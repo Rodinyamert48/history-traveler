@@ -236,7 +236,7 @@ export class MapScene implements GameScene {
   private buildSea(fog: Color3): void {
     // Rasterize land into a mask, blur it → "depth" (0 near coasts, 1 open sea).
     const size = 512;
-    const rect: [number, number, number, number] = [-200, -140, 400, 280];
+    const rect: [number, number, number, number] = [-270, -210, 540, 420];
     const canvas = document.createElement("canvas");
     canvas.width = canvas.height = size;
     const ctx = canvas.getContext("2d")!;
@@ -495,8 +495,9 @@ export class MapScene implements GameScene {
     } else if (mode === "menu") {
       ui.hide();
     } else {
-      ui.setControlsVisible(false);
+      // Selecting: the cinematic owns the screen.
       ui.showTooltip(null, 0, 0);
+      ui.hide();
     }
   }
 

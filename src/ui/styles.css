@@ -574,12 +574,15 @@ body {
   position: absolute;
   bottom: calc(24px + var(--safe-bottom));
   right: calc(24px + var(--safe-right));
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.14em;
-  color: var(--ink-dim);
+  color: var(--ink);
   text-transform: uppercase;
   z-index: 31;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(14, 9, 6, 0.55);
+  border: 1px solid var(--line);
 }
 
 .letterbox {
@@ -652,8 +655,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
-  padding: 8px 20px 10px;
-  background: radial-gradient(ellipse at center, rgba(14, 9, 6, 0.7), rgba(14, 9, 6, 0) 80%);
+  padding: 6px 36px 8px;
+  background: linear-gradient(90deg, rgba(14, 9, 6, 0), rgba(14, 9, 6, 0.6) 22%, rgba(14, 9, 6, 0.6) 78%, rgba(14, 9, 6, 0));
   min-width: 260px;
   max-width: 46vw;
 }
@@ -1691,6 +1694,14 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media (max-height: 480px) {
+  .hud-mission-desc {
+    display: none;
+  }
+
+  .hud-mission {
+    padding: 8px 12px 10px;
+  }
+
   .menu-buttons {
     margin-top: 22px;
     gap: 8px;
