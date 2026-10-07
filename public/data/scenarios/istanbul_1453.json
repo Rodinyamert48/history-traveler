@@ -1,0 +1,348 @@
+{
+  "scenario": "istanbul_1453",
+  "firstMission": "mission_001",
+  "missions": [
+    {
+      "id": "mission_001",
+      "title": "Sultan'ın Otağı",
+      "description": "Ordugâha yeni katıldın. Fatih Sultan Mehmet'in otağına git ve huzuruna çık.",
+      "type": "story",
+      "date": "21 Nisan 1453 · Osmanlı Ordugâhı",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "fatih",
+          "text": "Fatih Sultan Mehmet ile konuş",
+          "dialogue": "d_m01"
+        }
+      ],
+      "reward": {
+        "text": "Sultan'ın güvenini kazandın."
+      },
+      "nextMission": "mission_002",
+      "onStart": [
+        "fatih:camp"
+      ]
+    },
+    {
+      "id": "mission_002",
+      "title": "Kızakları Hazırla",
+      "description": "Galata sırtlarındaki kızak yolunda yağlanmış kütükler gerekiyor. Haliç'in karşı kıyısına geç ve kızakları don yağıyla yağla.",
+      "type": "collect",
+      "date": "22 Nisan 1453 · Galata Sırtları",
+      "objectives": [
+        {
+          "type": "reach",
+          "anchor": "slipway_bottom",
+          "radius": 12,
+          "text": "Haliç'in karşı kıyısına geç (iskeledeki kayıkçı seni geçirir)"
+        },
+        {
+          "type": "interact",
+          "targets": [
+            "grease_1",
+            "grease_2",
+            "grease_3"
+          ],
+          "text": "Kızak kütüklerini yağla",
+          "prompt": "Kızağı yağla (basılı tut)",
+          "hold": 1.6
+        }
+      ],
+      "reward": {
+        "text": "Kızak yolu hazır."
+      },
+      "nextMission": "mission_003",
+      "outro": "d_m02_end"
+    },
+    {
+      "id": "mission_003",
+      "title": "Gemileri Karadan Yürüt",
+      "description": "Donanma, Haliç'i kapatan zinciri aşmak için gemileri Galata sırtlarından karadan yürütecek. Ekibe katıl, ritmi tut ve gemiyi Haliç'e ulaştır.",
+      "type": "minigame",
+      "date": "22 Nisan 1453 · Kızak Yolu",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "ship",
+          "anchor": "ship_start",
+          "text": "Gemiyi Haliç'e ulaştır",
+          "prompt": "Ekibe katıl"
+        }
+      ],
+      "reward": {
+        "text": "Donanma Haliç'e indi!"
+      },
+      "nextMission": "mission_004",
+      "outro": "d_m03_end",
+      "onComplete": [
+        "ships:launched"
+      ],
+      "onStart": [
+        "fatih:slipway"
+      ]
+    },
+    {
+      "id": "mission_004",
+      "title": "Sultan'a Haber Ver",
+      "description": "Gemiler Haliç'e indi. Kıyıdan izleyen Fatih Sultan Mehmet'e haberi ilet.",
+      "type": "story",
+      "date": "22 Nisan 1453 · Haliç Kıyısı",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "fatih",
+          "text": "Fatih Sultan Mehmet ile konuş",
+          "dialogue": "d_m04"
+        }
+      ],
+      "reward": {
+        "text": "Yeni emir: Topları hazırla."
+      },
+      "nextMission": "mission_005"
+    },
+    {
+      "id": "mission_005",
+      "title": "Topları Hazırla",
+      "description": "Bataryadaki dev Şahi topu için gülleler taşınmalı. Haliç'i kayıkla geri geç, cephanelikten gülleleri al ve topun yanına götür.",
+      "type": "deliver",
+      "date": "Mayıs 1453 · Top Bataryası",
+      "objectives": [
+        {
+          "type": "reach",
+          "anchor": "battery",
+          "radius": 16,
+          "text": "Top bataryasına git"
+        },
+        {
+          "type": "deliver",
+          "pickup": "ammo_pile",
+          "drop": "sahi_drop",
+          "count": 3,
+          "item": "cannonball",
+          "text": "Gülleleri Şahi topuna taşı",
+          "pickupPrompt": "Gülle al",
+          "dropPrompt": "Gülleyi topun yanına bırak"
+        }
+      ],
+      "reward": {
+        "text": "Şahi topu ateşe hazır."
+      },
+      "nextMission": "mission_006",
+      "outro": "d_m05_end",
+      "onStart": [
+        "fatih:battery"
+      ]
+    },
+    {
+      "id": "mission_006",
+      "title": "Surları Döv",
+      "description": "Şahi topunun başına geç. Doğru açı ve yön ile surlardaki dört hedefi vur: küçük kule, sur bölümü, savunma noktası ve büyük kule.",
+      "type": "minigame",
+      "date": "Mayıs 1453 · Topkapı Önleri",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "cannon",
+          "anchor": "sahi",
+          "text": "Surlardaki 4 hedefi vur",
+          "prompt": "Topun başına geç"
+        }
+      ],
+      "reward": {
+        "text": "Dış surda gedik açıldı!"
+      },
+      "nextMission": "mission_007",
+      "outro": "d_m06_end",
+      "onComplete": [
+        "walls:breached"
+      ]
+    },
+    {
+      "id": "mission_007",
+      "title": "Surlara İlerle",
+      "description": "29 Mayıs 1453, şafak vakti. Son hücum başladı! Askerlerle birlikte ilerle ve gedikteki üç noktayı ele geçir.",
+      "type": "combat",
+      "date": "29 Mayıs 1453 · Şafak",
+      "intro": "d_m07",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "siege",
+          "anchor": "siege_start",
+          "text": "Hücum hattına katıl",
+          "autoRadius": 14
+        }
+      ],
+      "reward": {
+        "text": "Gedik ele geçirildi!"
+      },
+      "nextMission": "mission_008",
+      "outro": "d_m07_end",
+      "onStart": [
+        "siege:begin"
+      ]
+    },
+    {
+      "id": "mission_008",
+      "title": "Sancağı Burca Dik",
+      "description": "İskeleden surların üzerine tırman ve Osmanlı sancağını burca dik.",
+      "type": "story",
+      "date": "29 Mayıs 1453 · Topkapı",
+      "objectives": [
+        {
+          "type": "reach",
+          "anchor": "wall_top",
+          "radius": 4,
+          "text": "İskeleden sur burcuna tırman"
+        },
+        {
+          "type": "hold",
+          "anchor": "flag_spot",
+          "time": 2.6,
+          "prompt": "Sancağı dik (basılı tut)",
+          "text": "Sancağı burca dik",
+          "key": "F"
+        }
+      ],
+      "reward": {
+        "text": "İstanbul fethedildi!"
+      },
+      "nextMission": null,
+      "outro": "d_m08_end",
+      "onComplete": [
+        "flag:planted"
+      ]
+    }
+  ],
+  "dialogues": {
+    "d_m01": [
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Hoş geldin yiğidim. Bu kadim şehrin surları önünde günlerdir sabırla bekliyoruz."
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Bizanslılar Haliç'in ağzını kalın bir zincirle kapattı. Donanmamız içeri giremiyor."
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Lakin denizden geçemediğimiz yerden karadan geçeceğiz. Gemilerin hazırlanması gerekiyor."
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Haliç'in karşı kıyısına, Galata sırtlarına git. Kızaklar yağlanmalı; gemiler Boğaz'dan Haliç'e yürütülecek."
+      },
+      {
+        "speaker": "Sen",
+        "role": "Asker",
+        "text": "Emredersiniz Sultanım!"
+      }
+    ],
+    "d_m02_end": [
+      {
+        "speaker": "Kızak Ustası",
+        "role": "Ustabaşı",
+        "text": "Aferin! Kütükler don yağıyla kaygan oldu, gemi üstlerinden kayıp gidecek."
+      },
+      {
+        "speaker": "Kızak Ustası",
+        "role": "Ustabaşı",
+        "text": "Gemiler tepenin öbür yanında, Boğaz kıyısında bekliyor. Ekibe katıl, davulun ritmine uy!"
+      }
+    ],
+    "d_m03_end": [
+      {
+        "speaker": "Kadırga Reisi",
+        "role": "Denizci",
+        "text": "Gemi Haliç'te! Bizans'ın zinciri artık bir işe yaramaz!"
+      },
+      {
+        "speaker": "Kadırga Reisi",
+        "role": "Denizci",
+        "text": "Sultanımız kıyıdan izliyor. Haberi ona sen ulaştır."
+      }
+    ],
+    "d_m04": [
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Gördün mü yiğidim? Geçilmez denilen yerden gemilerimizi geçirdik."
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Şimdi topları hazırlayın. Surları dövmenin vakti geldi."
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Topçubaşı bataryada seni bekliyor. Kayıkla karşıya geç ve gülleleri Şahi topuna taşı."
+      }
+    ],
+    "d_m05_end": [
+      {
+        "speaker": "Topçubaşı",
+        "role": "Top Ustası",
+        "text": "Gülleler yerinde, barut dolduruldu. Şahi ateşe hazır!"
+      },
+      {
+        "speaker": "Topçubaşı",
+        "role": "Top Ustası",
+        "text": "Nişanı sen alacaksın. Fareyle yönü, tekerlek ya da Q/E ile açıyı ayarla. Menzili iyi hesapla!"
+      }
+    ],
+    "d_m06_end": [
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Aferin! Dış sur gedik verdi, burçlar sarsıldı."
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Askerlere söyleyin: şafakla birlikte son hücum başlayacak."
+      }
+    ],
+    "d_m07": [
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Ya ben bu şehri alırım, ya bu şehir beni alır! İleri yiğitlerim!"
+      },
+      {
+        "speaker": "Bölük Ağası",
+        "role": "Yeniçeri Subayı",
+        "text": "Hücum hattına gel! Askerlerle birlikte ilerleyip gedikteki noktaları tutacağız."
+      }
+    ],
+    "d_m07_end": [
+      {
+        "speaker": "Bölük Ağası",
+        "role": "Yeniçeri Subayı",
+        "text": "Gedik bizim! Ulubatlı Hasan ve yiğitleri burçlara yöneldi."
+      },
+      {
+        "speaker": "Bölük Ağası",
+        "role": "Yeniçeri Subayı",
+        "text": "İskeleden tırman ve sancağı burca dik!"
+      }
+    ],
+    "d_m08_end": [
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Sancak burçta dalgalanıyor... İstanbul fethedildi!"
+      },
+      {
+        "speaker": "Fatih Sultan Mehmet",
+        "role": "Osmanlı Padişahı",
+        "text": "Bu şehrin halkı emanımızdadır. Kimseye zulmedilmeyecek; herkes inancıyla, malıyla güvende olacak."
+      }
+    ]
+  }
+}
