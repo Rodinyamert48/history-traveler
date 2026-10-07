@@ -44,7 +44,7 @@ const RESUME_SPAWNS: Record<string, { x: number; z: number; yaw: number }> = {
   mission_005: { x: -168, z: 66, yaw: 2.6 },
   mission_006: { x: -116, z: -46, yaw: 1.4 },
   mission_007: { x: -112, z: -30, yaw: 1.57 },
-  mission_008: { x: 30, z: -36, yaw: 0 },
+  mission_008: { x: 29, z: -68, yaw: 0 },
 };
 
 const CHATTER: Record<string, string[]> = {
@@ -827,6 +827,8 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
         this.spawnAllies();
         break;
       case "flag:carry":
+        // The defenders have left the walls by now.
+        for (const d of this.defenders) d.visible = false;
         if (phase !== "resume") this.setCarry("flag");
         break;
       case "flag:planted":

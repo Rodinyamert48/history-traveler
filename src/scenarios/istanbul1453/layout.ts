@@ -69,7 +69,8 @@ export const LAYOUT = {
     { id: "B", name: "Hendek Geçidi", x: 10, z: -30 },
     { id: "C", name: "Sur Gediği", x: 30, z: -30 },
   ],
-  stairs: { x: 31.5, z0: -48, z1: -22, width: 3.4 },
+  /** Siege scaffold south of the breach, reaching the inner wall walk next to tower z=-44. */
+  stairs: { x: 31.5, z0: -64, z1: -38, width: 3.4 },
   flagSpot: { x: 39, z: -8 },
 
   goldenHorn: { tipX: -262, zCenter: 106 },

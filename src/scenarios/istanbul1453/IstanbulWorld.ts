@@ -352,12 +352,28 @@ export async function buildIstanbulWorld(ctx: BuildContext): Promise<IstanbulWor
       }
       scaffoldColliders.push(collision.addBox(st.x, z, st.width, run + 0.02, 0, top - 1.2, top, { solid: false, tag: "wood" }));
     }
-    // Landing platform toward the wall walk.
+    // Landing platform: covers the top of the stairs and reaches the wall walk.
     const topY = base + innerH;
-    scaffold.box(34.5, topY - 0.1, -19, 6, 0.2, 5, { color: hexColor("#8a5e38"), uvScale: 2 });
-    scaffoldColliders.push(collision.addBox(34.5, -19, 6, 5, 0, topY - 1, topY, { solid: false, tag: "wood" }));
+    const lx0 = st.x - st.width / 2;
+    const lx1 = innerX - 1.5;
+    const lz0 = st.z1 - 0.6;
+    const lz1 = st.z1 + 6;
+    const lcx = (lx0 + lx1) / 2;
+    const lcz = (lz0 + lz1) / 2;
+    scaffold.box(lcx, topY - 0.1, lcz, lx1 - lx0, 0.2, lz1 - lz0, { color: hexColor("#8a5e38"), uvScale: 2 });
+    scaffoldColliders.push(collision.addBox(lcx, lcz, lx1 - lx0, lz1 - lz0, 0, topY - 1, topY, { solid: false, tag: "wood" }));
+    // Wooden railings (visual + solid) along the stairs and the landing edges.
+    const rail = (cx: number, cz: number, w: number, d: number, y0: number, y1: number) => {
+      scaffold.box(cx, y1 - 0.05, cz, w, 0.1, d, { color: hexColor("#5e4128") });
+      scaffoldColliders.push(collision.addBox(cx, cz, w, d, 0, y0, y1, { walkable: false }));
+    };
+    for (const side of [-1, 1]) rail(st.x + side * (st.width / 2 + 0.1), (st.z0 + st.z1) / 2, 0.15, st.z1 - st.z0, base, topY + 1.1);
+    rail(lcx, lz1 + 0.1, lx1 - lx0, 0.15, topY - 1, topY + 1.1);
+    rail(lx0 - 0.1, lcz, 0.15, lz1 - lz0, topY - 1, topY + 1.1);
+    const sx0 = st.x + st.width / 2 + 0.2;
+    rail((sx0 + lx1) / 2, lz0 - 0.1, lx1 - sx0, 0.15, topY - 1, topY + 1.1);
     // Railings on the wall walk so the player can't fall into the city.
-    scaffoldColliders.push(collision.addBox(innerX + 2.1, -26, 0.3, 26, 0, topY, topY + 1.3, { walkable: false }));
+    scaffoldColliders.push(collision.addBox(innerX + 2.1, -26, 0.3, 28, 0, topY, topY + 1.3, { walkable: false }));
   }
   const scaffoldMesh = scaffold.toMesh("scaffold", scene);
   scaffoldMesh.material = materials.get("wood");
@@ -366,7 +382,7 @@ export async function buildIstanbulWorld(ctx: BuildContext): Promise<IstanbulWor
   for (const c of scaffoldColliders) c.enabled = false;
 
   // Wall walk collider is already walkable (inner wall). Tower T blocks the north side.
-  anchors.set("wall_top", new Vector3(innerX - 0.5, base + innerH, -19));
+  anchors.set("wall_top", new Vector3(innerX - 0.5, base + innerH, L.stairs.z1 + 3));
   anchors.set("flag_spot", new Vector3(innerX, base + innerH + 0.6, -14.5));
   const finalFlag = new TransformNode("final-flag", scene);
   prefabs.place("bigFlag", 0, 0, 0, { parent: finalFlag });
