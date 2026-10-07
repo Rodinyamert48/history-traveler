@@ -42,12 +42,21 @@ interface ProvinceEntry {
 
 type MapMode = "menu" | "map" | "selecting";
 
+/** Pole, banner and pulsing ring that mark a playable city. */
+interface CityMarker {
+  prov: ProvinceEntry;
+  material: PBRMaterial;
+  pole: Mesh;
+  flag: Mesh;
+  ring: Mesh;
+}
+
 const MAP = GAME_CONFIG.map;
 
 /**
  * The Türkiye map table: extruded provinces from Natural Earth data, a stylized animated
  * sea, drifting low-poly clouds and the interactive city layer. Only active cities
- * (İstanbul) react to clicks; the rest are desaturated and show "henüz keşfedilmedi".
+ * (İstanbul, Muğla) react to clicks; the rest are desaturated and show "henüz keşfedilmedi".
  */
 export class MapScene implements GameScene {
   readonly scene: Scene;
@@ -62,12 +71,9 @@ export class MapScene implements GameScene {
   private mode: MapMode = "menu";
   private pointer = { x: 0, y: 0, moved: false, inside: false };
   private hovered: ProvinceEntry | null = null;
-  private activeMat!: PBRMaterial;
   private landMat!: PBRMaterial;
   private hoverMat!: PBRMaterial;
-  private marker!: Mesh;
-  private markerRing!: Mesh;
-  private flag!: Mesh;
+  private markers: CityMarker[] = [];
   private emergence: Mesh | null = null;
   private time = 0;
   private camTarget = new Vector3(0, 0, -2);
@@ -131,7 +137,6 @@ export class MapScene implements GameScene {
     onProgress(0.7, "Bulutlar ve işaretler");
     this.buildClouds();
     this.buildMarkers();
-    this.buildIstanbulEmergence();
 
     this.setupShadows();
     this.setupPointer();
@@ -150,12 +155,15 @@ export class MapScene implements GameScene {
     this.landMat.roughness = 0.9;
     this.hoverMat = this.materials.variant("terrain", "map-land-hover");
     this.hoverMat.emissiveColor = new Color3(0.13, 0.1, 0.06);
-    this.activeMat = new PBRMaterial("map-active", scene);
-    this.activeMat.albedoColor = Color3.White();
-    this.activeMat.roughness = 0.55;
-    this.activeMat.metallic = 0.05;
-    this.activeMat.emissiveColor = Color3.FromHexString("#ff2a2a").toLinearSpace();
-    this.activeMat.emissiveIntensity = 0.2;
+    const activeMat = (id: string) => {
+      const m = new PBRMaterial(`map-active-${id}`, scene);
+      m.albedoColor = Color3.White();
+      m.roughness = 0.55;
+      m.metallic = 0.05;
+      m.emissiveColor = Color3.FromHexString("#ff2a2a").toLinearSpace();
+      m.emissiveIntensity = 0.2;
+      return m;
+    };
 
     const borders = new GeoBuilder();
     const borderColor = hexColor("#3a342c");
@@ -191,7 +199,7 @@ export class MapScene implements GameScene {
         }
       }
       const mesh = b.toMesh(`prov-${prov.id}`, scene);
-      mesh.material = active ? this.activeMat : this.landMat;
+      mesh.material = active ? activeMat(prov.id) : this.landMat;
       mesh.receiveShadows = true;
       mesh.isPickable = true;
       const [lx, lz] = project(prov.label[0], prov.label[1]);
@@ -308,47 +316,61 @@ export class MapScene implements GameScene {
 
   private buildMarkers(): void {
     const scene = this.scene;
-    const ist = this.provinces.find((p) => p.active);
-    if (ist) {
-      const top = ist.center.y;
+    const ringMat = new PBRMaterial("ring", scene);
+    ringMat.albedoColor = Color3.Black();
+    ringMat.emissiveColor = Color3.FromHexString("#ffcf6a").toLinearSpace();
+    ringMat.emissiveIntensity = 1.4;
+    ringMat.disableLighting = true;
+    ringMat.alpha = 0.9;
+    for (const prov of this.provinces) {
+      if (!prov.active) continue;
+      const top = prov.center.y;
       const b = new GeoBuilder();
       b.cylinder(0, 0, 0, 0.08, 0.06, 4.2, { color: hexColor("#5a3a1e"), segments: 6 });
       b.sphere(0, 4.3, 0, 0.16, { color: hexColor("#d8ad48"), segments: 6, rings: 4 });
-      this.marker = b.toMesh("ist-pole", scene);
-      this.marker.material = this.materials.get("wood");
-      this.marker.position.copyFrom(ist.center);
-      this.marker.position.y = top;
+      const pole = b.toMesh(`marker-pole-${prov.id}`, scene);
+      pole.material = this.materials.get("wood");
+      pole.position.copyFrom(prov.center);
+      pole.position.y = top;
+      // İstanbul flies the Ottoman banner; other cities a crimson-gold swallowtail pennant.
       const fb = new GeoBuilder();
-      const [u0, v0, u1, v1] = ATLAS_RECTS.flagOttoman;
       const segs = 6;
-      for (let i = 0; i < segs; i++) {
-        const x0 = (i / segs) * 2.2;
-        const x1 = ((i + 1) / segs) * 2.2;
-        fb.quad([x0, 0, 0], [x1, 0, 0], [x1, 1.3, 0], [x0, 1.3, 0], [u0 + ((u1 - u0) * i) / segs, v1, u0 + ((u1 - u0) * (i + 1)) / segs, v0], [0, 0, -1]);
+      if (prov.id === "istanbul") {
+        const [u0, v0, u1, v1] = ATLAS_RECTS.flagOttoman;
+        for (let i = 0; i < segs; i++) {
+          const x0 = (i / segs) * 2.2;
+          const x1 = ((i + 1) / segs) * 2.2;
+          fb.quad([x0, 0, 0], [x1, 0, 0], [x1, 1.3, 0], [x0, 1.3, 0], [u0 + ((u1 - u0) * i) / segs, v1, u0 + ((u1 - u0) * (i + 1)) / segs, v0], [0, 0, -1]);
+        }
+      } else {
+        const red = hexColor("#b3141c");
+        const gold = hexColor("#d8ad48");
+        for (let i = 0; i < segs; i++) {
+          const x0 = (i / segs) * 2;
+          const x1 = ((i + 1) / segs) * 2;
+          const notch = (x: number) => (x > 1.4 ? (x - 1.4) * 0.9 : 0);
+          fb.quad([x0, notch(x0), 0], [x1, notch(x1), 0], [x1, 1.2 - notch(x1), 0], [x0, 1.2 - notch(x0), 0], [0, 0, 1, 1], [0, 0, -1], i % 3 === 1 ? gold : red);
+        }
       }
-      this.flag = fb.toMesh("ist-flag", scene, true);
-      this.flag.material = this.materials.get("props");
-      this.flag.parent = this.marker;
-      this.flag.position.set(0.05, 2.8, 0);
+      const flag = fb.toMesh(`marker-flag-${prov.id}`, scene, true);
+      flag.material = prov.id === "istanbul" ? this.materials.get("props") : this.materials.get("fabric");
+      flag.parent = pole;
+      flag.position.set(0.05, 2.8, 0);
       const rb = new GeoBuilder();
       const ring: [number, number][] = [];
       for (let i = 0; i < 40; i++) ring.push([Math.cos((i / 40) * Math.PI * 2) * 2.6, Math.sin((i / 40) * Math.PI * 2) * 2.6]);
       ribbon(rb, ring, 0.18, 0, true, [1, 1, 1, 1]);
-      this.markerRing = rb.toMesh("ist-ring", scene);
-      const ringMat = new PBRMaterial("ring", scene);
-      ringMat.albedoColor = Color3.Black();
-      ringMat.emissiveColor = Color3.FromHexString("#ffcf6a").toLinearSpace();
-      ringMat.emissiveIntensity = 1.4;
-      ringMat.disableLighting = true;
-      ringMat.alpha = 0.9;
-      this.markerRing.material = ringMat;
-      this.markerRing.position.copyFrom(ist.center);
-      this.markerRing.position.y = top + 0.03;
-      this.markerRing.isPickable = false;
-      this.marker.isPickable = false;
-      this.flag.isPickable = false;
-      this.pipeline.glowLayer?.addIncludedOnlyMesh(this.markerRing);
+      const ringMesh = rb.toMesh(`marker-ring-${prov.id}`, scene);
+      ringMesh.material = ringMat.clone(`ring-${prov.id}`);
+      ringMesh.position.copyFrom(prov.center);
+      ringMesh.position.y = top + 0.03;
+      ringMesh.isPickable = false;
+      pole.isPickable = false;
+      flag.isPickable = false;
+      this.pipeline.glowLayer?.addIncludedOnlyMesh(ringMesh);
+      this.markers.push({ prov, material: prov.mesh.material as PBRMaterial, pole, flag, ring: ringMesh });
     }
+    ringMat.dispose();
     // Small stone pins for upcoming cities.
     const pins = new GeoBuilder();
     for (const p of this.provinces) {
@@ -363,11 +385,11 @@ export class MapScene implements GameScene {
     pinMesh.isPickable = false;
   }
 
-  /** Low-poly relief of the İstanbul province that "rises" during the zoom transition. */
-  private buildIstanbulEmergence(): void {
-    const ist = this.geo.provinces.find((p) => p.id === "istanbul");
-    if (!ist) return;
-    const rings = ist.polys.map((poly) => projectRing(poly[0]));
+  /** Low-poly relief of the selected province that "rises" during the zoom transition. */
+  private buildEmergence(provinceId: string): Mesh | null {
+    const geoProv = this.geo.provinces.find((p) => p.id === provinceId);
+    if (!geoProv) return null;
+    const rings = geoProv.polys.map((poly) => projectRing(poly[0]));
     let minX = Infinity;
     let maxX = -Infinity;
     let minZ = Infinity;
@@ -379,13 +401,16 @@ export class MapScene implements GameScene {
         minZ = Math.min(minZ, z);
         maxZ = Math.max(maxZ, z);
       }
-    const noise = new Noise2D(1453);
-    const step = 0.28;
+    const forested = provinceId !== "istanbul";
+    const noise = new Noise2D(provinceId === "istanbul" ? 1453 : 48);
+    // Large provinces get a coarser grid so the relief stays a few thousand triangles.
+    const step = Math.max(0.28, Math.sqrt(((maxX - minX) * (maxZ - minZ)) / 9000));
     const b = new GeoBuilder();
     const inside = (x: number, z: number) => rings.some((r) => pointInPolygon(x, z, r));
-    const hAt = (x: number, z: number) => (inside(x, z) ? 0.15 + Math.max(0, noise.fbm(x * 0.35, z * 0.35, 3) + 0.3) * 0.9 : -0.05);
-    const grass = hexColor("#6f8a43");
-    const dirt = hexColor("#9b7b4f");
+    const relief = forested ? 1.4 : 0.9;
+    const hAt = (x: number, z: number) => (inside(x, z) ? 0.15 + Math.max(0, noise.fbm(x * 0.35, z * 0.35, 3) + 0.3) * relief : -0.05);
+    const grass = forested ? hexColor("#4f6e34") : hexColor("#6f8a43");
+    const dirt = forested ? hexColor("#8a7a5a") : hexColor("#9b7b4f");
     for (let x = minX; x < maxX; x += step) {
       for (let z = minZ; z < maxZ; z += step) {
         if (!inside(x + step / 2, z + step / 2)) continue;
@@ -399,32 +424,46 @@ export class MapScene implements GameScene {
         b.tri([x, h00, z], [x + step, h11, z + step], [x, h01, z + step], [0, 0], [1, 1], [0, 1], [0, 1, 0], shade(col, 0.95));
       }
     }
-    // Miniature land walls on the historic peninsula + a few tiny towers.
-    const walls: [number, number][] = [
-      [28.922, 40.995],
-      [28.928, 41.011],
-      [28.934, 41.026],
-      [28.945, 41.037],
-    ];
-    const wallCol = hexColor("#d9c9a3");
-    for (let i = 0; i < walls.length - 1; i++) {
-      const [ax, az] = project(walls[i][0], walls[i][1]);
-      const [bx, bz] = project(walls[i + 1][0], walls[i + 1][1]);
-      const segs = 4;
-      for (let s = 0; s <= segs; s++) {
-        const t = s / segs;
-        const x = lerp(ax, bx, t);
-        const z = lerp(az, bz, t);
-        b.box(x, hAt(x, z) + 0.12, z, 0.05, 0.24, 0.05, { color: wallCol });
+    if (provinceId === "istanbul") {
+      // Miniature land walls on the historic peninsula.
+      const walls: [number, number][] = [
+        [28.922, 40.995],
+        [28.928, 41.011],
+        [28.934, 41.026],
+        [28.945, 41.037],
+      ];
+      const wallCol = hexColor("#d9c9a3");
+      for (let i = 0; i < walls.length - 1; i++) {
+        const [ax, az] = project(walls[i][0], walls[i][1]);
+        const [bx, bz] = project(walls[i + 1][0], walls[i + 1][1]);
+        const segs = 4;
+        for (let s = 0; s <= segs; s++) {
+          const t = s / segs;
+          const x = lerp(ax, bx, t);
+          const z = lerp(az, bz, t);
+          b.box(x, hAt(x, z) + 0.12, z, 0.05, 0.24, 0.05, { color: wallCol });
+        }
+      }
+    } else {
+      // Miniature pine forest covering the hills.
+      const rnd = new Random(52);
+      const pine = hexColor("#2f4a2a");
+      for (let i = 0; i < 260; i++) {
+        const x = rnd.range(minX, maxX);
+        const z = rnd.range(minZ, maxZ);
+        if (!inside(x, z)) continue;
+        const h = hAt(x, z);
+        const s = rnd.range(0.12, 0.2);
+        b.cylinder(x, h, z, s, 0, s * 3.2, { segments: 5, color: shade(pine, rnd.range(0.85, 1.15)) });
       }
     }
-    const mesh = b.toMesh("ist-relief", this.scene);
+    const mesh = b.toMesh(`relief-${provinceId}`, this.scene);
     mesh.material = this.materials.get("terrain");
     mesh.position.y = MAP.provinceHeight + MAP.activeLift;
     mesh.scaling.y = 0.001;
     mesh.setEnabled(false);
     mesh.isPickable = false;
-    this.emergence = mesh;
+    return mesh;
   }
 
   private setupShadows(): void {
@@ -438,7 +477,7 @@ export class MapScene implements GameScene {
     this.sky.sun.autoUpdateExtends = true;
     for (const c of this.clouds) gen.addShadowCaster(c.mesh);
     for (const p of this.provinces) if (p.active) gen.addShadowCaster(p.mesh);
-    if (this.marker) gen.addShadowCaster(this.marker, true);
+    for (const m of this.markers) gen.addShadowCaster(m.pole, true);
     this.mapShadow = gen;
   }
 
@@ -490,8 +529,10 @@ export class MapScene implements GameScene {
     if (mode === "map") {
       ui.show();
       ui.setControlsVisible(true);
-      const city = this.cities.find((c) => c.active);
-      if (city) ui.setActiveCity(city.name, `${city.year} — ${city.title}`, this.services.save.save.completedScenarios.includes(city.scenario ?? ""));
+      for (const city of this.cities) {
+        if (!city.active) continue;
+        ui.setActiveCity(city.id, city.name, `${city.year} — ${city.title}`, this.services.save.save.completedScenarios.includes(city.scenario ?? ""), city.doneLabel);
+      }
     } else if (mode === "menu") {
       ui.hide();
     } else {
@@ -542,20 +583,20 @@ export class MapScene implements GameScene {
       p.mesh.position.y = p.lift;
     }
 
-    const ist = this.provinces.find((p) => p.active);
-    if (ist && this.marker) {
-      const pulse = 0.5 + 0.5 * Math.sin(t * 2.4);
-      this.activeMat.emissiveIntensity = 0.16 + pulse * 0.22 + (this.hovered === ist ? 0.35 : 0);
-      this.markerRing.scaling.setAll(1 + pulse * 0.25);
-      (this.markerRing.material as PBRMaterial).alpha = 0.55 + (1 - pulse) * 0.4;
-      this.marker.position.y = ist.center.y + ist.lift;
-      this.markerRing.position.y = ist.center.y + ist.lift + 0.03;
-      this.flag.rotation.y = Math.sin(t * 1.7) * 0.25;
-      this.flag.rotation.x = Math.sin(t * 2.3) * 0.04;
+    this.markers.forEach((m, i) => {
+      const prov = m.prov;
+      const pulse = 0.5 + 0.5 * Math.sin(t * 2.4 + i * 1.3);
+      m.material.emissiveIntensity = 0.16 + pulse * 0.22 + (this.hovered === prov ? 0.35 : 0);
+      m.ring.scaling.setAll(1 + pulse * 0.25);
+      (m.ring.material as PBRMaterial).alpha = 0.55 + (1 - pulse) * 0.4;
+      m.pole.position.y = prov.center.y + prov.lift;
+      m.ring.position.y = prov.center.y + prov.lift + 0.03;
+      m.flag.rotation.y = Math.sin(t * 1.7 + i) * 0.25;
+      m.flag.rotation.x = Math.sin(t * 2.3 + i) * 0.04;
       const scale = this.camera.radius / MAP.cameraRadius;
-      this.marker.scaling.setAll(clamp(scale, 0.25, 1.6));
-      this.placeLabel(ist);
-    }
+      m.pole.scaling.setAll(clamp(scale, 0.25, 1.6));
+      this.placeLabel(prov);
+    });
   }
 
   private updateHover(dt: number): void {
@@ -598,15 +639,15 @@ export class MapScene implements GameScene {
     return y + this.services.canvas.getBoundingClientRect().top;
   }
 
-  private placeLabel(ist: ProvinceEntry): void {
+  private placeLabel(prov: ProvinceEntry): void {
     const engine = this.services.engine;
-    const pos = ist.center.clone();
-    pos.y += ist.lift + 4.6 * clamp(this.camera.radius / MAP.cameraRadius, 0.25, 1.6);
+    const pos = prov.center.clone();
+    pos.y += prov.lift + 4.6 * clamp(this.camera.radius / MAP.cameraRadius, 0.25, 1.6);
     const vp = this.camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
     const p = Vector3.Project(pos, Matrix.Identity(), this.scene.getTransformMatrix(), vp);
     const scale = engine.getHardwareScalingLevel();
     const visible = this.mode !== "menu" && p.z > 0 && p.z < 1;
-    this.services.ui.map.placeLabel(p.x * scale, p.y * scale, visible && this.mode === "map", this.hovered === ist);
+    this.services.ui.map.placeLabel(prov.id, p.x * scale, p.y * scale, visible && this.mode === "map", this.hovered === prov);
   }
 
   // ----------------------------------------------------------------- city selection
@@ -620,8 +661,9 @@ export class MapScene implements GameScene {
     audio.play("whoosh", { volume: 0.8 });
     audio.play("drum", { volume: 0.8 });
     audio.stopMusic(2.5);
-    ui.map.placeLabel(0, 0, false, false);
+    ui.map.hideLabels();
     ui.cinematic.setLetterbox(true);
+    this.emergence = this.buildEmergence(prov.id);
     for (const p of this.provinces) p.targetLift = p === prov ? MAP.hoverLift : -0.15;
 
     const cam = this.camera;

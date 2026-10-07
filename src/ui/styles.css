@@ -381,7 +381,7 @@ body {
 }
 
 .city-label.completed .era::after {
-  content: " · FETHEDİLDİ ✓";
+  content: attr(data-done);
   color: var(--good);
 }
 
@@ -1059,6 +1059,160 @@ body {
   font-weight: 700;
 }
 
+.mg-panel.compact {
+  left: auto;
+  right: calc(20px + var(--safe-right));
+  bottom: auto;
+  top: calc(96px + var(--safe-top));
+  transform: none;
+  width: min(330px, 70vw);
+  padding: 12px 16px;
+}
+
+.mg-bar.thin {
+  height: 9px;
+  margin-top: 4px;
+}
+
+.mg-bar.heat {
+  overflow: visible;
+}
+
+.mg-panel .hud-label {
+  margin-top: 8px;
+}
+
+.mg-bar-fill.wheat {
+  background: linear-gradient(90deg, #8a6a2a, #d8b45a, #f2dc96);
+}
+
+.mg-bar-fill.wood {
+  background: linear-gradient(90deg, #5a3a20, #8a6240, #b58a5a);
+}
+
+.mg-bar-fill.fire {
+  background: linear-gradient(90deg, #6e2a10, #d8642a, #ffc45a);
+  opacity: 0.85;
+}
+
+.mg-bar-fill.keskek {
+  background: linear-gradient(90deg, #9a8a62, #d8c8a0, #f4ead2);
+}
+
+.mg-band {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  border: 1px solid rgba(159, 210, 107, 0.9);
+  background: rgba(159, 210, 107, 0.18);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mg-band.over {
+  border-color: rgba(226, 101, 90, 0.9);
+  background: rgba(226, 101, 90, 0.2);
+}
+
+.mg-marker {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 3px;
+  margin-left: -1.5px;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  z-index: 2;
+  transition: left 0.08s linear;
+}
+
+.rhythm.high {
+  top: 42%;
+}
+
+.rhythm-feedback.high {
+  top: calc(42% - 110px);
+}
+
+.dibek-turn {
+  position: absolute;
+  left: 50%;
+  top: calc(42% + 84px);
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.dibek-turn.yours {
+  color: var(--gold);
+}
+
+.stir-dial {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.stir-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(216, 173, 72, 0.75);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+}
+
+.stir-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(255, 207, 106, 0.9);
+}
+
+.stir-label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+@media (max-height: 520px) {
+  .mg-panel .hud-label {
+    margin-top: 4px;
+  }
+
+  .mg-panel .hint-line,
+  .mg-panel .mg-ascii {
+    display: none;
+  }
+
+  .stir-dial {
+    top: 30%;
+    width: 90px;
+    height: 90px;
+  }
+}
+
 .rhythm {
   position: absolute;
   left: 50%;
@@ -1620,6 +1774,20 @@ input[type="range"]::-moz-range-thumb {
   left: 50%;
   bottom: calc(150px + var(--safe-bottom));
   transform: translateX(-50%);
+}
+
+.touch-action-row {
+  left: auto;
+  right: calc(20px + var(--safe-right));
+  transform: none;
+  display: flex;
+  gap: 14px;
+}
+
+.touch-action-row .touch-btn.big {
+  width: 104px;
+  height: 104px;
+  font-size: 17px;
 }
 
 .touch-pause {

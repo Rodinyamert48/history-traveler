@@ -7,12 +7,16 @@ export interface CityTooltip {
   active: boolean;
 }
 
-/** DOM overlay for the Türkiye map: header, İstanbul label, hover tooltip, legend. */
+interface CityLabel {
+  root: HTMLDivElement;
+  name: HTMLDivElement;
+  era: HTMLDivElement;
+}
+
+/** DOM overlay for the Türkiye map: header, playable-city labels, hover tooltip, legend. */
 export class MapUI {
   readonly root: HTMLDivElement;
-  private label: HTMLDivElement;
-  private labelName: HTMLDivElement;
-  private labelEra: HTMLDivElement;
+  private labels = new Map<string, CityLabel>();
   private tooltip: HTMLDivElement;
   private backBtn: HTMLButtonElement;
   private settingsBtn: HTMLButtonElement;
@@ -22,10 +26,6 @@ export class MapUI {
     const header = el("div", "map-header", this.root);
     el("h2", "", header, "TÜRKİYE");
     el("p", "", header, "Bir şehir seç ve tarihin içine gir");
-    this.label = el("div", "city-label", this.root);
-    this.labelName = el("div", "name", this.label, "İSTANBUL");
-    this.labelEra = el("div", "era", this.label, "1453 — İstanbul'un Fethi");
-    el("div", "stem", this.label);
     this.tooltip = el("div", "map-tooltip hidden", this.root);
     const corner = el("div", "map-corner", this.root);
     this.backBtn = el("button", "btn secondary", corner, "Ana Menü");
@@ -50,18 +50,33 @@ export class MapUI {
     this.backBtn.parentElement!.style.display = visible ? "" : "none";
   }
 
-  setActiveCity(name: string, era: string, completed: boolean): void {
-    setText(this.labelName, name.toLocaleUpperCase("tr-TR"));
-    setText(this.labelEra, era);
-    this.label.classList.toggle("completed", completed);
+  /** Creates/updates the floating label of a playable city. */
+  setActiveCity(id: string, name: string, era: string, completed: boolean, doneText = "TAMAMLANDI"): void {
+    let label = this.labels.get(id);
+    if (!label) {
+      const root = el("div", "city-label", this.root);
+      label = { root, name: el("div", "name", root), era: el("div", "era", root) };
+      el("div", "stem", root);
+      this.labels.set(id, label);
+    }
+    setText(label.name, name.toLocaleUpperCase("tr-TR"));
+    setText(label.era, era);
+    label.era.dataset.done = ` · ${doneText} ✓`;
+    label.root.classList.toggle("completed", completed);
   }
 
-  /** Positions the active city label (screen px); hidden when off-screen. */
-  placeLabel(x: number, y: number, visible: boolean, hover: boolean): void {
-    this.label.style.left = `${x}px`;
-    this.label.style.top = `${y}px`;
-    this.label.style.opacity = visible ? "1" : "0";
-    this.label.classList.toggle("hover", hover);
+  /** Positions a city label (screen px); hidden when off-screen. */
+  placeLabel(id: string, x: number, y: number, visible: boolean, hover: boolean): void {
+    const label = this.labels.get(id);
+    if (!label) return;
+    label.root.style.left = `${x}px`;
+    label.root.style.top = `${y}px`;
+    label.root.style.opacity = visible ? "1" : "0";
+    label.root.classList.toggle("hover", hover);
+  }
+
+  hideLabels(): void {
+    for (const l of this.labels.values()) l.root.style.opacity = "0";
   }
 
   showTooltip(t: CityTooltip | null, x: number, y: number): void {

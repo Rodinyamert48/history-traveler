@@ -66,6 +66,11 @@ export class ParticleFX {
     this.flashLight.range = 40;
   }
 
+  /** Quality multiplier for emit rates (for callers that drive their own emitters). */
+  get quality(): number {
+    return Math.max(0.15, this.factor);
+  }
+
   setFactor(f: number): void {
     this.factor = f;
     for (const ps of this.ambient) ps.emitRate = (ps as ParticleSystem & { baseRate?: number }).baseRate! * Math.max(0.15, f);
@@ -183,7 +188,7 @@ export class ParticleFX {
   }
 
   /** Small puff of dust (footfalls of the crew, rope pulls, ship hull scraping). */
-  dustPuff(at: Vector3, amount = 10): void {
+  dustPuff(at: Vector3, amount = 10, tint?: Color4): void {
     if (this.factor <= 0) return;
     const ps = this.takeFromPool(this.dustPool, () => this.makeSystem("impact-dust", 120, this.puff));
     ps.reset();
@@ -196,9 +201,9 @@ export class ParticleFX {
     ps.maxLifeTime = 1.8;
     ps.minSize = 0.6;
     ps.maxSize = 1.4;
-    ps.color1 = new Color4(0.75, 0.66, 0.5, 0.5);
-    ps.color2 = new Color4(0.7, 0.62, 0.48, 0.4);
-    ps.colorDead = new Color4(0.7, 0.62, 0.48, 0);
+    ps.color1 = tint ?? new Color4(0.75, 0.66, 0.5, 0.5);
+    ps.color2 = tint ? new Color4(tint.r * 0.92, tint.g * 0.92, tint.b * 0.92, tint.a * 0.8) : new Color4(0.7, 0.62, 0.48, 0.4);
+    ps.colorDead = tint ? new Color4(tint.r, tint.g, tint.b, 0) : new Color4(0.7, 0.62, 0.48, 0);
     ps.gravity = new Vector3(0, -0.4, 0);
     ps.manualEmitCount = Math.round(amount * this.factor);
     ps.targetStopDuration = 0.2;
@@ -236,7 +241,8 @@ export class ParticleFX {
     return ps;
   }
 
-  campfire(at: Vector3): void {
+  /** Fire + smoke emitters; returned so callers can drive their strength (e.g. a hearth). */
+  campfire(at: Vector3): { fire: ParticleSystem; smoke: ParticleSystem } {
     const fire = this.ambientSystem("fire", 40, 18, this.flare, at.add(new Vector3(0, 0.3, 0)));
     fire.blendMode = ParticleSystem.BLENDMODE_ADD;
     fire.minEmitBox = new Vector3(-0.3, 0, -0.3);
@@ -266,10 +272,31 @@ export class ParticleFX {
     smoke.colorDead = new Color4(0.6, 0.58, 0.56, 0);
     smoke.gravity = new Vector3(0.25, 0.1, 0.1);
     smoke.start();
+    return { fire, smoke };
+  }
+
+  /** Steam rising from a cauldron; emit rate is driven by the caller. */
+  steam(at: Vector3, radius: number): ParticleSystem {
+    const ps = this.ambientSystem("steam", 50, 0, this.puff, at);
+    ps.minEmitBox = new Vector3(-radius, 0, -radius);
+    ps.maxEmitBox = new Vector3(radius, 0.05, radius);
+    ps.direction1 = new Vector3(-0.15, 0.9, -0.15);
+    ps.direction2 = new Vector3(0.2, 1.4, 0.2);
+    ps.minLifeTime = 1.6;
+    ps.maxLifeTime = 3;
+    ps.minSize = 0.5;
+    ps.maxSize = 1.1;
+    this.sizeGradient(ps, 0.5, 2.6);
+    ps.color1 = new Color4(0.95, 0.95, 0.93, 0.32);
+    ps.color2 = new Color4(0.9, 0.9, 0.9, 0.24);
+    ps.colorDead = new Color4(1, 1, 1, 0);
+    ps.gravity = new Vector3(0.15, 0.2, 0.05);
+    ps.start();
+    return ps;
   }
 
   /** Large lazy smoke column (burning siege area / city). */
-  smokeColumn(at: Vector3, scale = 1): void {
+  smokeColumn(at: Vector3, scale = 1): ParticleSystem {
     const ps = this.ambientSystem("column", 70, 5 * scale, this.puff, at);
     ps.minEmitBox = new Vector3(-2, 0, -2);
     ps.maxEmitBox = new Vector3(2, 1, 2);
@@ -285,6 +312,7 @@ export class ParticleFX {
     ps.colorDead = new Color4(0.5, 0.48, 0.46, 0);
     ps.gravity = new Vector3(0.5, 0.3, 0.2);
     ps.start();
+    return ps;
   }
 
   /** Floating dust motes around the camera (gives depth to sunlight). */

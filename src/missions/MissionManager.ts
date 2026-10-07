@@ -127,8 +127,13 @@ export class MissionManager {
         return best;
       }
       case "deliver":
-        return this.host.anchor(this.carrying ? o.drop : o.pickup);
+        return this.host.anchor(this.carrying ? this.dropAnchor(o) : o.pickup);
     }
+  }
+
+  /** Current drop anchor of a deliver objective (cycles through `drops` when given). */
+  private dropAnchor(o: Extract<ObjectiveDef, { type: "deliver" }>): string {
+    return o.drops?.length ? o.drops[this.progress % o.drops.length] : o.drop;
   }
 
   private setupObjective(): void {
@@ -184,15 +189,16 @@ export class MissionManager {
         });
         this.register({
           id: `drop:${o.drop}`,
-          position: () => this.anchorPoint(o.drop),
+          position: () => this.anchorPoint(this.dropAnchor(o)),
           key: "E",
           prompt: o.dropPrompt,
           enabled: () => !this.busy && this.carrying,
           onInteract: () => {
             this.carrying = false;
             this.host.setCarry(null);
+            const dropId = this.dropAnchor(o);
             this.progress++;
-            this.host.onTargetDone(`${o.drop}:${this.progress}`);
+            this.host.onTargetDone(`${dropId}:${this.progress}`);
             this.host.notify("toast", `${o.text} (${this.progress}/${o.count})`);
             this.onChanged?.();
             if (this.progress >= o.count) void this.completeObjective();

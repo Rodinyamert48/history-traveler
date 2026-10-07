@@ -3,7 +3,7 @@ import { QUALITY_PRESETS, type QualityPreset } from "../config/qualityPresets";
 import type { CitiesFile, CityEntry, TurkeyGeo } from "../data/types";
 import { MapScene } from "../map/MapScene";
 import { loadScenario } from "../scenarios/registry";
-import type { ScenarioInstance } from "../scenarios/types";
+import type { ScenarioInstance, ScenarioModule } from "../scenarios/types";
 import { UIManager } from "../ui/UIManager";
 import { fetchJson, nextFrame, wait } from "../utils/async";
 import { createEngine, type EngineInfo } from "./EngineFactory";
@@ -25,6 +25,7 @@ export class GameManager {
   private current: GameScene | null = null;
   private map: MapScene | null = null;
   private scenario: ScenarioInstance | null = null;
+  private scenarioModule: ScenarioModule | null = null;
   private geo: TurkeyGeo | null = null;
   private cities: CityEntry[] = [];
   private fpsAccum = 0;
@@ -189,8 +190,9 @@ export class GameManager {
     await this.map.playSelectSequence(city.id);
 
     let instance: ScenarioInstance;
+    let module: ScenarioModule;
     try {
-      const module = await loadScenario(city.scenario);
+      module = await loadScenario(city.scenario);
       const completed = save.save.completedScenarios.includes(module.id);
       if (completed) save.resetScenario(module.id, [...module.missionIds]);
       ui.cinematic.setSkipHint(true, "Yükleniyor…");
@@ -214,10 +216,11 @@ export class GameManager {
     this.map.dispose();
     this.map = null;
     this.scenario = instance;
+    this.scenarioModule = module;
     this.current = instance;
     instance.onExitToMap = () => void this.returnToMap();
     instance.onRequestPause = () => this.togglePause(true);
-    audio.setAmbience({ sea: 0.4, wind: 0.3, camp: 0.5, battle: 0.1 });
+    audio.setAmbience(module.ambience);
     await instance.playIntro();
     this.state = "playing";
   }
@@ -235,6 +238,7 @@ export class GameManager {
     ui.dialogue.close();
     this.scenario.dispose();
     this.scenario = null;
+    this.scenarioModule = null;
     this.current = null;
     ui.loading.setTitle("TÜRKİYE", "Haritaya dönülüyor");
     ui.loading.show();
@@ -284,7 +288,7 @@ export class GameManager {
     const { ui } = this.services;
     ui.modal.show(
       "DURAKLATILDI",
-      `<p>İstanbul · 1453</p>`,
+      `<p>${this.scenarioModule?.label ?? ""}</p>`,
       [
         { label: "Devam Et", primary: true, onClick: () => this.togglePause(false) },
         { label: "Ayarlar", onClick: () => ui.settings.show() },
@@ -298,7 +302,7 @@ export class GameManager {
     ui.modal.show(
       "HAKKINDA",
       `<p><b>Tarih Yolcusu</b>, Türkiye haritasından seçtiğin şehrin önemli bir tarihî dönemini birinci şahıs olarak oyunlaştırılmış görevler ve mini oyunlarla yaşatan bir web oyunudur.</p>
-       <p>İlk bölüm: <b>İstanbul — 1453</b>. Diğer şehirler yakında.</p>
+       <p>Bölümler: <b>İstanbul — 1453</b> (İstanbul'un Fethi) ve <b>Muğla — Menteşe</b> (Keşkeğin Keşfi). Diğer şehirler yakında.</p>
        <p style="font-size:12px">Render: ${this.engineInfo.api} · Babylon.js<br/>Harita verisi: Natural Earth (kamu malı).<br/>Tüm 3B modeller, dokular, müzik ve sesler kod ile prosedürel üretilmiştir.</p>`,
       [{ label: "Kapat", primary: true, onClick: () => ui.modal.hide() }],
     );

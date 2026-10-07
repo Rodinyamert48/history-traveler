@@ -1,13 +1,25 @@
 import type { Vector3 } from "@babylonjs/core";
 import type { DialogueLine } from "../ui/DialogueUI";
 
-export type MinigameKind = "ship" | "cannon" | "siege";
+/** Minigame id; each scenario maps the ids it uses to its own minigame classes. */
+export type MinigameKind = string;
 
 export type ObjectiveDef =
   | { type: "talk"; npc: string; text: string; dialogue: string; prompt?: string }
   | { type: "reach"; anchor: string; radius: number; text: string }
   | { type: "interact"; targets: string[]; text: string; prompt: string; hold?: number; key?: "E" | "F" }
-  | { type: "deliver"; pickup: string; drop: string; count: number; text: string; pickupPrompt: string; dropPrompt: string; item: string }
+  | {
+      type: "deliver";
+      pickup: string;
+      /** Drop anchor; with `drops`, each delivery goes to the next anchor in that list instead. */
+      drop: string;
+      drops?: string[];
+      count: number;
+      text: string;
+      pickupPrompt: string;
+      dropPrompt: string;
+      item: string;
+    }
   | { type: "minigame"; minigame: MinigameKind; anchor: string; text: string; prompt?: string; autoRadius?: number }
   | { type: "hold"; anchor: string; text: string; prompt: string; time: number; key?: "E" | "F" };
 

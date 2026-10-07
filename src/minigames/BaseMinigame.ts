@@ -1,3 +1,4 @@
+import type { Vector3 } from "@babylonjs/core";
 import { el } from "../ui/dom";
 
 /**
@@ -11,6 +12,11 @@ export abstract class BaseMinigame {
   private _active = false;
   paused = false;
   protected elapsed = 0;
+  /**
+   * Free-roam minigames (siege, gathering) move the player themselves and own the HUD
+   * objective/waypoint; the hosting scene then asks them via objectiveText()/waypoint().
+   */
+  readonly freeRoam: boolean = false;
 
   constructor(protected readonly layer: HTMLElement) {}
 
@@ -46,6 +52,16 @@ export abstract class BaseMinigame {
   /** Forces the minigame to end (e.g. leaving the scenario). */
   abort(): void {
     this.finish(false);
+  }
+
+  /** HUD objective while a free-roam minigame runs (null keeps whatever the game set). */
+  objectiveText(): string | null {
+    return null;
+  }
+
+  /** HUD waypoint while a free-roam minigame runs. */
+  waypoint(): Vector3 | null {
+    return null;
   }
 
   protected abstract onStart(): void;

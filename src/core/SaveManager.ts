@@ -53,7 +53,7 @@ export function defaultSettings(): Settings {
 function defaultSave(): SaveData {
   return {
     version: 1,
-    unlockedCities: ["istanbul"],
+    unlockedCities: ["istanbul", "mugla"],
     completedMissions: [],
     completedScenarios: [],
     currentMission: {},
@@ -96,7 +96,7 @@ function sanitize(raw: unknown): SaveData {
     showFps: bool(s.showFps, d.showFps),
   };
   const unlocked = isStringArray(data.unlockedCities) ? data.unlockedCities : base.unlockedCities;
-  if (!unlocked.includes("istanbul")) unlocked.unshift("istanbul");
+  for (const id of base.unlockedCities) if (!unlocked.includes(id)) unlocked.push(id);
   const currentMission: Record<string, string> = {};
   if (data.currentMission && typeof data.currentMission === "object") {
     for (const [k, v] of Object.entries(data.currentMission)) {

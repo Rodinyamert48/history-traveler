@@ -1,3 +1,4 @@
+import type { AmbienceMix } from "../audio/AudioManager";
 import type { GameScene, GameServices } from "../core/GameServices";
 
 export interface ScenarioCreateOptions {
@@ -19,6 +20,10 @@ export interface ScenarioInstance extends GameScene {
 export interface ScenarioModule {
   id: string;
   cityId: string;
+  /** Short label for menus, e.g. "İstanbul · 1453". */
+  label: string;
+  /** Ambience beds while the scenario plays. */
+  ambience: AmbienceMix;
   missionIds: readonly string[];
   create(services: GameServices, opts: ScenarioCreateOptions): Promise<ScenarioInstance>;
 }

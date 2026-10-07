@@ -5,12 +5,10 @@ import { SynthLibrary, type SfxName } from "./SynthLibrary";
 export type { SfxName } from "./SynthLibrary";
 export type { MusicTheme } from "./MusicSequencer";
 
-export interface AmbienceMix {
-  sea: number;
-  wind: number;
-  camp: number;
-  battle: number;
-}
+export const AMBIENCE_BEDS = ["sea", "wind", "camp", "battle", "forest"] as const;
+export type AmbienceBed = (typeof AMBIENCE_BEDS)[number];
+/** Target level (0..1) per ambience bed; beds left out fade to silence. */
+export type AmbienceMix = Partial<Record<AmbienceBed, number>>;
 
 export interface PlayOptions {
   volume?: number;
@@ -47,7 +45,7 @@ export class AudioManager {
   private synth!: SynthLibrary;
   private music!: MusicSequencer;
   private samples = new Map<SfxName, AudioBuffer>();
-  private ambience: Partial<Record<keyof AmbienceMix, GainNode>> = {};
+  private ambience: Partial<Record<AmbienceBed, GainNode>> = {};
   private ambienceSources: AudioScheduledSourceNode[] = [];
   private campTimer: number | null = null;
   private volumes = { master: 0.8, music: 0.5, sfx: 0.85 };
@@ -190,8 +188,8 @@ export class AudioManager {
     const ctx = this.ctx;
     if (!this.ambience.sea) this.buildAmbience();
     const t = ctx.currentTime;
-    for (const key of Object.keys(mix) as (keyof AmbienceMix)[]) {
-      this.ambience[key]?.gain.setTargetAtTime(mix[key], t, 0.6);
+    for (const key of AMBIENCE_BEDS) {
+      this.ambience[key]?.gain.setTargetAtTime(mix[key] ?? 0, t, 0.6);
     }
   }
 
@@ -219,7 +217,7 @@ export class AudioManager {
       lfo.start();
       this.ambienceSources.push(src, lfo);
     };
-    for (const key of ["sea", "wind", "camp", "battle"] as const) {
+    for (const key of AMBIENCE_BEDS) {
       const g = ctx.createGain();
       g.gain.value = 0;
       g.connect(this.ambienceBus);
@@ -232,6 +230,9 @@ export class AudioManager {
     makeLoop("bandpass", 520, 1.4, 0.05, 0.4, this.ambience.wind!);
     // Distant battle rumble.
     makeLoop("lowpass", 160, 0.8, 0.3, 0.5, this.ambience.battle!);
+    // Cicadas (ağustos böceği): narrow high band of noise, fast pulsing, slow swells.
+    this.buildCicadas(this.ambience.forest!);
+    makeLoop("bandpass", 380, 1.1, 0.04, 0.3, this.ambience.forest!);
     // Camp: crackling fire + murmuring voices, scheduled randomly.
     const tick = () => {
       const level = this.ambience.camp?.gain.value ?? 0;
@@ -242,9 +243,50 @@ export class AudioManager {
       }
       const battle = this.ambience.battle?.gain.value ?? 0;
       if (battle > 0.05 && Math.random() < 0.18) this.synth.play("distantShout", this.ambience.battle!, 0.8 + Math.random() * 0.4);
+      // Pine forest: Aegean cicadas in waves and the odd bird.
+      const forest = this.ambience.forest?.gain.value ?? 0;
+      if (forest > 0.02 && this.ctx?.state === "running") {
+        if (Math.random() < 0.09) this.synth.play("birdChirp", this.ambience.forest!, 0.85 + Math.random() * 0.4);
+      }
       this.campTimer = window.setTimeout(tick, 280 + Math.random() * 420);
     };
     tick();
+  }
+
+  private buildCicadas(out: GainNode): void {
+    const ctx = this.ctx!;
+    for (const [freq, rate, swell] of [
+      [4600, 38, 0.05],
+      [5400, 44, 0.032],
+    ] as const) {
+      const src = ctx.createBufferSource();
+      src.buffer = this.synth.noiseBuffer;
+      src.loop = true;
+      const bp = ctx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = freq;
+      bp.Q.value = 9;
+      const pulse = ctx.createGain();
+      pulse.gain.value = 0.35;
+      const lfo = ctx.createOscillator();
+      lfo.type = "square";
+      lfo.frequency.value = rate;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = 0.3;
+      lfo.connect(lfoGain).connect(pulse.gain);
+      const level = ctx.createGain();
+      level.gain.value = 0.22;
+      const slow = ctx.createOscillator();
+      slow.frequency.value = swell;
+      const slowGain = ctx.createGain();
+      slowGain.gain.value = 0.18;
+      slow.connect(slowGain).connect(level.gain);
+      src.connect(bp).connect(pulse).connect(level).connect(out);
+      src.start();
+      lfo.start();
+      slow.start();
+      this.ambienceSources.push(src, lfo, slow);
+    }
   }
 
   dispose(): void {

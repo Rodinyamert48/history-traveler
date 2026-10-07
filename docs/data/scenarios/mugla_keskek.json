@@ -1,0 +1,201 @@
+{
+  "$comment": "Muğla · Menteşe — Keşkeğin Keşfi. Bir halk rivayetinden esinlenen kurgusal bölüm. Görev tipleri: talk, reach, interact, deliver, minigame (dibek | forest | fire | stir), hold.",
+  "scenario": "mugla_keskek",
+  "firstMission": "mugla_m01",
+  "missions": [
+    {
+      "id": "mugla_m01",
+      "title": "Düğün Telaşı",
+      "description": "Harman kalktı, köyde yarın büyük bir düğün var. Köyün aşçıbaşısı Ayşe Nine seni meydanda bekliyor.",
+      "type": "story",
+      "date": "MENTEŞE · HASAT SONU, İKİNDİ VAKTİ",
+      "intro": "d_mg_intro",
+      "onStart": ["ayse:ocak"],
+      "objectives": [{ "type": "talk", "npc": "ayse", "text": "Meydandaki Ayşe Nine ile konuş", "dialogue": "d_mg01" }],
+      "reward": { "text": "Ayşe Nine'nin çırağı oldun." },
+      "nextMission": "mugla_m02"
+    },
+    {
+      "id": "mugla_m02",
+      "title": "Ambardan Buğday",
+      "description": "Ayşe Nine'nin fikri için çok buğday lazım. Köy ambarından üç çuval buğdayı dibek taşının başına taşı.",
+      "type": "deliver",
+      "objectives": [
+        {
+          "type": "deliver",
+          "pickup": "ambar",
+          "drop": "dibek",
+          "count": 3,
+          "item": "sack",
+          "text": "Ambardan dibeğe buğday taşı",
+          "pickupPrompt": "Buğday çuvalını sırtla",
+          "dropPrompt": "Çuvalı dibeğin yanına bırak"
+        }
+      ],
+      "outro": "d_mg02_end",
+      "reward": { "text": "Üç çuval buğday dibeğin başında." },
+      "nextMission": "mugla_m03"
+    },
+    {
+      "id": "mugla_m03",
+      "title": "Dibekte Dövme",
+      "description": "Buğdayın kabuğu dibek taşında, tokmakla dövülerek ayrılır. İki kişi sırayla vurur; biri kaldırırken öbürü indirir.",
+      "type": "minigame",
+      "onStart": ["dibek:wheat"],
+      "objectives": [
+        { "type": "talk", "npc": "hasan", "text": "Dibeğin başındaki Hasan Emmi ile konuş", "dialogue": "d_mg03" },
+        { "type": "minigame", "minigame": "dibek", "anchor": "dibek", "text": "Hasan Emmi ile sırayla tokmak vur", "prompt": "Tokmağı al — Dövmeye başla" }
+      ],
+      "outro": "d_mg03_end",
+      "reward": { "text": "Buğday dövüldü: keşkeklik dövme hazır." },
+      "nextMission": "mugla_m04"
+    },
+    {
+      "id": "mugla_m04",
+      "title": "Çam Ormanında Odun",
+      "description": "Kazan bütün gece kaynayacak. Köyün kuzeyindeki kızılçam ormanından kuru dal ve ateşi tutuşturacak çıra topla.",
+      "type": "collect",
+      "objectives": [
+        { "type": "reach", "anchor": "orman_giris", "radius": 7, "text": "Kuzeydeki çam ormanının girişine git" },
+        { "type": "minigame", "minigame": "forest", "anchor": "orman_giris", "text": "Ormandan kuru dal ve çıra topla", "prompt": "Odun toplamaya başla" },
+        { "type": "reach", "anchor": "ocak", "radius": 4, "text": "Odunları meydandaki ocağa götür" }
+      ],
+      "onComplete": ["wood:stacked"],
+      "outro": "d_mg04_end",
+      "reward": { "text": "Ocağın yanında bütün gece yetecek odun var." },
+      "nextMission": "mugla_m05"
+    },
+    {
+      "id": "mugla_m05",
+      "title": "Et, Su ve Tuz",
+      "description": "Dövme buğday tek başına yetmez. Kasaptan kemikli eti, çeşmeden suyu, bakkaldan tuzu ve tereyağını al.",
+      "type": "collect",
+      "objectives": [
+        { "type": "interact", "targets": ["kasap", "cesme", "bakkal"], "text": "Kazan için malzemeleri topla", "prompt": "Malzemeyi al" },
+        { "type": "talk", "npc": "ayse", "text": "Malzemeleri Ayşe Nine'ye teslim et", "dialogue": "d_mg05" }
+      ],
+      "onComplete": ["kazan:filled"],
+      "reward": { "text": "Kazan dolduruldu: buğday, kemikli et, su ve tuz." },
+      "nextMission": "mugla_m06"
+    },
+    {
+      "id": "mugla_m06",
+      "title": "Ocağı Harla",
+      "description": "Güneş Menteşe dağlarının ardına iniyor. Ocağı yak; ateşi ne söndür ne taşır, kazanı kaynat.",
+      "type": "minigame",
+      "date": "AKŞAMÜSTÜ",
+      "onStart": ["time:dusk"],
+      "intro": "d_mg06",
+      "objectives": [{ "type": "minigame", "minigame": "fire", "anchor": "ocak", "text": "Ateşi yak ve kazanı kaynat", "prompt": "Ocağın başına geç" }],
+      "onComplete": ["time:night"],
+      "outro": "d_mg06_end",
+      "reward": { "text": "Kazan fokur fokur kaynıyor." },
+      "nextMission": "mugla_m07"
+    },
+    {
+      "id": "mugla_m07",
+      "title": "Gece Boyu Karıştır",
+      "description": "Keşkek sabaha kadar pişer ve hiç durmadan karıştırılır. Köyün gençleri nöbetleşe ocağın başında; sıra sende.",
+      "type": "minigame",
+      "date": "GECE YARISI",
+      "intro": "d_mg07",
+      "objectives": [{ "type": "minigame", "minigame": "stir", "anchor": "ocak", "text": "Keşkeği kıvamına gelene dek karıştır", "prompt": "Kepçeyi al — Karıştır" }],
+      "onComplete": ["time:dawn"],
+      "outro": "d_mg07_end",
+      "reward": { "text": "Keşkek kıvamını buldu!" },
+      "nextMission": "mugla_m08"
+    },
+    {
+      "id": "mugla_m08",
+      "title": "Düğün Sofrası",
+      "description": "Davul zurna çalıyor, misafirler sofralara oturdu. Ayşe Nine'nin keşkeğini sofralara taşı.",
+      "type": "deliver",
+      "date": "DÜĞÜN SABAHI",
+      "onStart": ["wedding:setup"],
+      "intro": "d_mg08",
+      "objectives": [
+        {
+          "type": "deliver",
+          "pickup": "ocak",
+          "drop": "sofra_1",
+          "drops": ["sofra_1", "sofra_2", "sofra_3"],
+          "count": 3,
+          "item": "bowl",
+          "text": "Keşkeği sofralara taşı",
+          "pickupPrompt": "Bir sahan keşkek al",
+          "dropPrompt": "Keşkeği sofraya koy"
+        },
+        { "type": "talk", "npc": "halil", "text": "Halil Ağa'nın yanına git", "dialogue": "d_mg08_end" }
+      ],
+      "onComplete": ["wedding:served"],
+      "reward": { "text": "Keşkek bütün köye yetti." },
+      "nextMission": null
+    }
+  ],
+  "dialogues": {
+    "d_mg_intro": [
+      { "speaker": "Anlatıcı", "text": "Menteşe Beyliği zamanı. Muğla'nın çam ormanlarıyla çevrili bir köyünde harman kalkmış, ambarlar buğdayla dolmuş." },
+      { "speaker": "Anlatıcı", "text": "Yarın köyün en güzel kızı evleniyor. Düğüne bütün köy, yayladan Yörükler, yoldan geçen kervancılar gelecek…" },
+      { "speaker": "Anlatıcı", "text": "Rivayet odur ki, o kadar insanı doyuracak yemeği bulan, o gece meydandaki ocağın başında doğan bir tat oldu." }
+    ],
+    "d_mg01": [
+      { "speaker": "Ayşe Nine", "text": "Hele gel yavrım, gel! Bak gari, yarın düğün var, köy alt üst." },
+      { "speaker": "Ayşe Nine", "text": "Halil Ağa'm bütün köyü, yayladan inen Yörükleri, kervancıları sofraya buyur etti. Bu kadar boğaza pilav mı yetişir, et mi yetişir?" },
+      { "speaker": "Sen", "text": "Ne yapacağız peki Ayşe Nine?" },
+      { "speaker": "Ayşe Nine", "text": "Aklımda bir şey var. Buğdayı dibekte döveriz, kabuğunu ayırırız. Sonra kemikli etle koca kazana koyar, bütün gece ağır ateşte pişiririz." },
+      { "speaker": "Ayşe Nine", "text": "Et dağılır, buğday erir; bir kazan bin kişiyi doyurur. Haydi, ilkin ambardan üç çuval buğday getir de Hasan Emmi'nin dibeğinin başına koy." }
+    ],
+    "d_mg02_end": [
+      { "speaker": "Hasan Emmi", "text": "Oooo, maşallah! Üç çuval tamam. Ayşe Nine yine ne pişiriyor böyle, bütün köyün buğdayını mı kazana atacak?" },
+      { "speaker": "Hasan Emmi", "text": "Gel bakalım delikanlı, dibeğin başında bir nefes alalım." }
+    ],
+    "d_mg03": [
+      { "speaker": "Hasan Emmi", "text": "Dibek dediğin iki kişiyle döner. Ben vururum, sen kaldırırsın; sen vurursun, ben kaldırırım." },
+      { "speaker": "Hasan Emmi", "text": "Benim tokmak inerken seninki havada olacak. Aynı anda vurursak tokmaklar çarpışır, elin acır, buğday da kaçar!" },
+      { "speaker": "Hasan Emmi", "text": "Biraz da su serptim, kabuk kolay ayrılsın. Haydi, bismillah!" }
+    ],
+    "d_mg03_end": [
+      { "speaker": "Hasan Emmi", "text": "Eline sağlık! Bak, kabuk ayrıldı, buğday yarıldı. Buna dövme derler." },
+      { "speaker": "Ayşe Nine", "text": "Aferin size! Şimdi ocağa odun lazım, hem de bol. Kazan sabaha kadar kaynayacak." },
+      { "speaker": "Ayşe Nine", "text": "Kuzeydeki çamlığa çık, kuru dal topla. Bir iki de çıra bul; çamın reçinelisi bir kıvılcımla tutuşur." }
+    ],
+    "d_mg04_end": [
+      { "speaker": "Ayşe Nine", "text": "Maşallah, sırtın dolmuş! Çam kokusu sinmiş üstüne." },
+      { "speaker": "Ayşe Nine", "text": "Şimdi kazanın gerisi: Kasap Mustafa'dan kemikli eti, çeşmeden suyu, Bakkal Rıza'dan tuzla tereyağını alıver." }
+    ],
+    "d_mg05": [
+      { "speaker": "Ayşe Nine", "text": "Et, su, tuz… Tereyağı da sona kalsın; sofraya inerken üstüne kızdırıp dökeceğiz." },
+      { "speaker": "Ayşe Nine", "text": "Dövmeyi bir gece önceden ıslatmıştım. Kemikli eti, buğdayı, suyu, tuzu koydum kazana. Kazan doldu!" },
+      { "speaker": "Ayşe Nine", "text": "Güneş iniyor. Ocağı yakma vakti geldi." }
+    ],
+    "d_mg06": [
+      { "speaker": "Ayşe Nine", "text": "Ateş dediğin evlat gibidir: az gelirse üşür, çok gelirse azar. Kazan ağır ateşte kaynayacak." },
+      { "speaker": "Ayşe Nine", "text": "Odunu yerinde at, körükle canlandır. Fazla harlarsa közü çek, yoksa kazan taşar." }
+    ],
+    "d_mg06_end": [
+      { "speaker": "Ayşe Nine", "text": "İşte böyle! Dinle şu sesi: fokur fokur… Kazan kaynadı." },
+      { "speaker": "Ayşe Nine", "text": "Gece uzun yavrım. Gençler toplanır, türkü söylenir, kazanın başı boş kalmaz." }
+    ],
+    "d_mg07": [
+      { "speaker": "Anlatıcı", "text": "Gece çöktü. Köyün delikanlıları ocağın başına toplandı; bir yandan türküler söyleniyor, bir yandan kazan nöbetle karıştırılıyor." },
+      { "speaker": "Ayşe Nine", "text": "Şimdi en zoru. Kepçe hiç durmayacak! Yavaş karıştırırsan dibi tutar, hızlı karıştırırsan taşar." },
+      { "speaker": "Ayşe Nine", "text": "Buğday eriyip et lif lif dağılınca, kepçeyi kaldırdığında uzayıp gelecek. O zaman tamamdır." }
+    ],
+    "d_mg07_end": [
+      { "speaker": "Anlatıcı", "text": "Şafak söktüğünde kazandaki buğday ile et birbirine karışmış, ipeksi bir lapa olmuştu." },
+      { "speaker": "Ayşe Nine", "text": "Bak hele, nasıl da uzuyor! Tam kıvamında. Bu dövmeden, bu kazandan doğdu; adını da köylü koysun." },
+      { "speaker": "Hasan Emmi", "text": "Dibekte dövüldü, kazanda döğüldü… Biz buna keşkek diyelim gari!" },
+      { "speaker": "Ayşe Nine", "text": "Keşkek olsun! Haydi, davulcular geldi; misafirler sofrada bekler." }
+    ],
+    "d_mg08": [
+      { "speaker": "Halil Ağa", "text": "Hoş geldiniz, safa geldiniz! Davulcu, zurnacı, çalın bakalım; bugün torunumun düğünü var!" },
+      { "speaker": "Ayşe Nine", "text": "Yavrım, sahanları al, keşkeği sofralara taşı. Üstüne kızgın tereyağı döktüm, pul biber serptim." }
+    ],
+    "d_mg08_end": [
+      { "speaker": "Halil Ağa", "text": "Yetmiş yıllık ömrümde böyle bir lezzet görmedim! Bir kazanla bütün köyü, yaylayı, yolcuyu doyurdunuz." },
+      { "speaker": "Ayşe Nine", "text": "Tek kişinin işi değil bu Ağa'm. Buğdayı ambar verdi, dibeği Hasan dövdü, odunu çamlık verdi, gece boyu gençler karıştırdı." },
+      { "speaker": "Halil Ağa", "text": "Öyleyse bundan böyle her düğünde keşkek kazanı kurulsun, hep birlikte dövülsün, hep birlikte karıştırılsın!" },
+      { "speaker": "Anlatıcı", "text": "O günden beri Anadolu'da düğünlerde, bayramlarda, imecelerde keşkek kazanları kurulur; tokmaklar davul zurnayla birlikte iner kalkar." }
+    ]
+  }
+}

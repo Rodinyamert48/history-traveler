@@ -1,4 +1,4 @@
-import { Color4, Mesh, TransformNode, type AssetContainer, type InstancedMesh, type Scene } from "@babylonjs/core";
+import { Color4, Matrix, Mesh, Quaternion, TransformNode, Vector3, type AssetContainer, type InstancedMesh, type Scene } from "@babylonjs/core";
 import type { MaterialKey, MaterialLibrary } from "../rendering/MaterialLibrary";
 import type { RenderPipeline } from "../rendering/RenderPipeline";
 import { registerInstancedBufferWithCapacity } from "../rendering/instancing";
@@ -21,6 +21,16 @@ export interface PlaceOptions {
   dynamic?: boolean;
   parent?: TransformNode;
   castShadows?: boolean;
+}
+
+/** One placement for scatter(): position, yaw, uniform scale and optional tint. */
+export interface ScatterItem {
+  x: number;
+  y: number;
+  z: number;
+  rotY?: number;
+  scale?: number;
+  tint?: RGBA;
 }
 
 export interface PlacedPrefab {
@@ -169,6 +179,85 @@ export class PrefabLibrary {
       out.push(m);
     }
     return out;
+  }
+
+  /**
+   * Draws many static copies of a prefab as GPU thin instances, grouped into square chunks.
+   * Unlike place(), copies cost nothing on the CPU per frame: each chunk is one draw call per
+   * material, frustum-culled as a whole and switched to the LOD model / culled by distance.
+   * Use it for forests, undergrowth, rocks and crops; place() for things that move or toggle.
+   */
+  scatter(name: string, items: readonly ScatterItem[], chunkSize = 90): Mesh[] {
+    const factory = this.factories.get(name);
+    if (!factory) throw new Error(`Unknown prefab "${name}"`);
+    if (!items.length) return [];
+    const def = factory();
+    const lodDistance = def.lod ? def.lod.distance * Math.max(0.6, this.cullScale) : 0;
+    const cull = def.cullDistance ? def.cullDistance * this.cullScale : 0;
+    const template = (parts: typeof def.parts, suffix: string) => {
+      const out = new Map<string, Mesh>();
+      for (const [key, b] of parts.parts) {
+        if (b.isEmpty) continue;
+        const m = b.toMesh(`${name}:${key}:${suffix}`, this.scene);
+        m.material = this.materials.get(key);
+        m.isPickable = false;
+        m.setEnabled(false);
+        out.set(key, m);
+      }
+      return out;
+    };
+    const full = template(def.parts, "tpl");
+    const lod = def.lod ? template(def.lod.parts, "lodtpl") : new Map<string, Mesh>();
+    const chunks = new Map<string, ScatterItem[]>();
+    for (const it of items) {
+      const k = `${Math.floor(it.x / chunkSize)}|${Math.floor(it.z / chunkSize)}`;
+      let list = chunks.get(k);
+      if (!list) {
+        list = [];
+        chunks.set(k, list);
+      }
+      list.push(it);
+    }
+    const meshes: Mesh[] = [];
+    const q = new Quaternion();
+    const sc = new Vector3();
+    const tr = new Vector3();
+    const mat = new Matrix();
+    for (const [key, list] of chunks) {
+      const matrices = new Float32Array(list.length * 16);
+      const colors = new Float32Array(list.length * 4);
+      list.forEach((it, i) => {
+        Quaternion.RotationYawPitchRollToRef(it.rotY ?? 0, 0, 0, q);
+        sc.setAll(it.scale ?? 1);
+        tr.set(it.x, it.y, it.z);
+        Matrix.ComposeToRef(sc, q, tr, mat);
+        mat.copyToArray(matrices, i * 16);
+        const t = it.tint ?? [1, 1, 1, 1];
+        colors.set([t[0], t[1], t[2], 1], i * 4);
+      });
+      const setup = (src: Mesh, label: string): Mesh => {
+        const m = src.clone(`${name}#${key}:${label}`, null, true, false)!;
+        // Thin-instance buffers live on the geometry: every chunk needs its own copy.
+        m.makeGeometryUnique();
+        m.setEnabled(true);
+        m.isPickable = false;
+        m.receiveShadows = true;
+        m.thinInstanceSetBuffer("matrix", matrices.slice(), 16, true);
+        if (def.tintable) m.thinInstanceSetBuffer("color", colors.slice(), 4, true);
+        m.thinInstanceRefreshBoundingInfo(false);
+        m.freezeWorldMatrix();
+        return m;
+      };
+      for (const [matKey, src] of full) {
+        const m = setup(src, matKey);
+        const lodSrc = lod.get(matKey);
+        if (lodDistance > 0) m.addLODLevel(lodDistance, lodSrc ? setup(lodSrc, `${matKey}:lod`) : null);
+        if (cull > 0) m.addLODLevel(cull, null);
+        if (def.castShadows && this.pipeline) this.pipeline.addShadowCaster(m);
+        meshes.push(m);
+      }
+    }
+    return meshes;
   }
 
   /** Total instance count (debug / perf HUD). */

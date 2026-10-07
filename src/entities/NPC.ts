@@ -5,7 +5,26 @@ import type { NavGraph } from "../world/NavGraph";
 import { angleDelta, clamp, damp, lerp } from "../utils/math";
 import type { HumanoidRig } from "./HumanoidFactory";
 
-export type NpcAnim = "idle" | "walk" | "run" | "push" | "pull" | "cheer" | "sit" | "work" | "carry" | "point" | "talk" | "thrust" | "guard" | "load" | "bow";
+export type NpcAnim =
+  | "idle"
+  | "walk"
+  | "run"
+  | "push"
+  | "pull"
+  | "cheer"
+  | "sit"
+  | "work"
+  | "carry"
+  | "point"
+  | "talk"
+  | "thrust"
+  | "guard"
+  | "load"
+  | "bow"
+  | "pound"
+  | "stir"
+  | "dance"
+  | "play";
 
 export type NpcBehavior =
   | { type: "idle"; lookAround?: boolean }
@@ -15,7 +34,21 @@ export type NpcBehavior =
   | { type: "follow"; target: () => Vector3 | null; distance: number; run?: boolean }
   | { type: "scripted" };
 
-export type NpcRole = "janissary" | "sipahi" | "worker" | "sailor" | "gunner" | "byzantine" | "commander" | "fatih" | "boatman";
+export type NpcRole =
+  | "janissary"
+  | "sipahi"
+  | "worker"
+  | "sailor"
+  | "gunner"
+  | "byzantine"
+  | "commander"
+  | "fatih"
+  | "boatman"
+  | "villager"
+  | "woman"
+  | "child"
+  | "elder"
+  | "musician";
 
 const NPCC = GAME_CONFIG.npc;
 
@@ -47,6 +80,8 @@ export class NPC {
   private headPitch = 0;
   /** Extra per-frame offsets the minigames can use (e.g. lean into the rope). */
   lean = 0;
+  /** Mallet swing for the "pound" pose: 0 = raised overhead, 1 = struck down (driven by minigames). */
+  strike = 0;
   visible = true;
   lodLevel = 0;
   private animAccum = 0;
@@ -318,6 +353,58 @@ export class NPC {
         torsoX = 0.55;
         aLx = -0.4;
         aRx = -0.4;
+        break;
+      }
+      case "pound": {
+        // Two-handed mallet: arms from overhead (-2.9) down to the mortar (-0.9).
+        const k = this.strike;
+        aLx = lerp(-2.9, -0.95, k);
+        aRx = lerp(-2.9, -0.95, k);
+        aLz = 0.12;
+        aRz = -0.12;
+        torsoX = lerp(-0.08, 0.32, k);
+        hipY = 0.95 - k * 0.05;
+        lLx = 0.2;
+        lRx = -0.25;
+        break;
+      }
+      case "stir": {
+        // Long paddle in a cauldron: arms forward, torso rocking in a slow circle.
+        const s = Math.sin(t * 2.2);
+        const c = Math.cos(t * 2.2);
+        torsoX = 0.28 + c * 0.08;
+        torsoY = s * 0.22;
+        aLx = -1.2 + c * 0.25;
+        aRx = -1.05 + c * 0.25;
+        aLz = 0.15;
+        aRz = -0.15;
+        lLx = 0.2;
+        lRx = -0.2;
+        break;
+      }
+      case "dance": {
+        // Zeybek: arms spread and raised, slow heavy steps with deep knee bends and turns.
+        const ph = t * 1.9;
+        const s = Math.sin(ph);
+        aLz = 1.35 + s * 0.12;
+        aRz = -1.35 + s * 0.12;
+        aLx = -0.35;
+        aRx = -0.35;
+        hipY = 0.92 - Math.max(0, Math.sin(ph * 2)) * 0.16;
+        lLx = s * 0.55;
+        lRx = -Math.max(0, s) * 0.3;
+        torsoY = s * 0.3;
+        torsoX = -0.05;
+        break;
+      }
+      case "play": {
+        // Musician: davul stick / zurna held up, rhythmic bounce.
+        const s = Math.sin(t * 8);
+        aRx = -1.25 + Math.max(0, s) * 0.5;
+        aLx = -1.1;
+        aLz = 0.3;
+        hipY = 0.95 + Math.abs(s) * 0.02;
+        torsoY = Math.sin(t * 1.2) * 0.12;
         break;
       }
     }

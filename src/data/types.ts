@@ -25,6 +25,8 @@ export interface CityEntry {
   title: string;
   active: boolean;
   scenario?: string;
+  /** Short badge once the scenario is completed (e.g. "FETHEDİLDİ"). */
+  doneLabel?: string;
 }
 
 export interface CitiesFile {

@@ -1,39 +1,21 @@
-import { Color3, Color4, Scene, TransformNode, Vector3, type AbstractMesh, type Observer } from "@babylonjs/core";
-import { AssetLoader } from "../../assets/AssetLoader";
-import { PrefabLibrary } from "../../assets/PrefabLibrary";
+import { Color3, Vector3, type AbstractMesh } from "@babylonjs/core";
 import { flagHeld, heldCannonball } from "../../assets/Prefabs";
 import { GAME_CONFIG } from "../../config/gameConfig";
 import type { GameServices } from "../../core/GameServices";
-import type { Settings } from "../../core/SaveManager";
-import { HumanoidFactory, LOOKS, type HumanoidLook } from "../../entities/HumanoidFactory";
-import type { NPC, NpcRole } from "../../entities/NPC";
-import { NPCManager } from "../../entities/NPCManager";
-import { Player } from "../../entities/Player";
+import { LOOKS } from "../../entities/HumanoidFactory";
+import type { NPC } from "../../entities/NPC";
+import type { BaseMinigame } from "../../minigames/BaseMinigame";
 import { CannonMinigame } from "../../minigames/CannonMinigame";
 import { ShipTransportMinigame } from "../../minigames/ShipTransportMinigame";
 import { SiegeMinigame, type SiegeZone } from "../../minigames/SiegeMinigame";
-import type { BaseMinigame } from "../../minigames/BaseMinigame";
-import { MissionManager } from "../../missions/MissionManager";
-import type { MinigameKind, MissionHost, ScenarioMissionFile } from "../../missions/types";
-import { MaterialLibrary } from "../../rendering/MaterialLibrary";
-import { RenderPipeline } from "../../rendering/RenderPipeline";
-import { createSkyEnvironment, type SkyEnvironment } from "../../rendering/SkyEnvironment";
-import { fogColorFromSky, SKY_PRESETS } from "../../rendering/SkyModel";
+import type { MinigameKind } from "../../missions/types";
+import { SKY_PRESETS } from "../../rendering/SkyModel";
 import { Water } from "../../rendering/Water";
-import { CameraFX } from "../../systems/CameraFX";
-import { InteractionSystem } from "../../systems/InteractionSystem";
-import { ParticleFX } from "../../systems/ParticleFX";
-import { projectWaypoint } from "../../systems/Waypoint";
-import type { DialogueLine } from "../../ui/DialogueUI";
-import { fetchJson, nextFrame, wait } from "../../utils/async";
-import { clamp, easeInOutCubic, lerp } from "../../utils/math";
-import { Random } from "../../utils/random";
-import type { ScenarioCreateOptions, ScenarioInstance } from "../types";
+import { wait } from "../../utils/async";
+import { FpsScenario, type CarrySpec, type IntroPath, type WorldBuildContext } from "../common/FpsScenario";
+import type { ScenarioCreateOptions } from "../types";
 import { buildIstanbulWorld, type IstanbulWorld } from "./IstanbulWorld";
 import { LAYOUT } from "./layout";
-import { CollisionWorld } from "../../world/CollisionWorld";
-
-const SCENARIO_ID = "istanbul_1453";
 
 /** Where the player (re)spawns when a mission is resumed from the save. */
 const RESUME_SPAWNS: Record<string, { x: number; z: number; yaw: number }> = {
@@ -47,7 +29,7 @@ const RESUME_SPAWNS: Record<string, { x: number; z: number; yaw: number }> = {
   mission_008: { x: 29, z: -68, yaw: 0 },
 };
 
-const CHATTER: Record<string, string[]> = {
+const CHATTER = {
   janissary: [
     "Sultanımız için canımız feda!",
     "Surlar ne kadar yüksek olsa da bir gün yıkılacak.",
@@ -61,37 +43,13 @@ const CHATTER: Record<string, string[]> = {
 };
 
 /**
- * The playable İstanbul 1453 scenario. Wires the world, player, NPCs, missions, minigames,
- * audio and HUD together, and implements MissionHost for the data-driven mission system.
+ * The playable İstanbul 1453 scenario: Golden Horn world, Fatih and the army, the ship /
+ * cannon / siege minigames and the banner finale on top of the shared FPS layer.
  */
-export class IstanbulScene implements ScenarioInstance, MissionHost {
-  readonly scene: Scene;
-  onExitToMap: (() => void) | null = null;
-  onRequestPause: (() => void) | null = null;
-  private materials!: MaterialLibrary;
-  private pipeline!: RenderPipeline;
-  private sky!: SkyEnvironment;
-  private water!: Water;
-  private fx!: ParticleFX;
-  private prefabs!: PrefabLibrary;
-  private world!: IstanbulWorld;
-  private humanoids!: HumanoidFactory;
-  private npcs!: NPCManager;
-  private player!: Player;
-  private interactions = new InteractionSystem();
-  private dynamicInteractables = new Map<string, () => Vector3>();
-  private missions!: MissionManager;
-  private camFx = new CameraFX();
-  private minigame: BaseMinigame | null = null;
+export class IstanbulScene extends FpsScenario<IstanbulWorld> {
   private shipGame: ShipTransportMinigame | null = null;
   private cannonGame: CannonMinigame | null = null;
   private siegeGame: SiegeMinigame | null = null;
-  private paused = false;
-  private playing = false;
-  private inDialogue = false;
-  private carryNode: TransformNode | null = null;
-  private carryMeshes: AbstractMesh[] = [];
-  private missionData!: ScenarioMissionFile;
   private fatih!: NPC;
   private fatihGuards: NPC[] = [];
   private shipCrew: NPC[] = [];
@@ -99,101 +57,41 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
   private gunners: NPC[] = [];
   private defenders: NPC[] = [];
   private allies: NPC[] = [];
-  private lockHintShown = false;
-  private disposers: (() => void)[] = [];
-  private rnd = new Random(7);
-  private lastHudMission = "";
-  private time = 0;
-  private atmosphere = { t: 1, from: 0, to: 0 };
-  private renderObserver: Observer<Scene> | null = null;
-  private startedAt = performance.now();
 
-  private constructor(private readonly services: GameServices) {
-    this.scene = new Scene(services.engine);
-    this.scene.clearColor = new Color4(0.8, 0.78, 0.72, 1);
-    this.scene.skipPointerMovePicking = true;
-    this.scene.ambientColor = new Color3(0.2, 0.2, 0.2);
+  private constructor(services: GameServices) {
+    super(services, {
+      scenarioId: "istanbul_1453",
+      missionsPath: "data/scenarios/istanbul_1453.json",
+      atmosphere: {
+        sky: SKY_PRESETS.istanbulMorning(),
+        sunIntensity: 3.4,
+        ambientIntensity: 0.85,
+        environmentIntensity: 0.75,
+        fogDensity: GAME_CONFIG.world.fogDensity,
+      },
+      postFx: { exposure: 1.05, contrast: 1.16, vignette: 2.4, grain: 5 },
+      bounds: LAYOUT.bounds,
+      music: "istanbul",
+      populateText: "Askerler toplanıyor",
+      chatter: { ...CHATTER, sipahi: CHATTER.janissary, boatman: CHATTER.sailor },
+      nameplates: [{ npc: "fatih", name: "Fatih Sultan Mehmet", role: "Osmanlı Padişahı" }],
+    });
   }
 
-  static async create(services: GameServices, opts: ScenarioCreateOptions): Promise<IstanbulScene> {
-    const s = new IstanbulScene(services);
-    try {
-      await s.build(opts);
-    } catch (err) {
-      // Never leak a half-built scene (GPU resources) when loading fails.
-      s.scene.dispose();
-      throw err;
-    }
-    return s;
+  static create(services: GameServices, opts: ScenarioCreateOptions): Promise<IstanbulScene> {
+    return FpsScenario.createInstance(new IstanbulScene(services), opts);
   }
 
   // =====================================================================  BUILD
-  private async build(opts: ScenarioCreateOptions): Promise<void> {
-    const { services } = this;
-    const preset = services.preset();
-    const scene = this.scene;
-    const progress = opts.onProgress;
-    progress(0.02, "Görevler yükleniyor");
-    this.missionData = await fetchJson<ScenarioMissionFile>("data/scenarios/istanbul_1453.json");
+  protected buildWorld(ctx: WorldBuildContext): Promise<IstanbulWorld> {
+    return buildIstanbulWorld(ctx);
+  }
 
-    this.materials = new MaterialLibrary(scene, preset.textureSize);
-    progress(0.05, "Dokular üretiliyor");
-    for (const k of ["terrain", "stone", "wood", "props", "roof", "plaster", "cloth"] as const) {
-      this.materials.get(k);
-      await nextFrame();
-    }
-
-    const skyParams = SKY_PRESETS.istanbulMorning();
-    const fog = fogColorFromSky(skyParams);
-    scene.fogMode = Scene.FOGMODE_EXP2;
-    scene.fogColor = fog;
-    scene.fogDensity = GAME_CONFIG.world.fogDensity;
-    const maxZ = Math.min(GAME_CONFIG.camera.farPlane, preset.drawDistance + 400);
-    this.sky = await createSkyEnvironment(scene, skyParams, {
-      // The dome must sit inside the camera's far plane.
-      domeRadius: maxZ * 0.88,
-      reflections: preset.environmentReflections,
-      envSize: 64,
-      sunIntensity: 3.4,
-      ambientIntensity: 0.85,
-      environmentIntensity: 0.75,
-    });
-
-    // The real collision world is bound once the level is built (see bindWorld below).
-    const placeholder = new CollisionWorld(() => 0, -100, LAYOUT.bounds);
-    this.materials.adaptToEnvironment(!!scene.environmentTexture);
-    this.player = new Player(scene, placeholder, services.input, services.audio, services.save.settings, () => "dirt");
-    scene.activeCamera = this.player.camera;
-    this.player.camera.maxZ = maxZ;
-    this.pipeline = new RenderPipeline(scene, this.player.camera, this.sky.sun, { exposure: 1.05, contrast: 1.16, vignette: 2.4, grain: 5 }, true);
-    this.pipeline.apply(preset, services.save.settings);
-    this.fx = new ParticleFX(scene, this.materials, preset.particles);
-    this.prefabs = new PrefabLibrary(scene, this.materials, this.pipeline, preset.propCullDistance / 260);
-
-    // Optional authored GLB models (none by default → procedural fallbacks).
-    const loader = new AssetLoader(scene);
-    const report = await loader.loadAll((f, k) => progress(0.08 + f * 0.02, `Model: ${k}`));
-    for (const key of report.loaded) {
-      const c = await loader.load(key);
-      if (c) this.prefabs.overrideWithContainer(key, c);
-    }
-
-    this.world = await buildIstanbulWorld({
-      scene,
-      prefabs: this.prefabs,
-      materials: this.materials,
-      pipeline: this.pipeline,
-      fx: this.fx,
-      preset,
-      progress: (f, s) => progress(0.1 + f * 0.7, s),
-      yieldFrame: nextFrame,
-    });
-    const world = this.world;
-    this.player.bindWorld(world.collision, world.surfaceAt);
-
+  protected override afterWorld(): void {
+    const preset = this.services.preset();
     const waterRect: [number, number, number, number] = [-700, -700, 1400, 1400];
     this.water = new Water(
-      scene,
+      this.scene,
       {
         extent: preset.waterExtent,
         cells: preset.waterCells,
@@ -204,51 +102,39 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
         shallowColor: "#3f8f8c",
         foamColor: "#f4f1e8",
         foamAmount: 0.85,
-        fogColor: fog,
+        fogColor: this.scene.fogColor,
         fogDensity: GAME_CONFIG.world.fogDensity,
-        depth: { data: world.terrain.depthMap(256, waterRect, 6, LAYOUT.waterLevel), width: 256, height: 256, rect: waterRect },
+        depth: { data: this.world.terrain.depthMap(256, waterRect, 6, LAYOUT.waterLevel), width: 256, height: 256, rect: waterRect },
         animate: preset.waterCells > 80,
       },
       this.sky.params,
     );
-
-    progress(0.82, "Askerler toplanıyor");
-    await nextFrame();
-    this.humanoids = new HumanoidFactory(scene, this.materials, this.pipeline);
-    this.npcs = new NPCManager(this.humanoids, world.collision, world.nav, (x, z, y) => world.groundAt(x, z, y + 0.5), this.player.position);
-    this.populate(preset.npcDensity);
-
-    progress(0.88, "Görev sistemi hazırlanıyor");
-    this.missions = new MissionManager(this.missionData, this, services.save);
-    this.missions.onScenarioComplete = () => void this.showEnding();
-    this.setupFerry();
-    this.setupChatter();
-    this.carryNode = new TransformNode("carry", scene);
-    this.carryNode.parent = this.player.hand;
-
-    // Start/resume point.
-    const resume = opts.resumeMissionId && this.missions.missionIds.includes(opts.resumeMissionId) ? opts.resumeMissionId : this.missionData.firstMission;
-    this.resumeMissionId = resume;
-    this.missions.fastForwardTo(resume);
-    const spawn = RESUME_SPAWNS[resume] ?? RESUME_SPAWNS.mission_001;
-    this.player.teleport(spawn.x, spawn.z, spawn.yaw);
-
-    this.fx.environmentDust(this.player.camera.position);
-    this.setupInputHooks();
-
-    progress(0.94, "Shader'lar derleniyor");
-    await scene.whenReadyAsync();
-    progress(1, "Hazır");
   }
 
-  private resumeMissionId = "mission_001";
+  protected override afterPopulate(): void {
+    this.setupFerry();
+  }
+
+  protected resumeSpawn(missionId: string): { x: number; z: number; yaw: number } {
+    return RESUME_SPAWNS[missionId] ?? RESUME_SPAWNS.mission_001;
+  }
+
+  protected introPath(): IntroPath {
+    // High above the Golden Horn, over the walls and the camp, down to eye level.
+    const L = LAYOUT;
+    return this.introToPlayer(
+      [new Vector3(120, 260, 150), new Vector3(-20, 140, 70), new Vector3(-140, 60, -10)],
+      [new Vector3(L.hagiaSophia.x, 20, L.hagiaSophia.z), new Vector3(30, 10, -30), new Vector3(L.otag.x, 4, L.otag.z)],
+      7.5,
+    );
+  }
+
+  protected override voicePitch(speaker: string): number {
+    return speaker.startsWith("Fatih") ? 0.85 : super.voicePitch(speaker);
+  }
 
   // ================================================================== NPCs
-  private spawn(role: NpcRole, look: HumanoidLook, x: number, z: number, heading: number, behavior?: Parameters<NPCManager["spawn"]>[0]["behavior"], name = "", id?: string): NPC {
-    return this.npcs.spawn({ id, role, name, look, x, z, heading, behavior });
-  }
-
-  private populate(density: number): void {
+  protected populate(density: number): void {
     const L = LAYOUT;
     const r = this.rnd;
     // Fatih Sultan Mehmet + guards.
@@ -360,7 +246,7 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
     }
   }
 
-  // ================================================================ ferry & chatter
+  // ================================================================== ferry
   private setupFerry(): void {
     const L = LAYOUT;
     const cross = async (toNorth: boolean) => {
@@ -398,295 +284,16 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
     this.dynamicInteractables.set("ferry_north", () => this.npcs.get("boatman_n")!.position.add(new Vector3(0, 1.5, 0)));
   }
 
-  private setupChatter(): void {
-    for (const npc of this.npcs.npcs) {
-      const lines = CHATTER[npc.role === "sipahi" ? "janissary" : npc.role === "boatman" ? "sailor" : npc.role];
-      if (!lines || !npc.displayName || npc.id === "fatih" || npc.behavior.type === "scripted") continue;
-      if (npc.behavior.type === "pose" && npc.behavior.anim === "sit" && this.rnd.chance(0.5)) continue;
-      const id = `chat:${npc.id}`;
-      this.interactions.add({
-        id,
-        position: npc.position.clone(),
-        key: "E",
-        prompt: `Konuş — ${npc.displayName}`,
-        enabled: () => !this.minigame && !this.inDialogue && !this.isMissionTalkTarget(npc.id),
-        onInteract: () => {
-          const line = lines[Math.floor(Math.random() * lines.length)];
-          void this.playLines([{ speaker: npc.displayName, text: line }], npc);
-        },
-      });
-      this.dynamicInteractables.set(id, () => npc.position.add(new Vector3(0, 1.5, 0)));
-    }
+  // ================================================================ minigames
+  protected createMinigame(kind: MinigameKind): BaseMinigame {
+    if (kind === "ship") return (this.shipGame ??= this.createShipGame());
+    if (kind === "cannon") return (this.cannonGame ??= this.createCannonGame());
+    return (this.siegeGame ??= this.createSiegeGame());
   }
 
-  private isMissionTalkTarget(id: string): boolean {
-    const o = this.missions?.objective;
-    return !!o && o.type === "talk" && o.npc === id;
-  }
-
-  // ================================================================== input
-  private setupInputHooks(): void {
-    const { input, canvas } = this.services;
-    const onClick = () => {
-      if (this.playing && !this.paused && !this.services.ui.isMenuOpen) input.requestPointerLock();
-    };
-    canvas.addEventListener("click", onClick);
-    this.disposers.push(() => canvas.removeEventListener("click", onClick));
-    const offLock = input.onPointerLockChange((locked) => {
-      if (!locked && this.playing && !this.paused && !input.isTouch && !this.services.ui.isMenuOpen) this.onRequestPause?.();
-    });
-    this.disposers.push(offLock);
-  }
-
-  // =========================================================== ScenarioInstance
-  async playIntro(): Promise<void> {
-    const { ui, audio } = this.services;
-    const cam = this.player.camera;
-    const L = LAYOUT;
-    ui.hud.hide();
-    ui.mobile.setLayout("hidden");
-    ui.cinematic.setLetterbox(true);
-    audio.playMusic("istanbul");
-    // Camera path: high above the Golden Horn, over the walls and the camp, down to eye level.
-    const eye = this.player.eyePosition.clone();
-    const fwd = this.player.forward();
-    const p: Vector3[] = [
-      new Vector3(120, 260, 150),
-      new Vector3(-20, 140, 70),
-      new Vector3(-140, 60, -10),
-      new Vector3(eye.x + 14, eye.y + 14, eye.z + 10),
-      eye,
-    ];
-    const look: Vector3[] = [
-      new Vector3(L.hagiaSophia.x, 20, L.hagiaSophia.z),
-      new Vector3(30, 10, -30),
-      new Vector3(L.otag.x, 4, L.otag.z),
-      eye.add(fwd.scale(20)),
-      eye.add(fwd.scale(20)),
-    ];
-    let skipped = false;
-    const duration = 7.5;
-    let t = 0;
-    const haze = ui.cinematic.fade(0, 1.8);
-    window.setTimeout(() => void ui.cinematic.hideTitle(), 1600);
-    ui.cinematic.setSkipHint(true, "Atla · Space");
-    await new Promise<void>((resolve) => {
-      const obs = this.scene.onBeforeRenderObservable.add(() => {
-        const dt = Math.min(0.05, this.scene.getEngine().getDeltaTime() / 1000);
-        t += dt;
-        if (this.services.input.wasPressed("skip") || this.services.input.wasPressed("pause")) skipped = true;
-        const k = skipped ? 1 : easeInOutCubic(clamp(t / duration, 0, 1));
-        cam.position.copyFrom(catmull(p, k));
-        cam.setTarget(catmull(look, k));
-        if (k >= 1) {
-          this.scene.onBeforeRenderObservable.remove(obs);
-          resolve();
-        }
-      });
-    });
-    await haze;
-    ui.cinematic.setSkipHint(false);
-    ui.cinematic.setFadeInstant(0);
-    ui.cinematic.setLetterbox(false);
-    this.player.syncCamera(0);
-    ui.hud.show();
-    ui.mobile.setLayout("explore");
-    this.playing = true;
-    this.player.controlEnabled = true;
-    this.player.lookEnabled = true;
-    this.services.input.gameplayEnabled = true;
-    if (!this.services.input.isTouch && !this.lockHintShown) {
-      this.lockHintShown = true;
-      ui.hud.toast("Fareyle etrafa bakmak için oyun alanına tıkla. WASD: hareket · Shift: koş · E: etkileşim · ESC: menü", "info", 7000);
-    }
-    // Not awaited: a mission intro dialogue must not block the "playing" state (pause, input).
-    void this.missions.start(this.resumeMissionId);
-  }
-
-  setPaused(paused: boolean): void {
-    this.paused = paused;
-    if (this.minigame) this.minigame.paused = paused;
-    if (paused) this.services.input.resetState();
-  }
-
-  applySettings(settings: Settings, changed: (keyof Settings)[]): void {
-    this.player.applySettings(settings);
-    const preset = this.services.preset();
-    if (changed.some((c) => c === "quality" || c === "resolutionScale" || c === "postProcessing" || c === "shadows")) {
-      this.materials.unfreezeAll();
-      this.pipeline.apply(preset, settings);
-      this.water.setAnimated(preset.waterCells > 80);
-      window.setTimeout(() => this.materials.freezeAll(), 1500);
-    }
-    if (changed.includes("particles") || changed.includes("quality")) this.fx.setFactor(preset.particles);
-    if (changed.includes("quality")) this.services.ui.hud.toast("Kalite değişti. Doku ve arazi çözünürlüğü bir sonraki yüklemede güncellenir.");
-  }
-
-  // ===================================================================== update
-  update(dt: number): void {
-    this.time += dt;
-    const { input, ui } = this.services;
-    const cam = this.player.camera;
-    this.water.update(dt, cam);
-    this.fx.update(dt);
-    this.updateAtmosphere(dt);
-    if (!this.playing || this.paused) return;
-
-    this.npcs.update(dt, cam);
-    if (this.inDialogue) {
-      if (input.wasPressed("interact") || input.wasPressed("skip") || input.wasPressed("fire")) ui.dialogue.advance();
-      this.player.updateLook();
-      this.player.syncCamera(dt, 0);
-      ui.hud.setInteraction(null);
-      ui.hud.setWaypoint(null);
-      return;
-    }
-    if (this.minigame?.active) {
-      if (this.minigame !== this.siegeGame) ui.hud.setInteraction(null);
-      this.minigame.tick(dt);
-    } else {
-      this.player.update(dt);
-      this.player.setShake(this.camFx.update(dt));
-      // Interactions.
-      for (const [id, fn] of this.dynamicInteractables) {
-        const it = this.interactions.get(id);
-        if (it) it.position.copyFrom(fn());
-      }
-      const prompt = this.interactions.update(dt, this.player.eyePosition, this.player.forward(), (a) => input.isDown(a), (a) => input.wasPressed(a));
-      ui.hud.setInteraction(prompt);
-      ui.hud.setCrosshair(true, !!prompt);
-      this.missions.update();
-    }
-    this.updatePendingRelocation();
-    this.updateHud();
-  }
-
-  private updateNameplate(): void {
-    const hud = this.services.ui.hud;
-    const f = this.fatih;
-    const d = Math.hypot(f.position.x - this.player.position.x, f.position.z - this.player.position.z);
-    if (this.inDialogue || this.minigame?.active || d > 16 || !f.rig.root.isEnabled()) {
-      hud.setNameplate(null);
-      return;
-    }
-    const head = f.position.add(new Vector3(0, 2.35 * f.rig.scale, 0));
-    const p = projectWaypoint(this.scene, this.player.camera, head);
-    if (p.offscreen) {
-      hud.setNameplate(null);
-      return;
-    }
-    hud.setNameplate({ name: "Fatih Sultan Mehmet", role: "Osmanlı Padişahı", x: p.x, y: p.y, opacity: clamp((16 - d) / 5, 0, 1) });
-  }
-
-  private updateHud(): void {
-    const hud = this.services.ui.hud;
-    this.updateNameplate();
-    const m = this.missions.current;
-    const key = m ? `${m.id}` : "";
-    if (key !== this.lastHudMission) {
-      this.lastHudMission = key;
-      hud.setMission(m?.title ?? null, m?.description ?? "");
-    }
-    if (this.minigame?.active && this.minigame !== this.siegeGame) {
-      hud.setObjective(null);
-      hud.setWaypoint(null);
-      return;
-    }
-    if (this.minigame !== this.siegeGame || !this.siegeGame?.active) hud.setObjective(this.missions.objectiveText() || null);
-    const wp = this.siegeGame?.active ? (this.siegeGame.currentZone?.position ?? null) : this.missions.waypoint();
-    if (wp) {
-      const target = wp.add(new Vector3(0, 2.2, 0));
-      const proj = projectWaypoint(this.scene, this.player.camera, target);
-      hud.setWaypoint(proj.distance > 3 ? proj : null);
-      hud.setObjectiveDistance(proj.distance);
-    } else {
-      hud.setWaypoint(null);
-      hud.setObjectiveDistance(null);
-    }
-  }
-
-  // ================================================================ MissionHost
-  anchor(id: string): Vector3 | null {
-    return this.world.anchors.get(id) ?? null;
-  }
-
-  npcPosition(id: string): Vector3 | null {
-    return this.npcs.get(id)?.position ?? null;
-  }
-
-  npcName(id: string): string {
-    return this.npcs.get(id)?.displayName ?? id;
-  }
-
-  playerPosition(): Vector3 {
-    return this.player.position;
-  }
-
-  async playDialogue(id: string, speakerNpc?: string): Promise<void> {
-    const lines = this.missionData.dialogues[id];
-    if (!lines?.length) return;
-    const npc = speakerNpc ? this.npcs.get(speakerNpc) : undefined;
-    await this.playLines(lines, npc);
-  }
-
-  private async playLines(lines: DialogueLine[], focus?: NPC): Promise<void> {
-    const { ui, audio } = this.services;
-    this.inDialogue = true;
-    this.player.controlEnabled = false;
-    const prevBehavior = focus?.behavior;
-    if (focus) {
-      focus.lookTarget = this.player.camera.position;
-      if (focus.behavior.type !== "scripted") focus.setBehavior({ type: "pose", anim: "talk" });
-      // Turn the player toward the speaker.
-      const dx = focus.position.x - this.player.position.x;
-      const dz = focus.position.z - this.player.position.z;
-      this.turnPlayerTo(Math.atan2(dx, dz));
-    }
-    ui.hud.setInteraction(null);
-    const layout = ui.mobile.currentLayout;
-    ui.mobile.setLayout("hidden");
-    await ui.dialogue.play(lines, (line) => {
-      if (line.speaker === "Sen") return;
-      audio.play("murmur", { volume: 0.5, pitch: line.speaker.startsWith("Fatih") ? 0.85 : 1 + Math.random() * 0.15 });
-    });
-    if (focus) {
-      focus.lookTarget = null;
-      if (prevBehavior && focus.behavior.type !== "scripted") focus.setBehavior(prevBehavior);
-    }
-    this.inDialogue = false;
-    ui.mobile.setLayout(layout === "hidden" ? "explore" : layout);
-    if (!this.minigame?.active) this.player.controlEnabled = true;
-  }
-
-  private turnPlayerTo(yaw: number): void {
-    const start = this.player.yaw;
-    let delta = yaw - start;
-    delta = Math.atan2(Math.sin(delta), Math.cos(delta));
-    const startPitch = this.player.pitch;
-    let t = 0;
-    const obs = this.scene.onBeforeRenderObservable.add(() => {
-      t += this.scene.getEngine().getDeltaTime() / 1000 / 0.45;
-      const k = easeInOutCubic(Math.min(1, t));
-      this.player.yaw = start + delta * k;
-      this.player.pitch = lerp(startPitch, 0.05, k);
-      if (t >= 1) this.scene.onBeforeRenderObservable.remove(obs);
-    });
-  }
-
-  async startMinigame(kind: MinigameKind): Promise<boolean> {
-    const ui = this.services.ui;
-    let game: BaseMinigame;
-    if (kind === "ship") game = this.shipGame ??= this.createShipGame();
-    else if (kind === "cannon") game = this.cannonGame ??= this.createCannonGame();
-    else game = this.siegeGame ??= this.createSiegeGame();
-    this.minigame = game;
-    ui.hud.setInteraction(null);
-    ui.hud.setWaypoint(null);
-    const ok = await game.run();
-    this.minigame = null;
-    if (!ok) ui.hud.toast("Hazır olduğunda tekrar deneyebilirsin.");
-    if (kind !== "siege") this.services.audio.playMusic("istanbul");
-    return ok;
+  protected override afterMinigame(kind: MinigameKind, ok: boolean): void {
+    // The siege keeps its battle music running into the banner finale.
+    if (kind !== "siege") super.afterMinigame(kind, ok);
   }
 
   private createShipGame(): ShipTransportMinigame {
@@ -782,7 +389,7 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
     this.pendingFatih = null;
   }
 
-  private updatePendingRelocation(): void {
+  protected override onPlayingUpdate(): void {
     const t = this.pendingFatih;
     if (!t) return;
     const p = this.player.position;
@@ -874,50 +481,26 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
 
   /** Final assault happens at dawn: warmer, lower sun and denser haze. */
   private setDawn(): void {
-    this.atmosphere = { t: 0, from: 0, to: 1 };
+    const base = this.cfg.atmosphere;
+    this.atmosphere.transition(
+      {
+        ...base,
+        sky: { ...base.sky, horizon: new Color3(0.95, 0.62, 0.42), sunColor: new Color3(1, 0.62, 0.38) },
+        sunIntensity: 2.6,
+        fogColor: new Color3(0.86, 0.66, 0.5),
+        fogDensity: GAME_CONFIG.world.fogDensity * 1.5,
+      },
+      4,
+    );
   }
 
-  private updateAtmosphere(dt: number): void {
-    if (this.atmosphere.t >= 1) return;
-    this.atmosphere.t = Math.min(1, this.atmosphere.t + dt / 4);
-    const k = this.atmosphere.t;
-    const sun = this.sky.sun;
-    sun.diffuse = Color3.Lerp(this.sky.params.sunColor, new Color3(1, 0.62, 0.38), k);
-    sun.intensity = lerp(3.4, 2.6, k);
-    this.scene.fogColor = Color3.Lerp(fogColorFromSky(this.sky.params), new Color3(0.86, 0.66, 0.5), k);
-    this.scene.fogDensity = lerp(GAME_CONFIG.world.fogDensity, GAME_CONFIG.world.fogDensity * 1.5, k);
-    this.water.setFog(this.scene.fogColor, this.scene.fogDensity);
-    this.sky.material.setColor3("horizon", Color3.Lerp(this.sky.params.horizon, new Color3(0.95, 0.62, 0.42), k));
-  }
-
-  addInteractable(def: Parameters<MissionHost["addInteractable"]>[0]): void {
-    const pos = def.position().clone();
-    this.interactions.add({ id: def.id, position: pos, key: def.key, prompt: def.prompt, holdTime: def.holdTime, enabled: def.enabled, onInteract: def.onInteract });
-    this.dynamicInteractables.set(def.id, def.position);
-  }
-
-  removeInteractable(id: string): void {
-    this.interactions.remove(id);
-    this.dynamicInteractables.delete(id);
-  }
-
-  setCarry(item: string | null): void {
-    for (const m of this.carryMeshes) m.dispose();
-    this.carryMeshes = [];
-    this.player.speedMultiplier = 1;
-    if (!item || !this.carryNode) return;
-    const isFlag = item !== "cannonball";
-    const parts = isFlag ? flagHeld() : heldCannonball();
+  protected carrySpec(item: string): CarrySpec {
     // The banner pole is held low and to the side so it frames the view instead of blocking it.
-    this.carryNode.position.set(isFlag ? 0.1 : 0, isFlag ? -1.15 : 0, isFlag ? 0.1 : 0);
-    this.carryNode.rotation.set(isFlag ? 0.12 : 0, 0, isFlag ? -0.18 : 0);
-    this.carryMeshes = this.prefabs.buildUnique(`carry-${item}`, parts, this.carryNode, false);
-    for (const m of this.carryMeshes) m.renderingGroupId = 1;
-    this.player.speedMultiplier = GAME_CONFIG.player.carrySpeedMultiplier;
-    this.services.audio.play("pickup", { volume: 0.7 });
+    if (item === "cannonball") return { parts: heldCannonball(), position: [0, 0, 0], rotation: [0, 0, 0] };
+    return { parts: flagHeld(), position: [0.1, -1.15, 0.1], rotation: [0.12, 0, -0.18] };
   }
 
-  onTargetDone(targetId: string): void {
+  override onTargetDone(targetId: string): void {
     const marks = this.world.greaseMarks.get(targetId);
     if (marks) {
       for (const m of marks) m.setEnabled(true);
@@ -933,96 +516,24 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
     }
   }
 
-  notify(kind: "mission" | "objective" | "complete" | "toast", title: string, subtitle?: string): void {
-    const { hud } = this.services.ui;
-    const audio = this.services.audio;
-    if (kind === "mission") {
-      hud.banner(subtitle ?? "YENİ GÖREV", title);
-      audio.play("drum", { volume: 0.7 });
-      hud.setObjective(this.missions.objectiveText(), true);
-    } else if (kind === "objective") {
-      hud.setObjective(title, true);
-      audio.play("objective", { volume: 0.6 });
-    } else if (kind === "complete") {
-      hud.banner("GÖREV TAMAMLANDI", title);
-      if (subtitle) hud.toast(subtitle, "success");
-      audio.play("objective", { volume: 0.8 });
-    } else {
-      hud.toast(title);
-    }
-  }
-
   // ===================================================================== ending
-  private async showEnding(): Promise<void> {
-    const { ui, save, input } = this.services;
-    save.completeScenario(SCENARIO_ID);
-    this.playing = false;
-    this.player.controlEnabled = false;
-    input.exitPointerLock();
-    ui.hud.hide();
-    ui.cinematic.setLetterbox(true);
+  protected async showEnding(): Promise<void> {
     // Slow orbit around the tower with the planted sancak.
-    const center = this.world.finalFlag.getAbsolutePosition().clone();
-    let t = 0;
-    const cam = this.player.camera;
-    this.renderObserver = this.scene.onBeforeRenderObservable.add(() => {
-      t += this.scene.getEngine().getDeltaTime() / 1000;
-      const a = -2.4 + t * 0.12;
-      cam.position.set(center.x + Math.cos(a) * 38, center.y + 10 + Math.sin(t * 0.2) * 3, center.z + Math.sin(a) * 38);
-      cam.setTarget(center);
-    });
+    this.beginEndingOrbit(this.world.finalFlag.getAbsolutePosition().clone(), 38, 10, -2.4);
     await wait(3500);
-    const minutes = Math.max(1, Math.round((performance.now() - this.startedAt) / 60000));
-    ui.modal.show(
+    this.services.ui.modal.show(
       "",
       `<div class="ending"><div class="e-date">29 MAYIS 1453</div><h1>İSTANBUL FETHEDİLDİ</h1>
        <div class="ornament-line"></div>
        <p>Gemileri karadan yürüttün, Şahi topuyla surlarda gedik açtın ve hücumda sancağı burca diktin.
        Fatih Sultan Mehmet'in emriyle şehir halkı emana alındı; İstanbul yeni bir çağa uyandı.</p>
-       <p style="font-size:12px">Bu oturumda oynama süresi: ~${minutes} dk · 8/8 görev tamamlandı</p>
-       <p style="font-size:12px;color:var(--gold)">Yeni şehirler ve dönemler yakında: Bursa 1326 · Çanakkale 1915 · Ankara 1920 · İzmir 1922…</p></div>`,
-      [
-        { label: "Haritaya Dön", primary: true, onClick: () => this.onExitToMap?.() },
-        {
-          label: "Bölümü Tekrar Oyna",
-          onClick: () => {
-            save.resetScenario(SCENARIO_ID, this.missions.missionIds);
-            this.onExitToMap?.();
-          },
-        },
-      ],
+       <p style="font-size:12px">Bu oturumda oynama süresi: ~${this.playMinutes()} dk · 8/8 görev tamamlandı</p>
+       <p style="font-size:12px;color:var(--gold)">Haritada yeni bir yolculuk seni bekliyor: Muğla · Keşkeğin Keşfi</p></div>`,
+      this.endingButtons(),
     );
-  }
-
-  dispose(): void {
-    this.minigame?.abort();
-    for (const d of this.disposers) d();
-    if (this.renderObserver) this.scene.onBeforeRenderObservable.remove(this.renderObserver);
-    this.services.ui.hud.minigameLayer.innerHTML = "";
-    this.services.ui.cinematic.setLetterbox(false);
-    this.services.ui.modal.hide();
-    this.fx.dispose();
-    this.pipeline.dispose();
-    this.water.dispose();
-    this.sky.dispose();
-    this.materials.dispose();
-    this.scene.dispose();
   }
 }
 
 function m0(arr: AbstractMesh[]): AbstractMesh {
   return arr[0];
-}
-
-/** Centripetal-ish Catmull-Rom through all points, k ∈ [0, 1]. */
-function catmull(points: Vector3[], k: number): Vector3 {
-  const n = points.length - 1;
-  const f = clamp(k, 0, 1) * n;
-  const i = Math.min(n - 1, Math.floor(f));
-  const t = f - i;
-  const p0 = points[Math.max(0, i - 1)];
-  const p1 = points[i];
-  const p2 = points[i + 1];
-  const p3 = points[Math.min(n, i + 2)];
-  return Vector3.CatmullRom(p0, p1, p2, p3, t);
 }

@@ -21,13 +21,23 @@ for (const c of cities) {
 }
 
 const OBJECTIVES = new Set(["talk", "reach", "interact", "deliver", "minigame", "hold"]);
-const MINIGAMES = new Set(["ship", "cannon", "siege"]);
+// Minigame ids each scenario implements (see the scenario's createMinigame()).
+const MINIGAMES = {
+  istanbul_1453: new Set(["ship", "cannon", "siege"]),
+  mugla_keskek: new Set(["dibek", "forest", "fire", "stir"]),
+};
+// Completed missions are saved in one flat list, so ids must be unique across scenarios.
+const allMissionIds = new Map();
 for (const name of scenarioFiles) {
   const data = JSON.parse(readFileSync(join(root, "scenarios", `${name}.json`), "utf8"));
+  if (data.scenario !== name) fail(`${name}: "scenario" field is "${data.scenario}", expected "${name}"`);
+  if (!MINIGAMES[name]) fail(`${name}: no minigame list registered in validate-data.mjs`);
   const ids = new Set();
   for (const m of data.missions) {
     if (ids.has(m.id)) fail(`${name}: duplicate mission id ${m.id}`);
+    if (allMissionIds.has(m.id)) fail(`${name}: mission id ${m.id} is also used by ${allMissionIds.get(m.id)}`);
     ids.add(m.id);
+    allMissionIds.set(m.id, name);
   }
   if (!ids.has(data.firstMission)) fail(`${name}: firstMission ${data.firstMission} does not exist`);
   const seen = new Set();
@@ -55,7 +65,7 @@ for (const name of scenarioFiles) {
       if (!OBJECTIVES.has(o.type)) fail(`${name}/${m.id}: unknown objective type ${o.type}`);
       if (!o.text) fail(`${name}/${m.id}: objective without text`);
       if (o.type === "talk" && !data.dialogues[o.dialogue]) fail(`${name}/${m.id}: talk dialogue ${o.dialogue} not defined`);
-      if (o.type === "minigame" && !MINIGAMES.has(o.minigame)) fail(`${name}/${m.id}: unknown minigame ${o.minigame}`);
+      if (o.type === "minigame" && !MINIGAMES[name]?.has(o.minigame)) fail(`${name}/${m.id}: unknown minigame ${o.minigame}`);
       if (o.type === "deliver" && !(o.count > 0)) fail(`${name}/${m.id}: deliver count must be > 0`);
     }
   }

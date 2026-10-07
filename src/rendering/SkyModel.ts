@@ -29,6 +29,44 @@ export const SKY_PRESETS = {
     sunIntensity: 9,
     hazeIntensity: 0.35,
   }),
+  /** Golden late afternoon over the Menteşe pine hills (sun low in the west). */
+  muglaAfternoon: (): SkyParams => ({
+    zenith: lin("#4b82bd"),
+    horizon: lin("#e4dccb"),
+    ground: lin("#5e5a44"),
+    sunColor: lin("#ffe6c0"),
+    sunDirection: new Vector3(-0.62, 0.45, 0.3).normalize(),
+    sunIntensity: 9,
+    hazeIntensity: 0.42,
+  }),
+  muglaDusk: (): SkyParams => ({
+    zenith: lin("#34497a"),
+    horizon: lin("#f09a62"),
+    ground: lin("#4a3a30"),
+    sunColor: lin("#ff9850"),
+    sunDirection: new Vector3(-0.92, 0.1, 0.35).normalize(),
+    sunIntensity: 7,
+    hazeIntensity: 0.65,
+  }),
+  /** Moonlit night: the "sun" becomes a cool, dim moon high in the east. */
+  muglaNight: (): SkyParams => ({
+    zenith: lin("#0a1326"),
+    horizon: lin("#25314d"),
+    ground: lin("#0e1016"),
+    sunColor: lin("#a9bcff"),
+    sunDirection: new Vector3(0.45, 0.62, -0.25).normalize(),
+    sunIntensity: 1.6,
+    hazeIntensity: 0.12,
+  }),
+  muglaDawn: (): SkyParams => ({
+    zenith: lin("#5a80b2"),
+    horizon: lin("#f5c79c"),
+    ground: lin("#5a4a3a"),
+    sunColor: lin("#ffd09a"),
+    sunDirection: new Vector3(0.82, 0.24, -0.2).normalize(),
+    sunIntensity: 8,
+    hazeIntensity: 0.5,
+  }),
   /** Cleaner, cooler daylight for the map table. */
   mapDay: (): SkyParams => ({
     zenith: lin("#3d6fa6"),

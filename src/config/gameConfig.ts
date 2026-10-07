@@ -140,6 +140,51 @@ export const GAME_CONFIG = {
     flag: {
       holdTime: 2.6,
     },
+    // ---- Muğla: keşkek chapter
+    dibek: {
+      /** Seconds between strikes (the two of you alternate, so you strike every other beat). */
+      startInterval: 0.82,
+      endInterval: 0.66,
+      perfectWindow: 0.1,
+      goodWindow: 0.21,
+      clashWindow: 0.12,
+      perfectGain: 5.2,
+      goodGain: 3.6,
+      weakGain: 1.2,
+      clashPenalty: 2,
+    },
+    forest: {
+      duration: 150,
+      extraTime: 45,
+      branches: 10,
+      cira: 3,
+      pickRadius: 2.4,
+      /** Each carried bundle slows you a little (never below minSpeed). */
+      weightPerItem: 0.025,
+      minSpeed: 0.72,
+    },
+    fire: {
+      startHeat: 22,
+      startFuel: 35,
+      bandMin: 55,
+      bandMax: 82,
+      overflowAt: 92,
+      boilPerSecond: 2.4,
+      fuelPerLog: 22,
+      logCooldown: 0.7,
+      bellowsBoost: 16,
+      emberPull: 18,
+      gustEvery: [11, 17] as const,
+    },
+    stir: {
+      /** Ideal stirring speed band in revolutions per second. */
+      minRps: 0.35,
+      maxRps: 1.15,
+      progressPerSecond: 2.5,
+      burnPerSecond: 7,
+      burnPenalty: 10,
+      splashLossPerSecond: 1.5,
+    },
   },
 } as const;
 

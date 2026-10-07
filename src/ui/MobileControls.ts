@@ -2,7 +2,8 @@ import { GAME_CONFIG } from "../config/gameConfig";
 import type { GameAction, InputManager } from "../core/InputManager";
 import { el } from "./dom";
 
-export type TouchLayout = "explore" | "ship" | "cannon" | "hidden";
+/** "action": minigame-defined big buttons (see setActionButtons) + drag-to-look area. */
+export type TouchLayout = "explore" | "ship" | "cannon" | "action" | "hidden";
 
 /**
  * Touch controls: virtual joystick (left), drag-to-look area (right), action buttons.
@@ -16,6 +17,7 @@ export class MobileControls {
   private look: HTMLDivElement;
   private buttons: HTMLDivElement;
   private center: HTMLDivElement;
+  private actionRow: HTMLDivElement;
   private aim: HTMLDivElement;
   private pause: HTMLButtonElement;
   private joyPointer: number | null = null;
@@ -41,6 +43,7 @@ export class MobileControls {
     this.button(this.buttons, "ZIPLA", "jump");
     this.center = el("div", "touch-center hidden", this.root);
     this.button(this.center, "ÇEK", "jump", false, "big");
+    this.actionRow = el("div", "touch-center touch-action-row hidden", this.root);
     this.aim = el("div", "touch-aim-slider hidden", this.root);
     this.button(this.aim, "▲", "aimUp", true);
     this.button(this.aim, "▼", "aimDown", true);
@@ -131,9 +134,16 @@ export class MobileControls {
     this.joystick.classList.toggle("hidden", !explore);
     this.buttons.classList.toggle("hidden", !explore);
     this.center.classList.toggle("hidden", layout !== "ship");
+    this.actionRow.classList.toggle("hidden", layout !== "action");
     this.aim.classList.toggle("hidden", layout !== "cannon");
-    this.look.classList.toggle("hidden", !(explore || layout === "cannon"));
+    this.look.classList.toggle("hidden", !(explore || layout === "cannon" || layout === "action"));
     if (!explore) this.input.setVirtualAxis(0, 0);
+  }
+
+  /** Big buttons for the "action" layout, e.g. [{ label: "KÖRÜK", action: "jump" }]. */
+  setActionButtons(buttons: { label: string; action: GameAction }[]): void {
+    this.actionRow.innerHTML = "";
+    for (const b of buttons) this.button(this.actionRow, b.label, b.action, false, "big");
   }
 
   get currentLayout(): TouchLayout {

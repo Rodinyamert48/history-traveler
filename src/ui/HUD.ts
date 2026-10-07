@@ -155,8 +155,23 @@ export class HUD {
     while (this.toasts.children.length > 4) this.toasts.firstElementChild?.remove();
   }
 
+  /** Large centred banner; banners queue so "completed" and the next "new mission" never overlap. */
   banner(label: string, title: string): void {
-    const b = el("div", "banner", this.root, `<div class="b-label">${escapeHtml(label)}</div><div class="b-title">${escapeHtml(title)}</div>`);
+    this.bannerQueue.push([label, title]);
+    if (this.bannerQueue.length === 1) this.showNextBanner();
+  }
+
+  private bannerQueue: [string, string][] = [];
+
+  private showNextBanner(): void {
+    const next = this.bannerQueue[0];
+    if (!next) return;
+    const b = el("div", "banner", this.root, `<div class="b-label">${escapeHtml(next[0])}</div><div class="b-title">${escapeHtml(next[1])}</div>`);
+    // The next banner starts as this one fades out (the CSS animation runs 3.6 s).
+    setTimeout(() => {
+      this.bannerQueue.shift();
+      this.showNextBanner();
+    }, this.bannerQueue.length > 1 ? 2600 : 3600);
     setTimeout(() => b.remove(), 3700);
   }
 

@@ -1,7 +1,7 @@
 import { Random } from "../utils/random";
-import { HICAZ_D, type SynthLibrary } from "./SynthLibrary";
+import { HICAZ_D, HUSEYNI_A, type SynthLibrary } from "./SynthLibrary";
 
-export type MusicTheme = "map" | "istanbul" | "tension" | "victory";
+export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun";
 
 interface ThemeDef {
   bpm: number;
@@ -12,6 +12,8 @@ interface ThemeDef {
   melodyDensity: number;
   droneRoot: number;
   volume: number;
+  /** Scale degrees in Hz (Hicaz for the Ottoman court/mehter, Hüseyni for Aegean folk). */
+  scale?: readonly number[];
 }
 
 const THEMES: Record<MusicTheme, ThemeDef> = {
@@ -19,6 +21,10 @@ const THEMES: Record<MusicTheme, ThemeDef> = {
   istanbul: { bpm: 84, usul: "D.TTD.T.", drum: "kudum", melody: "mixed", melodyDensity: 0.5, droneRoot: 73.42, volume: 0.85 },
   tension: { bpm: 104, usul: "D.D.T.D.DDT.T.T.", drum: "davul", melody: "zurna", melodyDensity: 0.45, droneRoot: 73.42, volume: 0.9 },
   victory: { bpm: 112, usul: "D.T.D.T.DDT.D.T.", drum: "davul", melody: "zurna", melodyDensity: 0.75, droneRoot: 73.42, volume: 1 },
+  // Muğla is zeybek country: a slow, heavy 9/8 (2+2+2+3) on the davul with bağlama-like plucks.
+  mugla: { bpm: 96, usul: "D.T.T.D..", drum: "kudum", melody: "mixed", melodyDensity: 0.45, droneRoot: 110, volume: 0.8, scale: HUSEYNI_A },
+  // Wedding (düğün): davul-zurna in a lively 9/8 karşılama.
+  dugun: { bpm: 150, usul: "D.T.D.TT.", drum: "davul", melody: "zurna", melodyDensity: 0.8, droneRoot: 110, volume: 0.95, scale: HUSEYNI_A },
 };
 
 /**
@@ -144,7 +150,7 @@ export class MusicSequencer {
     }
     const note = this.phrase[this.phraseIndex++];
     this.degree = note.degree;
-    const freq = HICAZ_D[this.degree];
+    const freq = (def.scale ?? HICAZ_D)[this.degree];
     const dur = note.steps * stepDur;
     const kind = def.melody === "mixed" ? (this.rng.next() < 0.65 ? "pluck" : "ney") : def.melody;
     if (kind === "ney") this.synth.ney(t, freq, dur * 0.95, g, 0.13);

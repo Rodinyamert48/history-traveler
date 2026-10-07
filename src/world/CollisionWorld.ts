@@ -61,6 +61,13 @@ export interface MoveResult {
 
 const CELL = 16;
 
+export interface Bounds {
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+}
+
 export class CollisionWorld {
   private grid = new Map<number, Collider[]>();
   private nextId = 1;
@@ -71,7 +78,7 @@ export class CollisionWorld {
   constructor(
     private readonly terrainHeight: (x: number, z: number) => number,
     readonly waterLevel: number,
-    readonly bounds: { minX: number; maxX: number; minZ: number; maxZ: number },
+    readonly bounds: Bounds,
     readonly maxWadeDepth = 0.55,
   ) {}
 

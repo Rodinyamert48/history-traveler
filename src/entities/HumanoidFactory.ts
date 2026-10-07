@@ -4,8 +4,8 @@ import type { MaterialKey, MaterialLibrary } from "../rendering/MaterialLibrary"
 import { registerInstancedBufferWithCapacity } from "../rendering/instancing";
 import type { RenderPipeline } from "../rendering/RenderPipeline";
 
-export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "none";
-export type ItemKind = "spear" | "shield" | "hammer" | "none";
+export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "yazma" | "keche" | "none";
+export type ItemKind = "spear" | "shield" | "hammer" | "mallet" | "paddle" | "davulStick" | "zurna" | "none";
 
 export interface HumanoidLook {
   skin: string;
@@ -23,7 +23,24 @@ export interface HumanoidLook {
   rightItem?: ItemKind;
   leftItem?: ItemKind;
   collar?: string;
+  /** Apron (önlük) colour over the dress/şalvar. */
+  apron?: string;
+  /** Davul hung across the chest (wedding musicians). */
+  davul?: boolean;
 }
+
+const LOOKS_BASE_MUSICIAN: HumanoidLook = {
+  skin: "#b98660",
+  kaftan: "#8a1f1f",
+  sleeves: "#efe6d2",
+  trousers: "#2f2a26",
+  sash: "#d6a540",
+  boots: "#3a2a1c",
+  hat: "keche",
+  hatColor: "#3a2e24",
+  beard: "#2b2018",
+  longKaftan: false,
+};
 
 export const LOOKS = {
   janissary: (v = 0): HumanoidLook => ({
@@ -121,6 +138,78 @@ export const LOOKS = {
     longKaftan: true,
     collar: "#6a4a2a",
   }),
+  // --------------------------------------------------------- Muğla / Menteşe villagers
+  villager: (v = 0): HumanoidLook => ({
+    skin: ["#c08a64", "#b07a54", "#cf9e78", "#a87450"][v % 4],
+    kaftan: ["#7a5236", "#5d4a3a", "#8a6a3e", "#4f5a3a", "#6e3a28"][v % 5],
+    sleeves: ["#e9e1cf", "#d8ccb0", "#efe6d2"][v % 3],
+    trousers: ["#2f2a26", "#4a3a2c", "#3a3a44"][v % 3],
+    sash: ["#a8261f", "#c4862a", "#7a2a40"][v % 3],
+    boots: "#3a2a1c",
+    hat: v % 3 === 2 ? "turban" : "keche",
+    hatColor: v % 3 === 2 ? "#e8e0cc" : ["#6a4a30", "#3a2e24", "#8a6a48"][v % 3],
+    beard: v % 2 ? "#2b2018" : undefined,
+    longKaftan: false,
+    rightItem: "none",
+  }),
+  woman: (v = 0): HumanoidLook => ({
+    skin: ["#d2a684", "#c49470", "#dcb08e"][v % 3],
+    kaftan: ["#8e2a2a", "#2e4f6e", "#6a3a5a", "#3f6a4a", "#9a5a2a"][v % 5],
+    sleeves: "#efe6d2",
+    trousers: ["#7a2a2a", "#4a3a5a", "#6e4a2a"][v % 3],
+    sash: ["#d6a540", "#c43a2a", "#e0c070"][v % 3],
+    boots: "#4a3020",
+    // Muğla women's yazma: white tülbent with coloured hand-printed borders.
+    hat: "yazma",
+    hatColor: ["#f2ece0", "#e8d9b8", "#f0e4d4"][v % 3],
+    longKaftan: true,
+    apron: v % 2 ? "#e9dfc8" : undefined,
+    scale: 0.94,
+  }),
+  child: (v = 0): HumanoidLook => ({
+    skin: ["#d2a684", "#c49470"][v % 2],
+    kaftan: ["#b0482a", "#3a6a8a", "#c49a2a", "#6a8a3a"][v % 4],
+    sleeves: "#efe6d2",
+    trousers: "#4a3a2c",
+    sash: "#d6a540",
+    boots: "#4a3020",
+    hat: v % 2 ? "keche" : "none",
+    hatColor: "#8a2a20",
+    longKaftan: false,
+    scale: 0.66,
+  }),
+  aysheNine: (): HumanoidLook => ({
+    skin: "#c9987a",
+    kaftan: "#5a2a3a",
+    sleeves: "#efe6d2",
+    trousers: "#4a2a2a",
+    sash: "#c4862a",
+    boots: "#3a2418",
+    hat: "yazma",
+    hatColor: "#faf6ee",
+    longKaftan: true,
+    apron: "#efe6d2",
+    scale: 0.92,
+  }),
+  elder: (): HumanoidLook => ({
+    skin: "#c08a64",
+    kaftan: "#3a4a5a",
+    sleeves: "#e9e1cf",
+    trousers: "#2a2a30",
+    sash: "#b3141c",
+    boots: "#2a1c14",
+    hat: "turban",
+    hatColor: "#f4efe4",
+    beard: "#d8d2c6",
+    longKaftan: true,
+    collar: "#5a3a24",
+  }),
+  musician: (v = 0): HumanoidLook => ({
+    ...LOOKS_BASE_MUSICIAN,
+    kaftan: ["#8a1f1f", "#2c4a75"][v % 2],
+    rightItem: v % 2 === 0 ? "davulStick" : "zurna",
+    davul: v % 2 === 0,
+  }),
   fatih: (): HumanoidLook => ({
     skin: "#d0a07c",
     kaftan: "#9e1a1f",
@@ -160,7 +249,15 @@ type PartName =
   | "spear"
   | "shield"
   | "hammer"
-  | "hatBand";
+  | "hatBand"
+  | "yazma"
+  | "keche"
+  | "apron"
+  | "mallet"
+  | "paddle"
+  | "davulStick"
+  | "zurna"
+  | "davul";
 
 interface PartDef {
   material: MaterialKey;
@@ -216,6 +313,53 @@ const PART_DEFS: Record<PartName, PartDef> = {
     build: (b) => {
       b.sphere(0, 0.17, 0, 0.14, { segments: 8, rings: 4, scaleY: 0.9, color: white });
       b.box(0, 0.12, 0.13, 0.03, 0.1, 0.03, { color: white });
+    },
+  },
+  yazma: {
+    material: "fabric",
+    build: (b) => {
+      // Tülbent wrapped over the head, tied at the nape and falling over the shoulders.
+      b.sphere(0, 0.17, -0.015, 0.142, { segments: 8, rings: 5, scaleY: 1.05, color: white });
+      b.box(0, 0.04, -0.105, 0.2, 0.2, 0.04, { topScale: 0.75, color: white });
+      b.box(0, 0.23, 0.115, 0.22, 0.035, 0.03, { color: hexColor("#c43a2a") });
+    },
+  },
+  keche: {
+    material: "fabric",
+    // Yörük-style rounded felt cap (keçe külah).
+    build: (b) => b.cylinder(0, 0.16, -0.005, 0.128, 0.085, 0.16, { segments: 8, color: white }),
+  },
+  apron: { material: "fabric", build: (b) => b.box(0, -0.42, 0.2, 0.4, 0.82, 0.03, { topScale: 0.8, color: white }) },
+  mallet: {
+    material: "wood",
+    build: (b) => {
+      // Long keşkek tokmağı: handle + heavy round head.
+      b.cylinder(0, -0.5, 0.06, 0.03, 0.03, 1.15, { segments: 5, color: hexColor("#7a5a3a") });
+      b.cylinder(0, 0.62, 0.06, 0.11, 0.1, 0.3, { segments: 7, color: hexColor("#6a4a2a") });
+    },
+  },
+  paddle: {
+    material: "wood",
+    build: (b) => {
+      b.cylinder(0, -0.2, 0.05, 0.025, 0.025, 1.6, { segments: 5, color: hexColor("#8a6a48") });
+      b.box(0, -0.35, 0.05, 0.14, 0.32, 0.03, { color: hexColor("#7a5a3a") });
+    },
+  },
+  davulStick: { material: "wood", build: (b) => b.cylinder(0, -0.15, 0.08, 0.018, 0.022, 0.42, { segments: 4, color: hexColor("#d9c9a3") }) },
+  zurna: {
+    material: "wood",
+    build: (b) => {
+      b.push(Matrix.RotationX(-1.2));
+      b.cylinder(0, -0.05, 0, 0.018, 0.06, 0.45, { segments: 6, color: hexColor("#5a3a20") });
+      b.pop();
+    },
+  },
+  davul: {
+    material: "matte",
+    build: (b) => {
+      b.push(Matrix.RotationZ(Math.PI / 2));
+      b.cylinder(0, -0.2, 0, 0.27, 0.27, 0.4, { segments: 12, color: hexColor("#e8dcc0") });
+      b.pop();
     },
   },
   plume: { material: "fabric", build: (b) => b.cylinder(0, 0.38, -0.02, 0.03, 0.06, 0.22, { segments: 5, color: white }) },
@@ -334,6 +478,8 @@ export class HumanoidFactory {
     if (look.hat === "kavuk") this.add(rig, "hatBand", head, look.hatAccent ?? "#b3141c");
     if (look.hat === "helmet" && look.hatAccent) this.add(rig, "plume", head, look.hatAccent);
     if (look.hat === "bork" && look.hatAccent) this.add(rig, "hatBand", head, look.hatAccent).scaling.set(0.8, 0.5, 0.8);
+    if (look.apron) this.add(rig, "apron", torso, look.apron, 0, 0.4, 0);
+    if (look.davul) this.add(rig, "davul", torso, "#ffffff", 0, 0.05, 0.3);
     for (const arm of [armL, armR]) {
       this.add(rig, "arm", arm, look.sleeves);
       this.add(rig, "hand", arm, look.skin);
@@ -343,6 +489,7 @@ export class HumanoidFactory {
       this.add(rig, "boot", leg, look.boots);
     }
     if (look.rightItem && look.rightItem !== "none") this.add(rig, look.rightItem, armR, "#ffffff", 0, -0.62, 0.02);
+    if (look.leftItem === "davulStick") this.add(rig, "davulStick", armL, "#ffffff", 0, -0.62, 0.02);
     if (look.leftItem === "shield") this.add(rig, "shield", armL, look.kaftan === "#3a3f6a" ? "#c9a03a" : "#2f4f8f", 0, 0, 0);
     return rig;
   }

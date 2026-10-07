@@ -83,8 +83,14 @@ export class SiegeMinigame extends BaseMinigame {
     this.arrowSource.isPickable = false;
   }
 
+  override readonly freeRoam = true;
+
   get currentZone(): SiegeZone | null {
     return this.d.zones[this.zoneIndex] ?? null;
+  }
+
+  override waypoint(): Vector3 | null {
+    return this.currentZone?.position ?? null;
   }
 
   protected onStart(): void {

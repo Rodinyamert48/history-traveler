@@ -34,10 +34,21 @@ export type SfxName =
   | "drop"
   | "stun"
   | "reload"
-  | "boatOars";
+  | "boatOars"
+  | "birdChirp"
+  | "pound"
+  | "woodClash"
+  | "bubble"
+  | "bellows"
+  | "branchSnap"
+  | "stir"
+  | "sizzle";
 
 /** Hicaz makam on D (Turkish classical / mehter flavour), in Hz. */
 export const HICAZ_D = [293.66, 311.13, 369.99, 392.0, 440.0, 466.16, 523.25, 587.33];
+
+/** Hüseyni on A — the typical Aegean folk / zeybek colour (segâh B approximated a bit flat). */
+export const HUSEYNI_A = [220.0, 242.0, 261.63, 293.66, 329.63, 369.99, 392.0, 440.0];
 
 /**
  * Procedural sound effects & instruments built from oscillators, filtered noise and
@@ -455,6 +466,77 @@ export class SynthLibrary {
         const o = this.osc("sine", 900, t, 0.5, g);
         o.frequency.exponentialRampToValueAtTime(300, t + 0.4);
         return 0.5;
+      }
+      case "birdChirp": {
+        // A short warbled phrase: 2–4 quick sine sweeps.
+        const n = 2 + Math.floor(Math.random() * 3);
+        const base = (2600 + Math.random() * 1400) * pitch;
+        for (let i = 0; i < n; i++) {
+          const tt = t + i * (0.09 + Math.random() * 0.05);
+          const g = this.gainEnv(dest, tt, 0.005, 0.03, 0.05, 0.05);
+          const o = this.osc("sine", base * (1 + Math.random() * 0.25), tt, 0.1, g);
+          o.frequency.exponentialRampToValueAtTime(base * (0.75 + Math.random() * 0.6), tt + 0.07);
+        }
+        return 0.6;
+      }
+      case "pound": {
+        // Wooden mallet into the stone mortar full of wheat: deep thud + grain crunch.
+        const g = this.gainEnv(dest, t, 0.001, 0.02, 0.28, 0.7);
+        const o = this.osc("sine", 120 * pitch, t, 0.35, g);
+        o.frequency.exponentialRampToValueAtTime(55 * pitch, t + 0.18);
+        const c = this.gainEnv(dest, t, 0.001, 0.03, 0.16, 0.35);
+        this.noise(t, 0.2, this.filter("bandpass", 1500 * pitch, 0.9, c));
+        this.play("woodKnock", dest, 0.6 * pitch);
+        return 0.4;
+      }
+      case "woodClash": {
+        // Two mallets hitting each other: dry, bright clack.
+        const g = this.gainEnv(dest, t, 0.0005, 0.005, 0.09, 0.6);
+        const o = this.osc("square", 640 * pitch, t, 0.1, this.filter("bandpass", 1300 * pitch, 3, g));
+        o.frequency.exponentialRampToValueAtTime(420 * pitch, t + 0.06);
+        return 0.15;
+      }
+      case "bubble": {
+        // Thick porridge "blop" in the cauldron.
+        const g = this.gainEnv(dest, t, 0.004, 0.01, 0.08, 0.22);
+        const f0 = (180 + Math.random() * 160) * pitch;
+        const o = this.osc("sine", f0, t, 0.12, g);
+        o.frequency.exponentialRampToValueAtTime(f0 * 2.4, t + 0.07);
+        return 0.15;
+      }
+      case "bellows": {
+        // Leather bellows (körük) puff: rising then falling filtered air.
+        const g = this.gainEnv(dest, t, 0.06, 0.08, 0.25, 0.4);
+        const f = this.filter("bandpass", 500 * pitch, 0.9, g);
+        f.frequency.setValueAtTime(350 * pitch, t);
+        f.frequency.exponentialRampToValueAtTime(900 * pitch, t + 0.12);
+        f.frequency.exponentialRampToValueAtTime(300 * pitch, t + 0.4);
+        this.noise(t, 0.45, f);
+        return 0.45;
+      }
+      case "branchSnap": {
+        for (let i = 0; i < 3; i++) {
+          const tt = t + i * 0.025 + Math.random() * 0.02;
+          const g = this.gainEnv(dest, tt, 0.0005, 0.004, 0.05, 0.35 - i * 0.08);
+          this.noise(tt, 0.05, this.filter("bandpass", (1800 + Math.random() * 900) * pitch, 1.4, g));
+        }
+        this.play("woodKnock", dest, 1.4 * pitch);
+        return 0.3;
+      }
+      case "stir": {
+        // Paddle through thick keşkek: slow, low, wet swish.
+        const g = this.gainEnv(dest, t, 0.08, 0.12, 0.25, 0.28);
+        const f = this.filter("lowpass", 700 * pitch, 1.6, g);
+        f.frequency.setValueAtTime(250 * pitch, t);
+        f.frequency.linearRampToValueAtTime(800 * pitch, t + 0.2);
+        f.frequency.linearRampToValueAtTime(300 * pitch, t + 0.45);
+        this.noise(t, 0.5, f, 0.6);
+        return 0.5;
+      }
+      case "sizzle": {
+        const g = this.gainEnv(dest, t, 0.02, 0.4, 0.5, 0.25);
+        this.noise(t, 1, this.filter("highpass", 3200, 0.7, g));
+        return 1;
       }
       case "reload": {
         this.play("woodKnock", dest, 0.7);
