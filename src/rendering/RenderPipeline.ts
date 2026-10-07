@@ -153,7 +153,9 @@ export class RenderPipeline {
 
     if (preset.ssao && !this.ssao) {
       try {
-        const ssao = new SSAO2RenderingPipeline("ssao", this.scene, { ssaoRatio: 0.5, blurRatio: 0.5 }, [this.camera]);
+        // forceGeometryBuffer: SSAO reads depth/normals from a dedicated geometry pass instead of
+        // the pre-pass, which would add varyings to every PBR material (WebGPU allows only 16).
+        const ssao = new SSAO2RenderingPipeline("ssao", this.scene, { ssaoRatio: 0.5, blurRatio: 0.5 }, [this.camera], true);
         ssao.radius = 1.6;
         ssao.totalStrength = 1.1;
         ssao.base = 0.12;

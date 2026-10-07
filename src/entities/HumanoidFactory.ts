@@ -1,6 +1,7 @@
 import { Color4, Matrix, TransformNode, type InstancedMesh, type Mesh, type Scene } from "@babylonjs/core";
 import { GeoBuilder, hexColor, type RGBA } from "../assets/GeoBuilder";
 import type { MaterialKey, MaterialLibrary } from "../rendering/MaterialLibrary";
+import { registerInstancedBufferWithCapacity } from "../rendering/instancing";
 import type { RenderPipeline } from "../rendering/RenderPipeline";
 
 export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "none";
@@ -283,7 +284,7 @@ export class HumanoidFactory {
       m.material = this.materials.get(def.material);
       m.isVisible = false;
       m.isPickable = false;
-      m.registerInstancedBuffer("instanceColor", 4);
+      registerInstancedBufferWithCapacity(m, "instanceColor", 4, 512);
       m.instancedBuffers.instanceColor = new Color4(1, 1, 1, 1);
       if (this.pipeline) this.pipeline.addShadowCaster(m);
       this.sources.set(name, m);

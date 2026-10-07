@@ -1,6 +1,7 @@
 import { Color4, Mesh, TransformNode, type AssetContainer, type InstancedMesh, type Scene } from "@babylonjs/core";
 import type { MaterialKey, MaterialLibrary } from "../rendering/MaterialLibrary";
 import type { RenderPipeline } from "../rendering/RenderPipeline";
+import { registerInstancedBufferWithCapacity } from "../rendering/instancing";
 import type { RGBA } from "./GeoBuilder";
 import type { PartSet, PrefabDef } from "./Prefabs";
 
@@ -86,7 +87,7 @@ export class PrefabLibrary {
       m.isPickable = false;
       if (tintable) {
         // "instanceColor" multiplies the baked vertex colours ("color" would replace them).
-        m.registerInstancedBuffer("instanceColor", 4);
+        registerInstancedBufferWithCapacity(m, "instanceColor", 4, 1024);
         m.instancedBuffers.instanceColor = new Color4(1, 1, 1, 1);
       }
       if (def.lod) {

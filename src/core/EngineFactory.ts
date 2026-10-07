@@ -31,7 +31,8 @@ export async function createEngine(canvas: HTMLCanvasElement, preference: Render
           stencil: true,
           adaptToDeviceRatio: false,
           powerPreference: "high-performance",
-          setMaximumLimits: false,
+          // Ask for the adapter's real limits (e.g. more inter-stage variables than the 16 default).
+          setMaximumLimits: true,
           enableAllFeatures: false,
         });
         await engine.initAsync();
