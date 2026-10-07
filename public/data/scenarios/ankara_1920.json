@@ -1,0 +1,295 @@
+{
+  "$comment": "Ankara · 23 Nisan 1920 — Türkiye Büyük Millet Meclisi'nin açılışı. Oyuncu, meclis binasında genç bir kâtiptir. Şerif Bey'in konuşması sadeleştirilmiş bir özettir. Görev tipleri: talk, reach, interact, deliver, minigame (lamps | telegraph | minutes), hold.",
+  "scenario": "ankara_1920",
+  "firstMission": "ankara_m01",
+  "missions": [
+    {
+      "id": "ankara_m01",
+      "title": "23 Nisan Sabahı",
+      "description": "Bugün Ankara'da Büyük Millet Meclisi açılacak. Meclis binasında kâtiplere yardım ediyorsun; Başkâtip Nuri Efendi seni koridorda bekliyor.",
+      "type": "story",
+      "date": "ANKARA · 23 NİSAN 1920, CUMA",
+      "intro": "d_an_intro",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "baskatip",
+          "text": "Koridordaki Başkâtip Nuri Efendi ile konuş",
+          "dialogue": "d_an01"
+        }
+      ],
+      "reward": {
+        "text": "Meclis kâtiplerine katıldın."
+      },
+      "nextMission": "ankara_m02"
+    },
+    {
+      "id": "ankara_m02",
+      "title": "Başkanlık Divanı",
+      "description": "Başkanlık divanının sandalyeleri eksik. Depodaki sandalyeleri salondaki divana taşı.",
+      "type": "deliver",
+      "objectives": [
+        {
+          "type": "deliver",
+          "pickup": "depo",
+          "drop": "baskanlik_1",
+          "drops": [
+            "baskanlik_1",
+            "baskanlik_2",
+            "baskanlik_3"
+          ],
+          "count": 3,
+          "item": "chair",
+          "text": "Depodan divana sandalye taşı",
+          "pickupPrompt": "Sandalyeyi al",
+          "dropPrompt": "Sandalyeyi divana yerleştir"
+        }
+      ],
+      "outro": "d_an02_end",
+      "reward": {
+        "text": "Başkanlık divanı hazır."
+      },
+      "nextMission": "ankara_m03",
+      "onComplete": [
+        "chairs:placed"
+      ]
+    },
+    {
+      "id": "ankara_m03",
+      "title": "Gaz Lambaları",
+      "description": "Binada elektrik yok; salon loş. Asılı gaz lambalarının hepsini uzun fitil sırığıyla yak.",
+      "type": "minigame",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "lamps",
+          "anchor": "hall_door",
+          "text": "Salondaki gaz lambalarını yak",
+          "prompt": "Fitil sırığını al — Lambaları yak"
+        }
+      ],
+      "outro": "d_an03_end",
+      "reward": {
+        "text": "Genel Kurul salonu aydınlandı."
+      },
+      "nextMission": "ankara_m04",
+      "onComplete": [
+        "lamps:lit"
+      ]
+    },
+    {
+      "id": "ankara_m04",
+      "title": "Telgrafhane",
+      "description": "Meclisin açılacağını bütün vilayetlere bildiren tamim telgrafla gidecek. Telgrafçı Hamdi Efendi'ye yardım et.",
+      "type": "minigame",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "telgrafci",
+          "text": "Telgrafhanedeki Hamdi Efendi ile konuş",
+          "dialogue": "d_an04"
+        },
+        {
+          "type": "minigame",
+          "minigame": "telegraph",
+          "anchor": "telgraf",
+          "text": "Tamimi Mors alfabesiyle gönder",
+          "prompt": "Maniplenin başına geç"
+        }
+      ],
+      "outro": "d_an04_end",
+      "reward": {
+        "text": "Tamim vilayetlere ulaştı."
+      },
+      "nextMission": "ankara_m05"
+    },
+    {
+      "id": "ankara_m05",
+      "title": "Mebuslar Geliyor",
+      "description": "Hacı Bayram Camii'ndeki Cuma namazından sonra mebuslar dualarla binaya geldi. Giriş holünde onları karşıla ve salona buyur et.",
+      "type": "story",
+      "onStart": [
+        "deputies:arrive"
+      ],
+      "intro": "d_an05",
+      "objectives": [
+        {
+          "type": "interact",
+          "targets": [
+            "mebus_1",
+            "mebus_2",
+            "mebus_3"
+          ],
+          "text": "Mebusları karşıla",
+          "prompt": "Hoş geldiniz — Salona buyurun"
+        }
+      ],
+      "onComplete": [
+        "deputies:seated"
+      ],
+      "reward": {
+        "text": "Mebuslar yerlerini aldı."
+      },
+      "nextMission": "ankara_m06"
+    },
+    {
+      "id": "ankara_m06",
+      "title": "Zabıt Kâtibi",
+      "description": "En yaşlı üye olarak Sinop Mebusu Şerif Bey kürsüye çıktı. Kâtip masasına geç ve açılış konuşmasını zabıt ceridesine yaz.",
+      "type": "minigame",
+      "date": "SAAT 13.45",
+      "intro": "d_an06",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "minutes",
+          "anchor": "katip_masasi",
+          "text": "Açılış konuşmasını zabta geçir",
+          "prompt": "Kâtip masasına otur"
+        }
+      ],
+      "outro": "d_an06_end",
+      "reward": {
+        "text": "Büyük Millet Meclisi açıldı!"
+      },
+      "nextMission": "ankara_m07",
+      "onComplete": [
+        "assembly:opened"
+      ]
+    },
+    {
+      "id": "ankara_m07",
+      "title": "Egemenlik Milletindir",
+      "description": "Ankara Mebusu Mustafa Kemal Paşa kürsüye çıkıyor. Kalemini bırak ve dinle.",
+      "type": "story",
+      "onStart": [
+        "mk:lectern"
+      ],
+      "intro": "d_an07",
+      "objectives": [
+        {
+          "type": "interact",
+          "targets": [
+            "katip_masasi"
+          ],
+          "text": "Mustafa Kemal Paşa'yı dinle",
+          "prompt": "Kalemi bırak ve dinle"
+        }
+      ],
+      "reward": {
+        "text": "Egemenlik kayıtsız şartsız milletindir."
+      },
+      "nextMission": null
+    }
+  ],
+  "dialogues": {
+    "d_an_intro": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "Mart 1920'de İstanbul işgal edildi, Meclis-i Mebusan dağıtıldı. Milletin temsilcileri Anadolu'nun ortasında, Ankara'da toplanmaya çağrıldı."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "23 Nisan 1920, Cuma. Ulus'taki bu taş bina birkaç gün içinde bir meclise dönüştürüldü: sıralar okullardan getirildi, salon gaz lambalarıyla aydınlatılacak."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Sen, açılış gününde kâtiplere yardım eden gençlerden birisin."
+      }
+    ],
+    "d_an01": [
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Hah, geldin evlat! Vakit dar; mebuslar namazdan sonra doğruca buraya gelecek."
+      },
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Önce başkanlık divanı: sandalyeleri hâlâ depoda duruyor. Üçünü de salondaki divanın arkasına taşı."
+      },
+      {
+        "speaker": "Sen",
+        "text": "Hemen getiriyorum, efendim."
+      }
+    ],
+    "d_an02_end": [
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Güzel. Şimdi salon… Pencereler küçük, içerisi loş kalıyor. Bütün gaz lambaları yanmalı."
+      },
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Fitil sırığı kapının yanında. Fitili fazla açarsan is yapar, az açarsan söner; tam kıvamında bırak."
+      }
+    ],
+    "d_an03_end": [
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Maşallah, salon gündüz gibi oldu! Şimdi telgrafhaneye koş; Hamdi Efendi'nin bir yardımcıya ihtiyacı var."
+      }
+    ],
+    "d_an04": [
+      {
+        "speaker": "Telgrafçı Hamdi Efendi",
+        "text": "Gel evladım, gel. Meclisin açıldığını bütün vilayetlere, kazalara bildireceğiz."
+      },
+      {
+        "speaker": "Telgrafçı Hamdi Efendi",
+        "text": "Mors bilir misin? Kısa basarsan nokta, uzun basarsan çizgi gider. Kâğıttaki işaretlere bak, harf harf gönder."
+      },
+      {
+        "speaker": "Telgrafçı Hamdi Efendi",
+        "text": "Önce ANKARA, sonra MECLİS, en son tarih: 23 NİSAN. Haydi bakalım!"
+      }
+    ],
+    "d_an04_end": [
+      {
+        "speaker": "Telgrafçı Hamdi Efendi",
+        "text": "Aferin! Hat açık, cevaplar gelmeye başladı bile. Erzurum'dan, Konya'dan, Sivas'tan…"
+      },
+      {
+        "speaker": "Telgrafçı Hamdi Efendi",
+        "text": "Dinle! Dışarıda tekbir sesleri… Mebuslar geliyor. Giriş holüne koş!"
+      }
+    ],
+    "d_an05": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "Hacı Bayram-ı Veli Camii'nde kılınan Cuma namazının ardından mebuslar, halkın dua ve tekbirleriyle binaya yürüdü; kapının önünde kurbanlar kesildi."
+      },
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Mebus beyler geldi! Karşıla, salona buyur et; her birine yerini göster."
+      }
+    ],
+    "d_an06": [
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Usul gereği meclisi en yaşlı üye açar: Sinop Mebusu Şerif Bey."
+      },
+      {
+        "speaker": "Başkâtip Nuri Efendi",
+        "text": "Kâtip masasına geç. Söylenen her söz zabıt ceridesine geçmeli; tarih bunu okuyacak."
+      }
+    ],
+    "d_an06_end": [
+      {
+        "speaker": "Şerif Bey",
+        "text": "…Büyük Millet Meclisi'ni açıyorum."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Salon alkışlarla inledi. Türkiye Büyük Millet Meclisi, 23 Nisan 1920'de saat 13.45'te açılmıştı."
+      }
+    ],
+    "d_an07": [
+      {
+        "speaker": "Şerif Bey",
+        "text": "Söz, Ankara Mebusu Mustafa Kemal Paşa'nındır."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Mustafa Kemal Paşa sıraların arasından yürüyüp kürsüye çıktı. Salon sessizliğe büründü."
+      }
+    ]
+  }
+}

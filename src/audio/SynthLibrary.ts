@@ -42,7 +42,11 @@ export type SfxName =
   | "bellows"
   | "branchSnap"
   | "stir"
-  | "sizzle";
+  | "sizzle"
+  | "applause"
+  | "keyClick"
+  | "penScratch"
+  | "lampLight";
 
 /** Hicaz makam on D (Turkish classical / mehter flavour), in Hz. */
 export const HICAZ_D = [293.66, 311.13, 369.99, 392.0, 440.0, 466.16, 523.25, 587.33];
@@ -202,6 +206,49 @@ export class SynthLibrary {
     o.frequency.exponentialRampToValueAtTime(high ? 330 : 150, t + 0.12);
     const s = this.gainEnv(dest, t, 0.001, 0.003, 0.05, vol * 0.4);
     this.noise(t, 0.06, this.filter("highpass", 2400, 0.7, s));
+  }
+
+  /** Bright brass lead (trumpet/cornet-like) for marches. */
+  brass(t: number, freq: number, dur: number, dest: AudioNode, vol = 0.12): void {
+    const g = this.gainEnv(dest, t, 0.035, Math.max(0, dur - 0.08), 0.12, vol);
+    const lp = this.filter("lowpass", freq * 3, 1.4, g);
+    lp.frequency.setValueAtTime(freq * 1.5, t);
+    lp.frequency.exponentialRampToValueAtTime(freq * 4.5, t + 0.06);
+    lp.frequency.exponentialRampToValueAtTime(freq * 3, t + 0.25);
+    const o = this.osc("sawtooth", freq, t, dur + 0.15, lp);
+    const o2 = this.osc("square", freq * 0.5, t, dur + 0.15, lp);
+    o2.detune.value = 5;
+    const o2g = this.ctx.createGain();
+    o2g.gain.value = 0.35;
+    o2.disconnect();
+    o2.connect(o2g).connect(lp);
+    const vib = this.ctx.createOscillator();
+    vib.frequency.value = 5.5;
+    const vg = this.ctx.createGain();
+    vg.gain.setValueAtTime(0, t);
+    vg.gain.linearRampToValueAtTime(freq * 0.006, t + Math.min(0.4, dur));
+    vib.connect(vg);
+    vg.connect(o.frequency);
+    vib.start(t);
+    vib.stop(t + dur + 0.2);
+    this.send(g, 0.3);
+  }
+
+  /** Tuba/bass pluck. */
+  bass(t: number, freq: number, dur: number, dest: AudioNode, vol = 0.16): void {
+    const g = this.gainEnv(dest, t, 0.01, Math.max(0, dur * 0.4), dur * 0.6, vol);
+    this.osc("triangle", freq, t, dur + 0.1, this.filter("lowpass", 600, 0.7, g));
+    this.send(g, 0.1);
+  }
+
+  /** Military snare drum. */
+  snare(t: number, dest: AudioNode, vol = 0.14): void {
+    const g = this.gainEnv(dest, t, 0.001, 0.01, 0.12, vol);
+    this.noise(t, 0.16, this.filter("bandpass", 2200, 0.8, g));
+    const b = this.gainEnv(dest, t, 0.001, 0.005, 0.06, vol * 0.6);
+    const o = this.osc("triangle", 190, t, 0.1, b);
+    o.frequency.exponentialRampToValueAtTime(140, t + 0.05);
+    this.send(g, 0.15);
   }
 
   drone(t: number, freq: number, dur: number, dest: AudioNode, vol = 0.05): void {
@@ -537,6 +584,36 @@ export class SynthLibrary {
         const g = this.gainEnv(dest, t, 0.02, 0.4, 0.5, 0.25);
         this.noise(t, 1, this.filter("highpass", 3200, 0.7, g));
         return 1;
+      }
+      case "applause": {
+        // Crowd clapping: hundreds of short filtered noise claps over ~3.5 s.
+        for (let i = 0; i < 160; i++) {
+          const tt = t + Math.random() * 3.5 * Math.sqrt(Math.random());
+          const g = this.gainEnv(dest, tt, 0.001, 0.004, 0.035, 0.05 + Math.random() * 0.05);
+          this.noise(tt, 0.045, this.filter("bandpass", 1100 + Math.random() * 1400, 1.2, g));
+        }
+        return 4;
+      }
+      case "keyClick": {
+        const g = this.gainEnv(dest, t, 0.0005, 0.003, 0.03, 0.35);
+        this.noise(t, 0.04, this.filter("bandpass", 3200 * pitch, 2, g));
+        return 0.1;
+      }
+      case "penScratch": {
+        const g = this.gainEnv(dest, t, 0.01, 0.06, 0.08, 0.12);
+        const f = this.filter("bandpass", 5200 * pitch, 3, g);
+        f.frequency.linearRampToValueAtTime(3800 * pitch, t + 0.12);
+        this.noise(t, 0.16, f, 1.4);
+        return 0.2;
+      }
+      case "lampLight": {
+        const g = this.gainEnv(dest, t, 0.03, 0.08, 0.4, 0.3);
+        const f = this.filter("lowpass", 900, 0.7, g);
+        f.frequency.setValueAtTime(300, t);
+        f.frequency.exponentialRampToValueAtTime(1600, t + 0.15);
+        this.noise(t, 0.5, f);
+        this.play("fireCrackle", dest, 1.2);
+        return 0.6;
       }
       case "reload": {
         this.play("woodKnock", dest, 0.7);

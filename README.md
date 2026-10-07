@@ -6,6 +6,7 @@ Oynanabilir bölümler:
 
 - **İstanbul — 1453, İstanbul'un Fethi** (3 mini oyun)
 - **Muğla — Menteşe, Keşkeğin Keşfi** (4 mini oyun): eski Muğla evleri, kızılçam ormanı ve bir köy düğünü
+- **Ankara — 23 Nisan 1920, TBMM'nin Açılışı** (3 mini oyun): tamamen I. TBMM binasının içinde geçer
 
 - **Motor:** Babylon.js 9 (WebGPU öncelikli, otomatik WebGL2/WebGL1 yedeği)
 - **Dil / derleme:** TypeScript + Vite (GitHub Pages uyumlu, göreli yollar)
@@ -32,7 +33,7 @@ Faydalı URL parametreleri:
 
 ```
 BOOT → Yükleme ("TARİHİN İÇİNE GİR") → Ana Menü → Türkiye Haritası → Şehir seçildi
-     → Sinematik geçiş (zoom, il 3B kabartmaya dönüşür, bulutlardan dalış, "İSTANBUL / 1453" · "MUĞLA / 1375")
+     → Sinematik geçiş (zoom, il 3B kabartmaya dönüşür, bulutlardan dalış, "İSTANBUL / 1453" · "MUĞLA / 1375" · "ANKARA / 1920")
      → Gökten sahneye iniş → FPS → Görev 1 … Görev 8 → Final → Haritaya dönüş
 ```
 
@@ -103,6 +104,39 @@ düğünde davul‑zurna. Hikâye ilerledikçe **ikindi → akşam → gece → 
 
 Her mini oyun `F` (mobilde **BIRAK**) ile bırakılıp sonra kaldığı yerden tekrar denenebilir.
 
+### Ankara · 23 Nisan 1920 — TBMM'nin Açılışı (`public/data/scenarios/ankara_1920.json`)
+Açık dünya yoktur: bölüm baştan sona **I. TBMM binasının içinde** geçer (giriş holü, koridor, telgrafhane, depo ve Genel Kurul salonu).
+Oyuncu, açılış gününde meclis kâtiplerine yardım eden bir gençtir. Bölüm boyunca **"Dağ Başını Duman Almış"** marşının
+sözsüz, sentezlenmiş bir düzenlemesi çalar.
+
+| # | Görev | Tür | Mekanik |
+|---|---|---|---|
+| 1 | 23 Nisan Sabahı | story | Başkâtip Nuri Efendi ile konuş |
+| 2 | Başkanlık Divanı | deliver | Depodan divana 3 sandalye taşı |
+| 3 | Gaz Lambaları | minigame | **Lamba mini oyunu** — salondaki 8 gaz lambasını yak |
+| 4 | Telgrafhane | minigame | **Telgraf mini oyunu** — tamimi Mors alfabesiyle vilayetlere gönder |
+| 5 | Mebuslar Geliyor | story | Cuma namazından gelen mebusları karşıla, salon dolar |
+| 6 | Zabıt Kâtibi | minigame | **Zabıt mini oyunu** — Şerif Bey'in açılış konuşmasını yaz |
+| 7 | Egemenlik Milletindir | story | Mustafa Kemal Paşa kürsüde → final |
+
+**Final:** Mustafa Kemal Paşa kürsüden *"Egemenlik kayıtsız şartsız milletindir."* der; salon alkışlar, müzik susar,
+ekran yavaşça kararır ve Atatürk'ün *"Biz her şeyi gençliğe bırakacağız… Geleceğin ümidi, ışıklı çiçekleri onlardır.
+Bütün ümidim gençliktedir."* sözü belirir.
+
+**Mini oyunlar:**
+1. **Gaz lambaları** — Salonda dolaş, lambanın altında `E`; fitil göstergesindeki ibre altın bölgedeyken `E`/`SPACE`/tık.
+   Az açarsan söner, fazla açarsan is yapar. Her yanan lamba salonu biraz daha aydınlatır.
+2. **Telgraf** — `SPACE`'e kısa bas = nokta, basılı tut = çizgi (mobilde **TUŞ**). *ANKARA · MECLİS · 23 NİSAN* harf harf gönderilir;
+   yanlış işaret o harfi baştan başlatır. Mors maniplesi ve telgraf sesi gerçek zamanlıdır.
+3. **Zabıt kâtibi** — Konuşmayı kelime kelime yaz (`ş→s`, `ğ→g`, `ı→i` gibi yazılabilir; mobilde doğru kelimeye dokun).
+
+*Tarihî notlar:* Meclis 23 Nisan 1920 Cuma günü, Hacı Bayram-ı Veli Camii'nde kılınan namazın ardından açıldı; açılışı en yaşlı
+üye Sinop Mebusu Şerif Bey yaptı. Oyundaki konuşma sadeleştirilmiş bir özettir. Kâtip, telgrafçı ve karşılanan mebusların
+adları kurgusaldır. "Egemenlik kayıtsız şartsız milletindir" sözü Atatürk'e aittir ve finalde dramatik olarak açılış anına yerleştirilmiştir.
+*Müzik:* Ezgi 19. yüzyıldan kalma kamu malı bir şarkıya dayanır; oyundaki düzenleme sentezle, kulaktan yapılmıştır ve birebir olmayabilir.
+Hak sahibi olduğun bir kaydı `public/assets/audio/dag-basini-duman-almis.mp3` olarak koyup `src/audio/AudioManager.ts` içindeki
+`MUSIC_SAMPLE_MANIFEST.ankara` değerini bu yola ayarlarsan bölüm boyunca o kayıt çalar.
+
 ## Kontroller
 
 | Tuş | İşlev |
@@ -159,12 +193,13 @@ src/
   systems/     InteractionSystem, ParticleFX, CameraFX, Waypoint
   missions/    MissionManager (veri odaklı), tipler
   minigames/   BaseMinigame, ShipTransportMinigame, CannonMinigame, SiegeMinigame,
-               DibekMinigame, ForestGatherMinigame, FireMinigame, StirMinigame
+               DibekMinigame, ForestGatherMinigame, FireMinigame, StirMinigame,
+               LampMinigame, TelegraphMinigame, MinutesMinigame
   audio/       AudioManager, SynthLibrary (prosedürel SFX + enstrümanlar), MusicSequencer (Hicaz / Hüseyni makamında üretken müzik)
   ui/          UIManager, HUD, Dialogue, Settings, Map UI, sinematik katman, mobil kontroller (DOM, değişiklik‑tabanlı güncelleme)
   scenarios/   registry, common/FpsScenario (ortak FPS katmanı: oyuncu, ışık, NPC, diyalog, HUD, görev köprüsü),
-               istanbul1453/ ve mugla/ (layout, dünya kurulumu, sahne: NPC'ler, mini oyunlar, görev kancaları)
-public/data/   turkey-geo.json, cities.json, scenarios/istanbul_1453.json, scenarios/mugla_keskek.json
+               istanbul1453/, mugla/ ve ankara/ (layout, dünya kurulumu, sahne: NPC'ler, mini oyunlar, görev kancaları)
+public/data/   turkey-geo.json, cities.json, scenarios/{istanbul_1453, mugla_keskek, ankara_1920}.json
 ```
 
 ### Yeni şehir eklemek
@@ -200,7 +235,7 @@ git add docs && git commit -m "Update Pages build" && git push
 Bu yolda `docs/` kullanılmaz.
 
 ## Neler gerçek, neler yer tutucu?
-**Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, iki bölümde 16 görevin tamamı, 7 mini oyun,
+**Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, üç bölümde 23 görevin tamamı, 10 mini oyun,
 NPC davranışları ve yol bulma, Fatih / Ayşe Nine ve diyaloglar, gün → gece → şafak geçişi, kayıt/devam, ayarlar, mobil kontroller,
 prosedürel ses ve müzik, WebGPU/WebGL.
 

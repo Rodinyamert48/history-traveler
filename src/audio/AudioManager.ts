@@ -32,6 +32,15 @@ export const AUDIO_SAMPLE_MANIFEST: Partial<Record<SfxName, string | null>> = {
 };
 
 /**
+ * Optional recorded music per theme (looped). `null` → the generative/arranged synth music.
+ * E.g. put an instrumental recording you have the rights to at
+ * public/assets/audio/dag-basini-duman-almis.mp3 and set `ankara` to "assets/audio/dag-basini-duman-almis.mp3".
+ */
+export const MUSIC_SAMPLE_MANIFEST: Partial<Record<MusicTheme, string | null>> = {
+  ankara: null,
+};
+
+/**
  * Modular WebAudio sound system: master → (music | sfx | ambience) buses, procedural SFX
  * (SynthLibrary), a generative makam-inspired music sequencer and layered ambience beds.
  * The AudioContext is created lazily on the first user gesture (browser autoplay policy).
@@ -52,6 +61,9 @@ export class AudioManager {
   private listener = { x: 0, y: 0, z: 0, fx: 0, fz: 1 };
   private pendingTheme: MusicTheme | null = null;
   private pendingMix: AmbienceMix | null = null;
+  private musicSamples = new Map<MusicTheme, AudioBuffer>();
+  private musicSource: { theme: MusicTheme; src: AudioBufferSourceNode; gain: GainNode } | null = null;
+  private tone: { osc: OscillatorNode; gain: GainNode } | null = null;
 
   get isReady(): boolean {
     return !!this.ctx && this.ctx.state === "running";
@@ -93,6 +105,9 @@ export class AudioManager {
     this.applyVolumes();
     for (const [name, path] of Object.entries(AUDIO_SAMPLE_MANIFEST)) {
       if (path) void this.loadSample(name as SfxName, path);
+    }
+    for (const [theme, path] of Object.entries(MUSIC_SAMPLE_MANIFEST)) {
+      if (path) void this.loadMusicSample(theme as MusicTheme, path);
     }
     if (this.pendingTheme) this.playMusic(this.pendingTheme);
     if (this.pendingMix) this.setAmbience(this.pendingMix);
@@ -170,15 +185,88 @@ export class AudioManager {
     window.setTimeout(() => panner.disconnect(), (duration + 0.5) * 1000);
   }
 
+  private async loadMusicSample(theme: MusicTheme, path: string): Promise<void> {
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}${path}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      this.musicSamples.set(theme, await this.ctx!.decodeAudioData(await res.arrayBuffer()));
+      // If that theme is already playing on the synth, switch to the recording.
+      if (this.pendingTheme === theme) {
+        this.music.stop(1.5);
+        this.startMusicSample(theme);
+      }
+    } catch (err) {
+      console.warn(`[Audio] music "${path}" unavailable, using the synthesized arrangement`, err);
+    }
+  }
+
+  private startMusicSample(theme: MusicTheme): boolean {
+    const buffer = this.musicSamples.get(theme);
+    if (!buffer || !this.ctx) return false;
+    if (this.musicSource?.theme === theme) return true;
+    this.stopMusicSample(1.5);
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.8, this.ctx.currentTime + 2);
+    src.connect(gain).connect(this.musicBus);
+    src.start();
+    this.musicSource = { theme, src, gain };
+    return true;
+  }
+
+  private stopMusicSample(fade: number): void {
+    const m = this.musicSource;
+    if (!m || !this.ctx) return;
+    const t = this.ctx.currentTime;
+    m.gain.gain.cancelScheduledValues(t);
+    m.gain.gain.setValueAtTime(Math.max(0.0001, m.gain.gain.value), t);
+    m.gain.gain.exponentialRampToValueAtTime(0.0001, t + fade);
+    m.src.stop(t + fade + 0.1);
+    this.musicSource = null;
+  }
+
   playMusic(theme: MusicTheme): void {
     this.pendingTheme = theme;
     if (!this.ctx) return;
+    if (this.startMusicSample(theme)) {
+      this.music.stop(1.5);
+      return;
+    }
+    this.stopMusicSample(1.5);
     this.music.play(theme);
   }
 
   stopMusic(fade = 1.5): void {
     this.pendingTheme = null;
     this.music?.stop(fade);
+    this.stopMusicSample(fade);
+  }
+
+  /** Continuous sidetone (e.g. a telegraph key held down). */
+  setTone(on: boolean, freq = 720): void {
+    if (!this.ctx || this.ctx.state !== "running") return;
+    const t = this.ctx.currentTime;
+    if (on && !this.tone) {
+      const osc = this.ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.12, t + 0.008);
+      osc.connect(gain).connect(this.sfxBus);
+      osc.start();
+      this.tone = { osc, gain };
+    } else if (!on && this.tone) {
+      const { osc, gain } = this.tone;
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(Math.max(0.0001, gain.gain.value), t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.01);
+      osc.stop(t + 0.03);
+      this.tone = null;
+    }
   }
 
   /** Crossfades the looping ambience beds (0..1 each). */

@@ -302,7 +302,7 @@ export class GameManager {
     ui.modal.show(
       "HAKKINDA",
       `<p><b>Tarih Yolcusu</b>, Türkiye haritasından seçtiğin şehrin önemli bir tarihî dönemini birinci şahıs olarak oyunlaştırılmış görevler ve mini oyunlarla yaşatan bir web oyunudur.</p>
-       <p>Bölümler: <b>İstanbul — 1453</b> (İstanbul'un Fethi) ve <b>Muğla — Menteşe</b> (Keşkeğin Keşfi). Diğer şehirler yakında.</p>
+       <p>Bölümler: <b>İstanbul — 1453</b> (İstanbul'un Fethi) ve <b>Muğla — Menteşe</b> (Keşkeğin Keşfi) ve <b>Ankara — 23 Nisan 1920</b> (TBMM'nin Açılışı). Diğer şehirler yakında.</p>
        <p style="font-size:12px">Render: ${this.engineInfo.api} · Babylon.js<br/>Harita verisi: Natural Earth (kamu malı).<br/>Tüm 3B modeller, dokular, müzik ve sesler kod ile prosedürel üretilmiştir.</p>`,
       [{ label: "Kapat", primary: true, onClick: () => ui.modal.hide() }],
     );

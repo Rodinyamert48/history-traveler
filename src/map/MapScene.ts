@@ -401,7 +401,8 @@ export class MapScene implements GameScene {
         minZ = Math.min(minZ, z);
         maxZ = Math.max(maxZ, z);
       }
-    const forested = provinceId !== "istanbul";
+    const forested = provinceId === "mugla";
+    const steppe = provinceId === "ankara";
     const noise = new Noise2D(provinceId === "istanbul" ? 1453 : 48);
     // Large provinces get a coarser grid so the relief stays a few thousand triangles.
     const step = Math.max(0.28, Math.sqrt(((maxX - minX) * (maxZ - minZ)) / 9000));
@@ -409,8 +410,8 @@ export class MapScene implements GameScene {
     const inside = (x: number, z: number) => rings.some((r) => pointInPolygon(x, z, r));
     const relief = forested ? 1.4 : 0.9;
     const hAt = (x: number, z: number) => (inside(x, z) ? 0.15 + Math.max(0, noise.fbm(x * 0.35, z * 0.35, 3) + 0.3) * relief : -0.05);
-    const grass = forested ? hexColor("#4f6e34") : hexColor("#6f8a43");
-    const dirt = forested ? hexColor("#8a7a5a") : hexColor("#9b7b4f");
+    const grass = forested ? hexColor("#4f6e34") : steppe ? hexColor("#a89a64") : hexColor("#6f8a43");
+    const dirt = forested ? hexColor("#8a7a5a") : steppe ? hexColor("#b49a70") : hexColor("#9b7b4f");
     for (let x = minX; x < maxX; x += step) {
       for (let z = minZ; z < maxZ; z += step) {
         if (!inside(x + step / 2, z + step / 2)) continue;
@@ -444,6 +445,21 @@ export class MapScene implements GameScene {
           b.box(x, hAt(x, z) + 0.12, z, 0.05, 0.24, 0.05, { color: wallCol });
         }
       }
+    } else if (steppe) {
+      // Miniature Ankara Castle on its hill and the Assembly building at its foot.
+      const geoP = this.geo.provinces.find((p) => p.id === "ankara")!;
+      const [cx, cz] = project(32.86, 39.94);
+      void geoP;
+      const stone = hexColor("#b8a888");
+      b.box(cx, hAt(cx, cz) + 0.12, cz, 0.5, 0.24, 0.4, { color: stone });
+      for (const [dx, dz] of [
+        [-0.25, -0.2],
+        [0.25, -0.2],
+        [-0.25, 0.2],
+        [0.25, 0.2],
+      ])
+        b.box(cx + dx, hAt(cx, cz) + 0.18, cz + dz, 0.1, 0.36, 0.1, { color: stone });
+      b.box(cx + 0.5, hAt(cx, cz) + 0.08, cz + 0.4, 0.24, 0.16, 0.18, { color: hexColor("#d8c8a8") });
     } else {
       // Miniature pine forest covering the hills.
       const rnd = new Random(52);

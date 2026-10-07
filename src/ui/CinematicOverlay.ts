@@ -11,6 +11,7 @@ export class CinematicOverlay {
   private boxTop: HTMLDivElement;
   private boxBottom: HTMLDivElement;
   private skip: HTMLDivElement;
+  private quote: HTMLDivElement;
 
   constructor(parent: HTMLElement) {
     this.boxTop = el("div", "letterbox top", parent);
@@ -27,6 +28,35 @@ export class CinematicOverlay {
     this.year = el("div", "tc-year", this.card);
     this.sub = el("div", "tc-sub", this.card);
     this.skip = el("div", "skip-hint hidden", parent, "Atla · Space");
+    this.quote = el("div", "cine-quote hidden", parent);
+  }
+
+  /**
+   * Large centred quotation (spoken line or closing words). `dark` puts it on the black
+   * fade; `actions` adds buttons below once the quote has settled.
+   */
+  showQuote(text: string, attribution: string, opts: { dark?: boolean; actions?: { label: string; primary?: boolean; onClick: () => void }[]; actionsDelay?: number } = {}): void {
+    const q = this.quote;
+    q.innerHTML = "";
+    q.className = `cine-quote${opts.dark ? " dark" : ""}`;
+    el("div", "cq-text", q, text);
+    el("div", "cq-attr", q, attribution);
+    if (opts.actions?.length) {
+      const row = el("div", "cq-actions", q);
+      for (const a of opts.actions) {
+        const b = el("button", `btn${a.primary ? "" : " secondary"}`, row, a.label);
+        b.addEventListener("click", a.onClick);
+      }
+      window.setTimeout(() => row.classList.add("show"), opts.actionsDelay ?? 4000);
+    }
+    void q.offsetWidth;
+    q.classList.add("show");
+  }
+
+  async hideQuote(seconds = 1): Promise<void> {
+    this.quote.classList.remove("show");
+    await wait(seconds * 1000);
+    this.quote.classList.add("hidden");
   }
 
   setLetterbox(on: boolean): void {

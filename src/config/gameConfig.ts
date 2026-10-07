@@ -176,6 +176,23 @@ export const GAME_CONFIG = {
       emberPull: 18,
       gustEvery: [11, 17] as const,
     },
+    // ---- Ankara: TBMM chapter
+    lamps: {
+      reach: 2.4,
+      /** Needle sweeps per second (grows a little with every lit lamp). */
+      sweepSpeed: 0.55,
+      sweepGain: 0.05,
+      zoneWidth: 0.16,
+    },
+    telegraph: {
+      /** Holding the key longer than this (seconds) sends a dash. */
+      dashThreshold: 0.22,
+      words: ["ANKARA", "MECLIS", "23 NISAN"],
+    },
+    minutes: {
+      /** Wrong keystrokes forgiven per word before the ink blots. */
+      blotEvery: 4,
+    },
     stir: {
       /** Ideal stirring speed band in revolutions per second. */
       minRps: 0.35,

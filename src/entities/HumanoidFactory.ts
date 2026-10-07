@@ -4,8 +4,8 @@ import type { MaterialKey, MaterialLibrary } from "../rendering/MaterialLibrary"
 import { registerInstancedBufferWithCapacity } from "../rendering/instancing";
 import type { RenderPipeline } from "../rendering/RenderPipeline";
 
-export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "yazma" | "keche" | "none";
-export type ItemKind = "spear" | "shield" | "hammer" | "mallet" | "paddle" | "davulStick" | "zurna" | "none";
+export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "yazma" | "keche" | "fes" | "kalpak" | "none";
+export type ItemKind = "spear" | "shield" | "hammer" | "mallet" | "paddle" | "davulStick" | "zurna" | "rifle" | "none";
 
 export interface HumanoidLook {
   skin: string;
@@ -27,6 +27,7 @@ export interface HumanoidLook {
   apron?: string;
   /** Davul hung across the chest (wedding musicians). */
   davul?: boolean;
+  mustache?: string;
 }
 
 const LOOKS_BASE_MUSICIAN: HumanoidLook = {
@@ -210,6 +211,68 @@ export const LOOKS = {
     rightItem: v % 2 === 0 ? "davulStick" : "zurna",
     davul: v % 2 === 0,
   }),
+  // ------------------------------------------------------------ Ankara 1920
+  /** Mebus (deputy): suits and coats with fes, kalpak or a cleric's sarık. */
+  deputy: (v = 0): HumanoidLook => {
+    const hat = (["fes", "kalpak", "turban", "fes", "kalpak", "none"] as const)[v % 6];
+    const cleric = hat === "turban";
+    return {
+      skin: ["#c99a72", "#b98660", "#d4a882", "#c08a64"][v % 4],
+      kaftan: cleric ? ["#3a3a44", "#2a3a2e"][v % 2] : ["#2a2a2e", "#3a3530", "#2c3444", "#4a4038", "#33302c"][v % 5],
+      sleeves: cleric ? "#3a3a44" : ["#2a2a2e", "#3a3530", "#2c3444", "#4a4038", "#33302c"][v % 5],
+      trousers: "#25252a",
+      sash: cleric ? "#e8e0cc" : "#1c1c1e",
+      boots: "#1a1614",
+      hat,
+      hatColor: hat === "fes" ? "#9e1a1f" : hat === "kalpak" ? ["#2e2a26", "#4a4440", "#1e1c1a"][v % 3] : "#f2ede2",
+      beard: v % 3 === 0 ? ["#2b2018", "#8a8478", "#d8d2c6"][v % 3] : undefined,
+      mustache: ["#2b2018", "#3a2a1c", "#8a8478"][v % 3],
+      longKaftan: cleric || v % 4 === 1,
+      collar: "#efe8dc",
+    };
+  },
+  /** Kuvâ-yi Milliye soldier guarding the building. */
+  soldier1920: (v = 0): HumanoidLook => ({
+    skin: ["#c08a64", "#b07a54"][v % 2],
+    kaftan: "#6b6748",
+    sleeves: "#6b6748",
+    trousers: "#5a5640",
+    sash: "#4a3a24",
+    boots: "#2a2018",
+    hat: "kalpak",
+    hatColor: "#2e2a26",
+    mustache: "#2b2018",
+    longKaftan: false,
+    rightItem: "rifle",
+  }),
+  clerk1920: (v = 0): HumanoidLook => ({
+    skin: ["#c99a72", "#d4a882"][v % 2],
+    kaftan: ["#3a3530", "#2c3444"][v % 2],
+    sleeves: ["#3a3530", "#2c3444"][v % 2],
+    trousers: "#2a2a2e",
+    sash: "#1c1c1e",
+    boots: "#1a1614",
+    hat: "fes",
+    hatColor: "#9e1a1f",
+    mustache: "#2b2018",
+    longKaftan: false,
+    collar: "#efe8dc",
+  }),
+  /** Mustafa Kemal Paşa in April 1920: grey kalpak and a long grey coat. */
+  mustafaKemal: (): HumanoidLook => ({
+    skin: "#e0b898",
+    kaftan: "#55534e",
+    sleeves: "#55534e",
+    trousers: "#2e2e30",
+    sash: "#2e2e30",
+    boots: "#141210",
+    hat: "kalpak",
+    hatColor: "#6a6660",
+    mustache: "#b89a72",
+    longKaftan: true,
+    collar: "#efe8dc",
+    scale: 1.04,
+  }),
   fatih: (): HumanoidLook => ({
     skin: "#d0a07c",
     kaftan: "#9e1a1f",
@@ -257,7 +320,12 @@ type PartName =
   | "paddle"
   | "davulStick"
   | "zurna"
-  | "davul";
+  | "davul"
+  | "fes"
+  | "fesTassel"
+  | "kalpak"
+  | "mustache"
+  | "rifle";
 
 interface PartDef {
   material: MaterialKey;
@@ -298,6 +366,21 @@ const PART_DEFS: Record<PartName, PartDef> = {
     build: (b) => {
       // Large Ottoman kavuk sitting above the brow so the face stays visible.
       b.sphere(0, 0.36, -0.01, 0.21, { segments: 10, rings: 6, scaleY: 0.72, color: white, jitter: 0.03 });
+    },
+  },
+  fes: { material: "fabric", build: (b) => b.cylinder(0, 0.17, 0, 0.115, 0.095, 0.17, { segments: 9, color: white }) },
+  fesTassel: { material: "fabric", build: (b) => b.box(-0.06, 0.24, -0.06, 0.03, 0.12, 0.03, { color: white }) },
+  kalpak: {
+    material: "fabric",
+    // Astrakhan fur kalpak: a little wider at the top, flat crown.
+    build: (b) => b.cylinder(0, 0.15, 0, 0.128, 0.142, 0.2, { segments: 9, color: white, jitter: 0.05 }),
+  },
+  mustache: { material: "matte", build: (b) => b.box(0, 0.075, 0.118, 0.11, 0.025, 0.03, { color: white }) },
+  rifle: {
+    material: "wood",
+    build: (b) => {
+      b.cylinder(0, -0.55, 0.04, 0.02, 0.02, 1.0, { segments: 4, color: hexColor("#2a2a2a") });
+      b.box(0, -0.75, 0.05, 0.05, 0.42, 0.07, { color: hexColor("#6a4a2a") });
     },
   },
   hatBand: { material: "fabric", build: (b) => b.cylinder(0, 0.44, 0, 0.09, 0.03, 0.2, { segments: 7, color: white }) },
@@ -474,6 +557,8 @@ export class HumanoidFactory {
     if (look.collar) this.add(rig, "collar", torso, look.collar);
     this.add(rig, "head", head, look.skin);
     if (look.beard) this.add(rig, "beard", head, look.beard);
+    if (look.mustache && !look.beard) this.add(rig, "mustache", head, look.mustache);
+    if (look.hat === "fes") this.add(rig, "fesTassel", head, "#1a1614");
     if (look.hat !== "none") this.add(rig, look.hat, head, look.hatColor);
     if (look.hat === "kavuk") this.add(rig, "hatBand", head, look.hatAccent ?? "#b3141c");
     if (look.hat === "helmet" && look.hatAccent) this.add(rig, "plume", head, look.hatAccent);

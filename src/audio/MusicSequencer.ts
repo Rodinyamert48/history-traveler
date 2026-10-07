@@ -1,7 +1,33 @@
 import { Random } from "../utils/random";
 import { HICAZ_D, HUSEYNI_A, type SynthLibrary } from "./SynthLibrary";
 
-export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun";
+export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara";
+
+/** A fixed arrangement (instead of generative phrases): MIDI notes in eighth-note steps, 0 = rest. */
+interface Score {
+  melody: [number, number][];
+  /** One chord root (MIDI) per bar; the bass alternates root and fifth on the quarter notes. */
+  bassRoots: number[];
+}
+
+/**
+ * "Dağ Başını Duman Almış" — instrumental march arrangement (melody of the 19th-century public
+ * domain song it is based on, played from memory by the synthesizer; no lyrics are used).
+ * A recording can replace it: see MUSIC_SAMPLE_MANIFEST in AudioManager.
+ */
+const DAG_BASINI: Score = (() => {
+  const L1: [number, number][] = [[67, 2], [67, 1], [69, 1], [71, 2], [71, 2], [69, 2], [67, 1], [69, 1], [71, 4]];
+  const L2: [number, number][] = [[72, 2], [72, 1], [71, 1], [69, 2], [69, 2], [71, 2], [69, 1], [67, 1], [69, 4]];
+  const L3: [number, number][] = [[71, 2], [71, 1], [72, 1], [74, 2], [74, 2], [76, 2], [74, 1], [72, 1], [71, 4]];
+  const L4: [number, number][] = [[69, 2], [71, 1], [72, 1], [71, 2], [69, 2], [67, 4], [0, 4]];
+  const L5: [number, number][] = [[74, 2], [74, 1], [74, 1], [76, 2], [74, 2], [72, 2], [71, 2], [69, 4]];
+  const L6: [number, number][] = [[71, 2], [72, 1], [74, 1], [72, 2], [71, 2], [69, 2], [71, 2], [67, 4]];
+  const G = 43, C = 48, D = 50, E = 40;
+  return {
+    melody: [...L1, ...L2, ...L3, ...L4, ...L5, ...L6, ...L5, ...L6, [0, 8]],
+    bassRoots: [G, G, C, D, G, E, D, G, G, C, D, G, G, C, D, G, D],
+  };
+})();
 
 interface ThemeDef {
   bpm: number;
@@ -14,6 +40,7 @@ interface ThemeDef {
   volume: number;
   /** Scale degrees in Hz (Hicaz for the Ottoman court/mehter, Hüseyni for Aegean folk). */
   scale?: readonly number[];
+  score?: Score;
 }
 
 const THEMES: Record<MusicTheme, ThemeDef> = {
@@ -25,7 +52,11 @@ const THEMES: Record<MusicTheme, ThemeDef> = {
   mugla: { bpm: 96, usul: "D.T.T.D..", drum: "kudum", melody: "mixed", melodyDensity: 0.45, droneRoot: 110, volume: 0.8, scale: HUSEYNI_A },
   // Wedding (düğün): davul-zurna in a lively 9/8 karşılama.
   dugun: { bpm: 150, usul: "D.T.D.TT.", drum: "davul", melody: "zurna", melodyDensity: 0.8, droneRoot: 110, volume: 0.95, scale: HUSEYNI_A },
+  // Ankara 1920: a brass-and-snare march (4/4, one char per 8th note).
+  ankara: { bpm: 104, usul: "D.S.T.S.", drum: "davul", melody: "pluck", melodyDensity: 1, droneRoot: 98, volume: 0.62, score: DAG_BASINI },
 };
+
+const midiHz = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
 /**
  * Generative, makam-inspired background music. Phrases are random walks in Hicaz (seeded),
@@ -117,7 +148,39 @@ export class MusicSequencer {
     this.phraseIndex = 0;
   }
 
+  private scheduleScore(def: ThemeDef, score: Score, step: number, t: number, stepDur: number): void {
+    const g = this.themeGain!;
+    const total = score.melody.reduce((n, [, d]) => n + d, 0);
+    const local = step % total;
+    // Drums: bass drum on 1 & 3, snare on the off-beats, a small roll at the end of each 2 bars.
+    const ch = def.usul[local % def.usul.length];
+    if (ch === "D") this.synth.davul(t, g, 0.32, true);
+    else if (ch === "T") this.synth.davul(t, g, 0.16, false);
+    if (ch === "S" || (local % 16 >= 14 && local % 2 === 1)) this.synth.snare(t, g, ch === "S" ? 0.14 : 0.1);
+    if (local % 16 === 15) this.synth.snare(t + stepDur / 2, g, 0.08);
+    // Bass: root on beats 1 & 3, fifth on 2 & 4.
+    if (local % 2 === 0) {
+      const bar = Math.floor(local / 8);
+      const root = score.bassRoots[bar % score.bassRoots.length];
+      this.synth.bass(t, midiHz(local % 4 === 0 ? root : root + 7), stepDur * 1.8, g, 0.16);
+    }
+    // Melody note starting at this step.
+    let acc = 0;
+    for (const [note, dur] of score.melody) {
+      if (acc === local) {
+        if (note > 0) this.synth.brass(t, midiHz(note), dur * stepDur * 0.92, g, 0.11);
+        break;
+      }
+      acc += dur;
+      if (acc > local) break;
+    }
+  }
+
   private scheduleStep(def: ThemeDef, step: number, t: number, stepDur: number): void {
+    if (def.score) {
+      this.scheduleScore(def, def.score, step, t, stepDur);
+      return;
+    }
     const g = this.themeGain!;
     const ch = def.usul[step % def.usul.length];
     if (def.drum === "davul") {

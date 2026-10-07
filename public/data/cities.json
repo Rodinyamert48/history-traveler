@@ -3,7 +3,7 @@
   "cities": [
     { "id": "istanbul", "name": "İstanbul", "year": 1453, "title": "İstanbul'un Fethi", "active": true, "scenario": "istanbul_1453", "doneLabel": "FETHEDİLDİ" },
     { "id": "mugla", "name": "Muğla", "year": 1375, "title": "Keşkeğin Keşfi", "active": true, "scenario": "mugla_keskek", "doneLabel": "KEŞFEDİLDİ" },
-    { "id": "ankara", "name": "Ankara", "year": 1920, "title": "Büyük Millet Meclisi'nin Açılışı", "active": false },
+    { "id": "ankara", "name": "Ankara", "year": 1920, "title": "TBMM'nin Açılışı", "active": true, "scenario": "ankara_1920", "doneLabel": "MECLİS AÇILDI" },
     { "id": "izmir", "name": "İzmir", "year": 1922, "title": "Kurtuluş", "active": false },
     { "id": "bursa", "name": "Bursa", "year": 1326, "title": "Bursa'nın Fethi", "active": false },
     { "id": "edirne", "name": "Edirne", "year": 1363, "title": "Edirne'nin Fethi", "active": false },
