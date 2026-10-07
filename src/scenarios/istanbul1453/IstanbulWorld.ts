@@ -595,17 +595,25 @@ export async function buildIstanbulWorld(ctx: BuildContext): Promise<IstanbulWor
   // ------------------------------------------------------------ piers & the ferry
   ctx.progress(0.58, "Haliç ve iskeleler");
   await ctx.yieldFrame();
-  const placePier = (x: number, z0: number, z1: number) => {
+  /** Walks from the land point toward the water until the shoreline, then builds the pier out from there. */
+  const placePier = (x: number, zLand: number, dir: 1 | -1): number => {
+    const deckY = 1.0;
+    let shore = zLand;
+    for (let i = 0; i < 80 && ground(x, shore) > deckY - 0.1; i++) shore += dir * 0.5;
+    const z0 = shore - dir * 2.5;
+    const z1 = shore + dir * 16;
     const len = Math.abs(z1 - z0);
     const cz = (z0 + z1) / 2;
-    const deckY = 1.0;
     appendParts(P.pier(len, 3), "piers", Matrix.Translation(x, deckY, cz));
     collision.addBox(x, cz, 3, len, 0, deckY - 2, deckY + 0.06, { solid: false, tag: "wood" });
+    // Ramp from the bank onto the deck so the pier is always walkable.
+    collision.addRamp(x, z0 - dir * 2, 3, 4, dir > 0 ? 0 : Math.PI, Math.max(deckY, ground(x, z0 - dir * 4)), deckY, "wood");
+    return z1;
   };
-  placePier(L.southPier.x, L.southPier.z - 4, L.southPier.z + 16);
-  placePier(L.northPier.x, L.northPier.z + 4, L.northPier.z - 16);
-  prefabs.place("rowingBoat", L.southPier.x + 3, 0.05, L.southPier.z + 10, { rotY: 0.1 });
-  prefabs.place("rowingBoat", L.northPier.x + 3, 0.05, L.northPier.z - 10, { rotY: Math.PI + 0.1 });
+  const southEnd = placePier(L.southPier.x, L.southPier.z - 4, 1);
+  const northEnd = placePier(L.northPier.x, L.northPier.z + 4, -1);
+  prefabs.place("rowingBoat", L.southPier.x + 3, 0.05, southEnd - 4, { rotY: 0.1 });
+  prefabs.place("rowingBoat", L.northPier.x + 3, 0.05, northEnd + 4, { rotY: Math.PI + 0.1 });
   anchors.set("boatman_south", at(L.boatmanSouth.x, L.boatmanSouth.z));
   anchors.set("boatman_north", at(L.boatmanNorth.x, L.boatmanNorth.z));
   flushStatics("piers", true, true);

@@ -499,7 +499,8 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
       this.lockHintShown = true;
       ui.hud.toast("Fareyle etrafa bakmak için oyun alanına tıkla. WASD: hareket · Shift: koş · E: etkileşim · ESC: menü", "info", 7000);
     }
-    await this.missions.start(this.resumeMissionId);
+    // Not awaited: a mission intro dialogue must not block the "playing" state (pause, input).
+    void this.missions.start(this.resumeMissionId);
   }
 
   setPaused(paused: boolean): void {
@@ -560,8 +561,26 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
     this.updateHud();
   }
 
+  private updateNameplate(): void {
+    const hud = this.services.ui.hud;
+    const f = this.fatih;
+    const d = Math.hypot(f.position.x - this.player.position.x, f.position.z - this.player.position.z);
+    if (this.inDialogue || this.minigame?.active || d > 16 || !f.rig.root.isEnabled()) {
+      hud.setNameplate(null);
+      return;
+    }
+    const head = f.position.add(new Vector3(0, 2.35 * f.rig.scale, 0));
+    const p = projectWaypoint(this.scene, this.player.camera, head);
+    if (p.offscreen) {
+      hud.setNameplate(null);
+      return;
+    }
+    hud.setNameplate({ name: "Fatih Sultan Mehmet", role: "Osmanlı Padişahı", x: p.x, y: p.y, opacity: clamp((16 - d) / 5, 0, 1) });
+  }
+
   private updateHud(): void {
     const hud = this.services.ui.hud;
+    this.updateNameplate();
     const m = this.missions.current;
     const key = m ? `${m.id}` : "";
     if (key !== this.lastHudMission) {
@@ -624,6 +643,8 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
       this.turnPlayerTo(Math.atan2(dx, dz));
     }
     ui.hud.setInteraction(null);
+    const layout = ui.mobile.currentLayout;
+    ui.mobile.setLayout("hidden");
     await ui.dialogue.play(lines, (line) => {
       if (line.speaker === "Sen") return;
       audio.play("murmur", { volume: 0.5, pitch: line.speaker.startsWith("Fatih") ? 0.85 : 1 + Math.random() * 0.15 });
@@ -633,6 +654,7 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
       if (prevBehavior && focus.behavior.type !== "scripted") focus.setBehavior(prevBehavior);
     }
     this.inDialogue = false;
+    ui.mobile.setLayout(layout === "hidden" ? "explore" : layout);
     if (!this.minigame?.active) this.player.controlEnabled = true;
   }
 
@@ -804,6 +826,9 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
         this.setDawn();
         this.spawnAllies();
         break;
+      case "flag:carry":
+        if (phase !== "resume") this.setCarry("flag");
+        break;
       case "flag:planted":
         this.world.finalFlag.setEnabled(true);
         this.services.audio.play("cheer", { volume: 1 });
@@ -879,7 +904,11 @@ export class IstanbulScene implements ScenarioInstance, MissionHost {
     this.carryMeshes = [];
     this.player.speedMultiplier = 1;
     if (!item || !this.carryNode) return;
-    const parts = item === "cannonball" ? heldCannonball() : flagHeld();
+    const isFlag = item !== "cannonball";
+    const parts = isFlag ? flagHeld() : heldCannonball();
+    // The banner pole is held low and to the side so it frames the view instead of blocking it.
+    this.carryNode.position.set(isFlag ? 0.1 : 0, isFlag ? -1.15 : 0, isFlag ? 0.1 : 0);
+    this.carryNode.rotation.set(isFlag ? 0.12 : 0, 0, isFlag ? -0.18 : 0);
     this.carryMeshes = this.prefabs.buildUnique(`carry-${item}`, parts, this.carryNode, false);
     for (const m of this.carryMeshes) m.renderingGroupId = 1;
     this.player.speedMultiplier = GAME_CONFIG.player.carrySpeedMultiplier;

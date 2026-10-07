@@ -25,6 +25,7 @@ export class HUD {
   private waypoint: HTMLDivElement;
   private waypointDist: HTMLDivElement;
   private toasts: HTMLDivElement;
+  private nameplate: HTMLDivElement;
   private fps: HTMLDivElement;
   private flash: HTMLDivElement;
   readonly minigameLayer: HTMLDivElement;
@@ -59,6 +60,7 @@ export class HUD {
     this.waypointDist = el("div", "wp-dist", this.waypoint);
 
     this.toasts = el("div", "hud-toasts", this.root);
+    this.nameplate = el("div", "nameplate hidden", this.root);
     this.fps = el("div", "fps-counter hidden", this.root);
   }
 
@@ -131,6 +133,16 @@ export class HUD {
       this.waypoint.style.setProperty("--wp-rot", `${wp.angle}deg`);
     }
     setText(this.waypointDist, `${Math.round(wp.distance)} m`);
+  }
+
+  /** Floating name tag above an important character (screen px), null hides it. */
+  setNameplate(p: { name: string; role: string; x: number; y: number; opacity: number } | null): void {
+    setVisible(this.nameplate, !!p);
+    if (!p) return;
+    const html = `<span class="np-name">${escapeHtml(p.name)}</span><span class="np-role">${escapeHtml(p.role)}</span>`;
+    if (this.nameplate.innerHTML !== html) this.nameplate.innerHTML = html;
+    this.nameplate.style.transform = `translate(${Math.round(p.x)}px, ${Math.round(p.y)}px) translate(-50%, -100%)`;
+    this.nameplate.style.opacity = p.opacity.toFixed(2);
   }
 
   toast(text: string, kind: "info" | "success" = "info", ms = 3800): void {

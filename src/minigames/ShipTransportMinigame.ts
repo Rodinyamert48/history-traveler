@@ -300,6 +300,8 @@ export class ShipTransportMinigame extends BaseMinigame {
         },
       ],
     );
+    // The modal needs a visible cursor; it is open, so releasing the lock won't pause the game.
+    this.d.input.exitPointerLock();
   }
 
   /** Positions ship, crew, ropes and the player from the current path distance. */
