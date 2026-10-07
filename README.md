@@ -140,9 +140,19 @@ public/data/   turkey-geo.json, cities.json, scenarios/istanbul_1453.json
 
 ## GitHub Pages'te yayınlama
 `vite.config.ts` içinde `base: "./"` — tüm yollar göreli, depo adı ne olursa olsun çalışır.
-`.github/workflows/deploy.yml` `main` dalına her push'ta derleyip Pages'e yükler:
-1. Repo → **Settings → Pages → Source: GitHub Actions**
-2. Değişiklikleri `main`'e birleştir (veya workflow'u elle çalıştır).
+
+**A) Daldan yayın (Settings → Pages → Source: Deploy from a branch)** — ek ayar gerekmez.
+Derlenmiş oyun depoda `docs/` klasöründe durur. Kök `index.html` kaynak dosyadır; Pages onu
+olduğu gibi sunduğunda TypeScript girişi yüklenemez ve sayfa kendiliğinden `docs/`'a yönlenir.
+Klasör olarak `/docs` seçilirse oyun doğrudan açılır. Oyunda değişiklik yaptıktan sonra:
+```bash
+npm run build:pages   # dist/ → docs/
+git add docs && git commit -m "Update Pages build" && git push
+```
+
+**B) GitHub Actions ile yayın (Source: GitHub Actions)** — `.github/workflows/deploy.yml`
+`main` dalına her push'ta derleyip yükler (veya workflow'u Actions sekmesinden elle çalıştır).
+Bu yolda `docs/` kullanılmaz.
 
 ## Neler gerçek, neler yer tutucu?
 **Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, 8 görevin tamamı, 3 mini oyun, NPC davranışları ve yol bulma,

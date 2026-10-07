@@ -18,6 +18,11 @@
     <canvas id="game-canvas" tabindex="0" aria-label="Oyun alanı"></canvas>
     <div id="ui-root"></div>
     <noscript>Bu oyun JavaScript gerektirir.</noscript>
-    <script type="module" src="/src/main.ts"></script>
+    <!--
+      GitHub Pages "Deploy from a branch" serves this source file as-is: the TypeScript entry
+      below then fails to load, so fall back to the prebuilt game in docs/ (npm run build:pages).
+      The production build replaces this tag, so the fallback never triggers there.
+    -->
+    <script type="module" src="/src/main.ts" onerror="location.replace('docs/')"></script>
   </body>
 </html>

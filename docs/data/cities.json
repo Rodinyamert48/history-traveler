@@ -1,0 +1,21 @@
+{
+  "$comment": "Şehir/senaryo kayıtları. 'id' alanı turkey-geo.json içindeki il kimliğiyle eşleşir. Yeni bir şehir eklemek için kayıt ekleyip 'active': true ve bir 'scenario' kimliği verin (src/scenarios/registry.ts).",
+  "cities": [
+    { "id": "istanbul", "name": "İstanbul", "year": 1453, "title": "İstanbul'un Fethi", "active": true, "scenario": "istanbul_1453" },
+    { "id": "ankara", "name": "Ankara", "year": 1920, "title": "Büyük Millet Meclisi'nin Açılışı", "active": false },
+    { "id": "izmir", "name": "İzmir", "year": 1922, "title": "Kurtuluş", "active": false },
+    { "id": "bursa", "name": "Bursa", "year": 1326, "title": "Bursa'nın Fethi", "active": false },
+    { "id": "edirne", "name": "Edirne", "year": 1363, "title": "Edirne'nin Fethi", "active": false },
+    { "id": "canakkale", "name": "Çanakkale", "year": 1915, "title": "Çanakkale Savaşları", "active": false },
+    { "id": "samsun", "name": "Samsun", "year": 1919, "title": "Milli Mücadele'nin Başlangıcı", "active": false },
+    { "id": "erzurum", "name": "Erzurum", "year": 1919, "title": "Erzurum Kongresi", "active": false },
+    { "id": "sivas", "name": "Sivas", "year": 1919, "title": "Sivas Kongresi", "active": false },
+    { "id": "konya", "name": "Konya", "year": 1220, "title": "Selçuklu Başkenti", "active": false },
+    { "id": "mus", "name": "Muş", "year": 1071, "title": "Malazgirt Meydan Muharebesi", "active": false },
+    { "id": "trabzon", "name": "Trabzon", "year": 1461, "title": "Trabzon'un Fethi", "active": false },
+    { "id": "afyonkarahisar", "name": "Afyonkarahisar", "year": 1922, "title": "Büyük Taarruz", "active": false },
+    { "id": "sakarya", "name": "Sakarya", "year": 1921, "title": "Sakarya Meydan Muharebesi", "active": false },
+    { "id": "kahramanmaras", "name": "Kahramanmaraş", "year": 1920, "title": "Maraş Savunması", "active": false },
+    { "id": "gaziantep", "name": "Gaziantep", "year": 1921, "title": "Antep Savunması", "active": false }
+  ]
+}

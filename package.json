@@ -8,7 +8,8 @@
     "build": "node scripts/validate-data.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "validate": "node scripts/validate-data.mjs"
+    "validate": "node scripts/validate-data.mjs",
+    "build:pages": "npm run build && node scripts/copy-pages.mjs"
   },
   "dependencies": {
     "@babylonjs/core": "^9.29.0",
