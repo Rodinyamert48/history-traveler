@@ -147,7 +147,7 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
     // Landing at the top: a solid bastion joining the stairs to the west rampart walk.
     const lx0 = W.x0;
     const lx1 = x1 + 0.6;
-    const lz0 = W.z0 + 1.6;
+    const lz0 = W.z0;
     const lz1 = W.z0 + 4.2;
     st.box((lx0 + lx1) / 2, GY + walkH / 2, (lz0 + lz1) / 2, lx1 - lx0, walkH, lz1 - lz0, { uvScale: 3, color: shade(wallCol, 0.93) });
     collision.addBox((lx0 + lx1) / 2, (lz0 + lz1) / 2, lx1 - lx0, lz1 - lz0, 0, -100, GY + walkH, { walkable: true, tag: "stone" });

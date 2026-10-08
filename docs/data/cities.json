@@ -91,7 +91,9 @@
       "name": "Bursa",
       "year": 1326,
       "title": "Bursa'nın Fethi",
-      "active": false,
+      "active": true,
+      "scenario": "bursa_1326",
+      "doneLabel": "FETHEDİLDİ · 1326",
       "date": "6 Nisan 1326",
       "summary": "Osman Gazi'nin kurduğu Osmanlı Beyliği, Bizans'ın Bithynia'daki en önemli şehri Bursa'yı yıllarca kuşattı. Şehrin çevresine Balabancık ve Aktimur hisarları yapıldı, yollar tutuldu ve şehrin erzakı kesildi. Kuşatmayı Orhan Bey yönetti; 1326'da şehrin komutanı Bursa'yı teslim etti. Bursa, Osmanlı'nın ilk büyük başkenti oldu.",
       "chapter": [
