@@ -9,6 +9,7 @@ export const SCENARIO_LOADERS: Record<string, () => Promise<ScenarioModule>> = {
   istanbul_1453: () => import("./istanbul1453/Istanbul1453Scenario").then((m) => m.default),
   mugla_keskek: () => import("./mugla/MuglaKeskekScenario").then((m) => m.default),
   ankara_1920: () => import("./ankara/AnkaraTbmmScenario").then((m) => m.default),
+  kayseri_pazar: () => import("./kayseri/KayseriPazarScenario").then((m) => m.default),
 };
 
 export async function loadScenario(id: string): Promise<ScenarioModule> {

@@ -2180,3 +2180,433 @@ input[type="range"]::-moz-range-thumb {
     max-height: 60px;
   }
 }
+
+/* ---------------------------------------------------------------- Kayseri: mantı */
+.manti-card {
+  position: absolute;
+  left: 50%;
+  top: 9%;
+  transform: translateX(-50%);
+  width: min(520px, 90vw);
+  padding: 12px 18px 14px;
+  background: linear-gradient(180deg, #c99a64, #b0824e);
+  color: #2a1a0e;
+  border-radius: 6px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), inset 0 0 0 2px rgba(255, 240, 210, 0.25);
+  text-align: center;
+  font-family: var(--font-display);
+}
+
+.manti-card .mc-title {
+  color: #5a1a12;
+}
+
+.manti-board {
+  position: relative;
+  margin: 10px auto 4px;
+  height: 92px;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 40% 40%, #f7ecd2, #eadbb6 70%, #dcc89c);
+  box-shadow: inset 0 0 12px rgba(120, 90, 40, 0.35);
+}
+
+.mt-guide {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 0;
+  border-left: 2px dashed rgba(120, 90, 50, 0.35);
+}
+
+.mt-guide.next {
+  border-left: 2px solid #c8402e;
+  box-shadow: 0 0 10px rgba(200, 64, 46, 0.8);
+}
+
+.mt-guide.cut {
+  border-left: 2px solid #8a6a3a;
+}
+
+.mt-knife {
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  width: 4px;
+  margin-left: -2px;
+  background: linear-gradient(180deg, #e8eef2, #8a949c);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+}
+
+.mt-knife::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: -5px;
+  width: 14px;
+  height: 16px;
+  border-radius: 3px;
+  background: #5a3a22;
+}
+
+.manti-fold {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 4px;
+}
+
+.mf-square {
+  width: 54px;
+  height: 54px;
+  background: #f4e8cc;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 2px rgba(160, 120, 70, 0.35);
+  position: relative;
+}
+
+.mf-square::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  background: #8a3a24;
+}
+
+.mf-seq {
+  display: flex;
+  gap: 10px;
+}
+
+.mf-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  font-size: 26px;
+  font-weight: 900;
+  color: rgba(42, 26, 14, 0.4);
+  background: rgba(255, 245, 225, 0.35);
+}
+
+.mf-key.cur {
+  color: #fff8e8;
+  background: #8e1a20;
+  transform: scale(1.12);
+}
+
+.mf-key.ok {
+  color: #2e6a2a;
+  background: rgba(220, 240, 200, 0.6);
+}
+
+.mf-timer {
+  width: 70%;
+  height: 6px;
+  background: rgba(42, 26, 14, 0.25);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mf-timer-fill {
+  height: 100%;
+  width: 100%;
+  background: #5a1a12;
+}
+
+.manti-spoon {
+  margin-top: 6px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+/* ---------------------------------------------------------------- Kayseri: sac */
+.sac-gauges {
+  position: absolute;
+  left: 50%;
+  top: 9%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  width: min(640px, 94vw);
+}
+
+.sac-gauge {
+  flex: 1;
+  padding: 8px 10px 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  text-align: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.sac-gauge.sel {
+  border-color: var(--gold, #d6a540);
+  transform: translateY(4px) scale(1.04);
+  box-shadow: 0 0 18px rgba(214, 165, 64, 0.45);
+}
+
+.sac-gauge.hot .sg-track {
+  animation: sg-hot 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes sg-hot {
+  to {
+    box-shadow: 0 0 14px rgba(230, 80, 40, 0.9);
+  }
+}
+
+.sg-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  font-weight: 700;
+}
+
+.sg-track {
+  position: relative;
+  height: 14px;
+  margin: 8px 0 6px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #efe2c4 0%, #d8a050 62%, #6a3a1a 85%, #2a1810 100%);
+}
+
+.sg-good,
+.sg-perfect {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  border-radius: 3px;
+}
+
+.sg-good {
+  border: 2px solid rgba(140, 200, 90, 0.9);
+}
+
+.sg-perfect {
+  background: rgba(255, 220, 110, 0.35);
+}
+
+.sg-needle {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 4px;
+  margin-left: -2px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+}
+
+.sg-side {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.sac-stack {
+  position: absolute;
+  right: 24px;
+  top: calc(9% + 96px);
+  padding: 8px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+}
+
+/* ---------------------------------------------------------------- Kayseri: pazarlık */
+.bazaar-card {
+  position: absolute;
+  right: 24px;
+  top: 76px;
+  width: min(360px, 46vw);
+  padding: 14px 16px;
+  background: #efe4c8;
+  color: #2a1a0e;
+  border-radius: 4px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  font-family: Georgia, "Times New Roman", serif;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.bazaar-card.show {
+  opacity: 1;
+  transform: none;
+}
+
+.bc-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #5a1a12;
+}
+
+.bc-name span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7a5a3a;
+}
+
+.bc-order {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.bc-speech {
+  margin-top: 10px;
+  padding: 8px 10px;
+  min-height: 44px;
+  background: #fff8ea;
+  border-radius: 10px;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.bc-mood {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.bc-mood-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(42, 26, 14, 0.15);
+  overflow: hidden;
+}
+
+.bc-mood-fill {
+  height: 100%;
+  width: 100%;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.bc-offer {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.bazaar-price {
+  position: absolute;
+  left: 50%;
+  bottom: calc(214px + var(--safe-bottom));
+  transform: translateX(-50%);
+  text-align: center;
+  font-family: var(--font-display);
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.8);
+}
+
+.bp-label {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  opacity: 0.85;
+}
+
+.bp-value {
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 900;
+  color: #ffd36a;
+}
+
+.bp-value.greedy {
+  color: #ff7a5a;
+}
+
+.bp-value.cheap {
+  color: #b8c8d8;
+}
+
+.bp-keys {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.bazaar-purse {
+  position: absolute;
+  left: 50%;
+  top: 16px;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.bazaar-summary {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  transform: translateX(-50%);
+  width: min(520px, 90vw);
+  padding: 18px 22px;
+  background: #efe4c8;
+  color: #2a1a0e;
+  border-radius: 4px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.bs-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: #5a1a12;
+  margin-bottom: 8px;
+}
+
+.bs-row {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+.bs-note {
+  margin-top: 10px;
+  font-style: italic;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .bazaar-card {
+    left: 8px;
+    right: 8px;
+    top: 8px;
+    width: auto;
+  }
+
+  .bazaar-purse {
+    display: none;
+  }
+
+  .bazaar-price {
+    bottom: calc(360px + var(--safe-bottom));
+  }
+
+  .sac-gauges {
+    gap: 6px;
+  }
+
+  .sac-stack {
+    right: 8px;
+  }
+}

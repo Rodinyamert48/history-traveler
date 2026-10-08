@@ -193,6 +193,40 @@ export const GAME_CONFIG = {
       /** Wrong keystrokes forgiven per word before the ink blots. */
       blotEvery: 4,
     },
+    // ---- Kayseri: bazaar chapter
+    manti: {
+      /** Knife sweeps per second across the dough sheet. */
+      knifeSpeed: 0.42,
+      /** Cut lines (strips) before folding starts. */
+      cuts: 6,
+      /** Allowed distance from the guide line (fraction of the sheet width). */
+      cutTolerance: 0.035,
+      /** Folding rounds (four mantı each) and the time per round. */
+      rounds: 10,
+      roundTime: [3.4, 2.0] as const,
+    },
+    sac: {
+      /** Good yufkas needed for the yağlama. */
+      needed: 8,
+      /** Doneness per second for each of the three griddles (1 = golden). */
+      rates: [0.3, 0.38, 0.34] as const,
+      /** Doneness windows: perfect inside ±perfect of 1, good inside ±good. */
+      perfect: 0.15,
+      good: 0.3,
+      burn: 1.6,
+      maxBurnt: 6,
+    },
+    pazarlik: {
+      /** Akçe the day's sales must reach. */
+      goal: 118,
+      /** Patience lost per offer, and extra per akçe asked above the buyer's limit (relative to the narh). */
+      patienceBase: 0.12,
+      patienceOver: 0.9,
+      /** Asking more than this × narh is called robbery. */
+      greedy: 1.6,
+      /** A taste (ikram) raises the buyer's limit by this share of the narh. */
+      tasteBonus: 0.15,
+    },
     stir: {
       /** Ideal stirring speed band in revolutions per second. */
       minRps: 0.35,

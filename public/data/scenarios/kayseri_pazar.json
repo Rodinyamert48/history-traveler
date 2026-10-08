@@ -1,0 +1,418 @@
+{
+  "$comment": "Kayseri · 1390 — Ticaretin ve Pazarlığın Keşfi. Kurgusal bir hikâye: oyuncu, çarşıda yağlama ve mantı satan Ahi Bekir Usta'nın çırağıdır. Kadı Burhaneddin Ahmed tarihî bir kişidir; ona söyletilen sözler kurgudur. Görev tipleri: talk, reach, interact, deliver, minigame (manti | sac | pazarlik), hold.",
+  "scenario": "kayseri_pazar",
+  "firstMission": "kayseri_m01",
+  "missions": [
+    {
+      "id": "kayseri_m01",
+      "title": "Çarşı Sabahı",
+      "description": "Ahi Bekir Usta'nın yağlamacı dükkânında çıraksın. Bugün dükkânı sen açacaksın; ustan seni dükkânda bekliyor.",
+      "type": "story",
+      "date": "KAYSERİ · 1390 · BAHAR",
+      "intro": "d_ka_intro",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "usta",
+          "text": "Dükkândaki Ahi Bekir Usta ile konuş",
+          "dialogue": "d_ka01"
+        }
+      ],
+      "reward": {
+        "text": "Dükkânın anahtarı artık sende."
+      },
+      "nextMission": "kayseri_m02"
+    },
+    {
+      "id": "kayseri_m02",
+      "title": "Un ve Kıyma",
+      "description": "Hanın ambarından iki çuval un getir, sonra kasap Hasan'dan kıymayı al.",
+      "type": "deliver",
+      "objectives": [
+        {
+          "type": "deliver",
+          "pickup": "ambar",
+          "drop": "un_yeri",
+          "count": 2,
+          "item": "flour",
+          "text": "Han ambarından dükkâna un taşı",
+          "pickupPrompt": "Un çuvalını omuzla",
+          "dropPrompt": "Çuvalı dükkâna bırak"
+        },
+        {
+          "type": "deliver",
+          "pickup": "kasap",
+          "drop": "tezgah",
+          "count": 1,
+          "item": "meat",
+          "text": "Kasaptan kıymayı al, tezgâha koy",
+          "pickupPrompt": "Kıymayı al",
+          "dropPrompt": "Kıymayı tezgâha koy"
+        }
+      ],
+      "outro": "d_ka02_end",
+      "reward": {
+        "text": "Malzeme tamam."
+      },
+      "nextMission": "kayseri_m03",
+      "onComplete": [
+        "stock:ready"
+      ]
+    },
+    {
+      "id": "kayseri_m03",
+      "title": "Kırk Mantı Bir Kaşığa",
+      "description": "Kayseri mantısı küçük olur: kırk tanesi bir kaşığa sığmalı. Hamuru kes, köşeleri kapat.",
+      "type": "minigame",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "manti",
+          "anchor": "hamur_tahtasi",
+          "text": "Hamur tahtasında mantı yap",
+          "prompt": "Hamur tahtasına geç"
+        }
+      ],
+      "outro": "d_ka03_end",
+      "reward": {
+        "text": "Kırk mantı bir kaşığa sığdı!"
+      },
+      "nextMission": "kayseri_m04",
+      "onComplete": [
+        "manti:ready"
+      ]
+    },
+    {
+      "id": "kayseri_m04",
+      "title": "Sac Başında",
+      "description": "Yağlamanın yufkalarını üç sacda pişir. Altı kızarınca çevir, öbür yüzü de kızarınca al.",
+      "type": "minigame",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "sac",
+          "anchor": "sac",
+          "text": "Saclarda yağlama yufkası pişir",
+          "prompt": "Sacın başına geç"
+        }
+      ],
+      "outro": "d_ka04_end",
+      "reward": {
+        "text": "Kayseri yağlaması hazır."
+      },
+      "nextMission": "kayseri_m05",
+      "onComplete": [
+        "yaglama:ready"
+      ]
+    },
+    {
+      "id": "kayseri_m05",
+      "title": "Muhtesibin Terazisi",
+      "description": "Muhtesib Nureddin Efendi bugün terazileri denetliyor. Kapana git, narhı öğren ve dükkânın terazisini denet.",
+      "type": "story",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "muhtesib",
+          "text": "Kapandaki Muhtesib Nureddin Efendi ile konuş",
+          "dialogue": "d_ka05"
+        },
+        {
+          "type": "deliver",
+          "pickup": "terazi",
+          "drop": "kapan",
+          "count": 1,
+          "item": "scale",
+          "text": "Dükkânın terazisini kapana götür",
+          "pickupPrompt": "Teraziyi al",
+          "dropPrompt": "Teraziyi muhtesibe ver"
+        }
+      ],
+      "outro": "d_ka05_end",
+      "reward": {
+        "text": "Terazin mühürlendi: doğru tartı, helal kazanç."
+      },
+      "nextMission": "kayseri_m06",
+      "onComplete": [
+        "terazi:checked"
+      ]
+    },
+    {
+      "id": "kayseri_m06",
+      "title": "Pazarlığın Keşfi",
+      "description": "Müşteriler tezgâhın önünde sıraya girdi. Fiyatını söyle, pazarlık et; alan da razı olsun, satan da.",
+      "type": "minigame",
+      "date": "ÖĞLEYE DOĞRU",
+      "intro": "d_ka06",
+      "onStart": [
+        "customers:queue"
+      ],
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "pazarlik",
+          "anchor": "satis",
+          "text": "Tezgâhın başında müşterilerle pazarlık et",
+          "prompt": "Tezgâhın başına geç"
+        }
+      ],
+      "outro": "d_ka06_end",
+      "reward": {
+        "text": "Pazarlığı keşfettin!"
+      },
+      "nextMission": "kayseri_m07",
+      "onComplete": [
+        "customers:done"
+      ]
+    },
+    {
+      "id": "kayseri_m07",
+      "title": "Kadı Efendi Çarşıda",
+      "description": "Kadı Burhaneddin Ahmed hanın divanına geldi. En güzel yağlama tepsisini ona götür.",
+      "type": "deliver",
+      "onStart": [
+        "kadi:arrive"
+      ],
+      "intro": "d_ka07",
+      "objectives": [
+        {
+          "type": "deliver",
+          "pickup": "tezgah",
+          "drop": "kadi_sofra",
+          "count": 1,
+          "item": "tray",
+          "text": "Yağlama tepsisini Kadı Efendi'nin divanına götür",
+          "pickupPrompt": "Yağlama tepsisini al",
+          "dropPrompt": "Kadı Efendi'ye ikram et"
+        }
+      ],
+      "outro": "d_ka07_end",
+      "reward": {
+        "text": "Kadı Efendi yağlamanı beğendi."
+      },
+      "nextMission": "kayseri_m08",
+      "onComplete": [
+        "kadi:served"
+      ]
+    },
+    {
+      "id": "kayseri_m08",
+      "title": "Alan Razı, Satan Razı",
+      "description": "Cenevizli Lorenzo ile kumaşçı divanın önünde tartışıyor. Kadı Efendi tanıklığını istiyor.",
+      "type": "story",
+      "onStart": [
+        "dispute:start"
+      ],
+      "intro": "d_ka08_intro",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "kadi",
+          "text": "Kadı Burhaneddin'e tanıklık et",
+          "dialogue": "d_ka08",
+          "prompt": "Tanıklık et — Kadı Burhaneddin Ahmed"
+        }
+      ],
+      "reward": {
+        "text": "Alan razı, satan razı."
+      },
+      "nextMission": null
+    }
+  ],
+  "dialogues": {
+    "d_ka_intro": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "Kayseri, 1390. Şehir, Kadı Burhaneddin Ahmed'in yönetiminde. Kendisi de bu şehrin çocuğu: önce Kayseri kadısıydı, sonra hükümdar oldu; boş vakitlerinde şiir yazar."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Kayseri, Anadolu'nun kavşağındadır. Tebriz'den, Sivas'tan, Konya'dan, Halep'ten gelen kervanlar burada konaklar. Selçuklular zamanında şehrin yakınındaki Yabanlu Pazarı'na dünyanın dört bir yanından tüccar gelirdi."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Sen, çarşıda yağlama ve mantı satan Ahi Bekir Usta'nın çırağısın. Bugün dükkânı ilk kez sen açacaksın."
+      }
+    ],
+    "d_ka01": [
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Hayırlı sabahlar evlat! Erken geldin, aferin. Çarşı dolmadan ocak yanmalı."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Önce malzeme: hanın ambarından iki çuval un getir. Sonra kasap Hasan'dan kıymamızı al, tezgâha koy."
+      },
+      {
+        "speaker": "Sen",
+        "text": "Hemen, ustam."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Unutma: Ahi esnafı malını iyi yapar, doğru tartar, insaflı satar. Bu dükkânın ekmeği buna bağlı."
+      }
+    ],
+    "d_ka02_end": [
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Un da tamam, kıyma da. Hasan iyi et vermiş, kokusundan belli."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Şimdi mantı. Kayseri'de derler ki: kırk mantı bir kaşığa sığmalı! Hamuru ben açtım; kesmek ve kapamak sende."
+      }
+    ],
+    "d_ka03_end": [
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Maşallah! Tam kırk tane, kaşığa sığıyor. Üstüne sarımsaklı yoğurt, kızgın tereyağı ve pul biber."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Sıra yağlamada. Yufkaları saca at; altı kızarınca çevir, öbür yüzü de kızarınca al. Aralarına kıymalı harcı ben sürerim."
+      }
+    ],
+    "d_ka04_end": [
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "İşte Kayseri yağlaması! Kat kat yufka, arasında kıyma, üstünde yoğurt."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Satıştan önce bir iş daha var: Muhtesib Nureddin Efendi bugün terazileri denetliyor. Karşıdaki kapana git, önce onunla konuş."
+      }
+    ],
+    "d_ka05": [
+      {
+        "speaker": "Muhtesib Nureddin Efendi",
+        "text": "Selam sana, Bekir Usta'nın çırağı. Ben bu çarşının muhtesibiyim: ölçüye, tartıya, fiyata ben bakarım."
+      },
+      {
+        "speaker": "Muhtesib Nureddin Efendi",
+        "text": "Her malın bir narhı vardır; yani esnafın ve kadılığın üzerinde anlaştığı doğru fiyat. Bir tepsi yağlamanın narhı sekiz akçe, bir sahan mantınınki üç akçe."
+      },
+      {
+        "speaker": "Muhtesib Nureddin Efendi",
+        "text": "Şimdi dükkânındaki teraziyi getir; kapanın mühürlü ağırlıklarıyla bir deneyelim."
+      }
+    ],
+    "d_ka05_end": [
+      {
+        "speaker": "Muhtesib Nureddin Efendi",
+        "text": "Terazin doğru, dirhemi dirhemine. Mühürledim. Eğri terazi kullananı Kadı Efendi'nin huzuruna çıkarırım, bilesin."
+      },
+      {
+        "speaker": "Muhtesib Nureddin Efendi",
+        "text": "Haydi, dükkânına dön. Pazarlık serbesttir ama hile yasaktır."
+      }
+    ],
+    "d_ka06": [
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Bak evlat, müşteriler sıraya girmiş. Bugün satışı sen yapacaksın; ben yanında olacağım."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Pazarlık bir sanattır. Müşteri az verir, sen biraz fazla istersin; ortada buluşursunuz. Ama ne malını yok pahasına ver, ne de müşterinin gözünü korkut."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Narhı aklında tut. Müşterinin sözüne ve sabrına dikkat et; gerekirse bir lokma ikram et. Unutma: alan da razı olmalı, satan da."
+      }
+    ],
+    "d_ka06_end": [
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Gün yarılanmadan kese doldu! Pazarlığı keşfettin evlat; artık sen de bu çarşının tüccarısın."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Dinle… davul sesi! Kadı Efendi hana geliyor."
+      }
+    ],
+    "d_ka07": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "Kadı Burhaneddin Ahmed, muhafızları ve sancaklarıyla hanın avlusuna girdi; eyvandaki divana oturdu. Esnaf ve kervancılar saygıyla toplandı."
+      },
+      {
+        "speaker": "Ahi Bekir Usta",
+        "text": "Aşçıbaşının siparişi hazır. En güzel tepsiyi de sen götür; Kadı Efendi'ye bizden ikram olsun."
+      }
+    ],
+    "d_ka07_end": [
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Bu yağlamayı kim yaptı?"
+      },
+      {
+        "speaker": "Sen",
+        "text": "Ahi Bekir Usta'nın çırağıyım, efendim. Yufkaları ben pişirdim."
+      },
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Eline sağlık. Bir şehrin bereketi, esnafının dürüstlüğündendir."
+      }
+    ],
+    "d_ka08_intro": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "Tam o sırada Cenevizli Lorenzo ile kumaşçı, bağıra çağıra divanın önüne geldiler."
+      },
+      {
+        "speaker": "Lorenzo",
+        "text": "Kadı Efendi! Bu adam bana kumaşı pahalıya sattı. Paramın bir kısmını geri istiyorum!"
+      },
+      {
+        "speaker": "Kumaşçı",
+        "text": "Efendim, pazarlık ettik; kendi rızasıyla aldı!"
+      },
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Yağlamacı çırağı, yaklaş. Bu sabah sen de bu tüccarla pazarlık ettin."
+      }
+    ],
+    "d_ka08": [
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Söyle bakalım evlat, Lorenzo nasıl pazarlık eder?"
+      },
+      {
+        "speaker": "Sen",
+        "text": "Sıkı pazarlık eder efendim, ama sonunda razı olup aldı. Kimse onu zorlamadı."
+      },
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Muhtesib Efendi, kumaşçının arşını ve terazisi doğru mu?"
+      },
+      {
+        "speaker": "Muhtesib Nureddin Efendi",
+        "text": "Mühürlü ve doğru, efendim. Kumaş da narhın içinde satılmış."
+      },
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Lorenzo, pazarlık ederken razı mıydın?"
+      },
+      {
+        "speaker": "Lorenzo",
+        "text": "Razıydım… ama sonradan pişman oldum."
+      },
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Alan razı, satan razı; kadıya ne düşer? Pişmanlık pazarlığı bozmaz. Ama terazi eğri olsaydı, hüküm başka olurdu."
+      },
+      {
+        "speaker": "Kadı Burhaneddin Ahmed",
+        "text": "Kumaşçı, sen de bir gönül al; misafirimiz bu şehirden kırgın gitmesin."
+      },
+      {
+        "speaker": "Kumaşçı",
+        "text": "Başüstüne efendim! Lorenzo, şu ipek mendil de benden hediye."
+      },
+      {
+        "speaker": "Lorenzo",
+        "text": "Grazie! Kayseri'de hem ticaret var hem adalet."
+      }
+    ]
+  }
+}

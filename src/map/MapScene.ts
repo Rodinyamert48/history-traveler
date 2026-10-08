@@ -402,7 +402,7 @@ export class MapScene implements GameScene {
         maxZ = Math.max(maxZ, z);
       }
     const forested = provinceId === "mugla";
-    const steppe = provinceId === "ankara";
+    const steppe = provinceId === "ankara" || provinceId === "kayseri";
     const noise = new Noise2D(provinceId === "istanbul" ? 1453 : 48);
     // Large provinces get a coarser grid so the relief stays a few thousand triangles.
     const step = Math.max(0.28, Math.sqrt(((maxX - minX) * (maxZ - minZ)) / 9000));
@@ -445,6 +445,16 @@ export class MapScene implements GameScene {
           b.box(x, hAt(x, z) + 0.12, z, 0.05, 0.24, 0.05, { color: wallCol });
         }
       }
+    } else if (provinceId === "kayseri") {
+      // Snow-capped Erciyes south of the city and the walled market (han) in the centre.
+      const [ex, ez] = project(35.45, 38.53);
+      const eh = hAt(ex, ez);
+      b.cylinder(ex, eh, ez, 1.1, 0.35, 0.9, { segments: 9, color: hexColor("#7a6e64") });
+      b.cylinder(ex, eh + 0.9, ez, 0.35, 0.0, 0.45, { segments: 9, color: hexColor("#f2f4f6") });
+      const [cx, cz] = project(35.49, 38.72);
+      const ch = hAt(cx, cz);
+      b.box(cx, ch + 0.1, cz, 0.42, 0.2, 0.42, { color: hexColor("#6e655c") });
+      b.box(cx, ch + 0.14, cz, 0.26, 0.12, 0.26, { color: hexColor("#948a7e") });
     } else if (steppe) {
       // Miniature Ankara Castle on its hill and the Assembly building at its foot.
       const geoP = this.geo.provinces.find((p) => p.id === "ankara")!;

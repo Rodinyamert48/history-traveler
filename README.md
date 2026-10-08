@@ -7,6 +7,7 @@ Oynanabilir bölümler:
 - **İstanbul — 1453, İstanbul'un Fethi** (3 mini oyun)
 - **Muğla — Menteşe, Keşkeğin Keşfi** (4 mini oyun): eski Muğla evleri, kızılçam ormanı ve bir köy düğünü
 - **Ankara — 23 Nisan 1920, TBMM'nin Açılışı** (3 mini oyun): tamamen I. TBMM binasının içinde geçer
+- **Kayseri — 1390, Ticaretin ve Pazarlığın Keşfi** (3 mini oyun): duvarlarla çevrili çarşı ve han; yağlama, mantı, pazarlık ve Kadı Burhaneddin
 
 - **Motor:** Babylon.js 9 (WebGPU öncelikli, otomatik WebGL2/WebGL1 yedeği)
 - **Dil / derleme:** TypeScript + Vite (GitHub Pages uyumlu, göreli yollar)
@@ -137,6 +138,43 @@ adları kurgusaldır. "Egemenlik kayıtsız şartsız milletindir" sözü Atatü
 Hak sahibi olduğun bir kaydı `public/assets/audio/dag-basini-duman-almis.mp3` olarak koyup `src/audio/AudioManager.ts` içindeki
 `MUSIC_SAMPLE_MANIFEST.ankara` değerini bu yola ayarlarsan bölüm boyunca o kayıt çalar.
 
+### Kayseri · 1390 — Ticaretin ve Pazarlığın Keşfi (`public/data/scenarios/kayseri_pazar.json`)
+Kapalı bir dünya: her yer duvarla çevrilidir. Bölüm, tonozlu ve tepe pencereli bir **arasta** (iki yanında bakırcı, kumaşçı,
+baharatçı, kasap, pastırmacı, kuyumcu, kapan, çömlekçi, şerbetçi… dükkânları) ile ona açılan iki katlı revaklı bir **han avlusunda**
+(şadırvan, develer, kervan denkleri, eyvan ve Kadı'nın divanı) geçer. Kayseri'nin koyu volkanik taşı ve kırmızımsı tüf süslemeleri
+kullanılır; avludan, eyvanın üstünde karlı **Erciyes** görünür. Oyuncu, çarşıda **yağlama ve mantı** satan Ahi Bekir Usta'nın çırağıdır.
+
+| # | Görev | Tür | Mekanik |
+|---|---|---|---|
+| 1 | Çarşı Sabahı | story | Ahi Bekir Usta ile konuş |
+| 2 | Un ve Kıyma | deliver | Han ambarından 2 çuval un, kasaptan kıyma taşı |
+| 3 | Kırk Mantı Bir Kaşığa | minigame | **Mantı mini oyunu** — hamuru düz kes, mantıların köşelerini kapat |
+| 4 | Sac Başında | minigame | **Sac mini oyunu** — üç sacda yağlama yufkası pişir |
+| 5 | Muhtesibin Terazisi | story | Muhtesibden narhı öğren, teraziyi kapanda denet |
+| 6 | Pazarlığın Keşfi | minigame | **Pazarlık mini oyunu** — beş müşteriyle pazarlık et, keseyi doldur |
+| 7 | Kadı Efendi Çarşıda | deliver | Kadı Burhaneddin'in divanına yağlama tepsisi götür |
+| 8 | Alan Razı, Satan Razı | story | Divanın önündeki anlaşmazlıkta tanıklık et → final |
+
+**Mini oyunlar:**
+1. **Kırk mantı bir kaşığa** — Bıçak hamurun üstünde gidip gelir; parlayan çizgiye gelince `SPACE` (mobilde **KES**). Sonra her mantı
+   için gösterilen sırayla dört köşeyi kapat (`ok tuşları` / `WASD`, mobilde ok düğmeleri). Süre her turda kısalır; kırk mantıda biter.
+2. **Sac başında** — Üç sac aynı anda, farklı hızda pişirir. `A/D` veya `←/→` ile sacı seç, alt yüz altın rengine gelince `SPACE` ile
+   çevir, ikinci yüz de kızarınca al. Erken alınan çiğ kalır, geç kalan yanar; sekiz iyi yufka bir tepsi yağlama eder.
+3. **Pazarlığın keşfi** — Her müşterinin isteği, **narhı** (muhtesibin belirlediği doğru fiyat), teklifi ve **sabrı** görünür; ödemeye
+   razı olacağı en yüksek fiyat gizlidir, sözlerinden sezilir. `←/→` ±1, `↑/↓` ±5 akçe; `SPACE` fiyatını söyle, `Q` teklifini kabul et,
+   `E` bir lokma ikram et (bir kez; gönlünü yumuşatır). Fahiş fiyat itibarı sarsar ve müşteriyi kaçırır; malı yok pahasına vermek de
+   kâr değildir. Narha yakın, müşteriyi memnun bırakan satış **"Alan razı, satan razı!"** sayılır. Kese hedefe ulaşmalıdır.
+
+**Final:** Cenevizli tüccar ile kumaşçı arasındaki anlaşmazlığı Kadı Burhaneddin, tanıklığın ve muhtesibin raporuyla çözer:
+*"Alan razı, satan razı; kadıya ne düşer?"* Kamera avludan Erciyes'e yükselir, *"Alan razı, satan razı."* (atasözü) belirir ve
+ekran kararırken Kayseri'nin ticaret ve Ahilik geleneğini anlatan kapanış yazısı gelir.
+
+*Tarihî notlar:* Kadı Burhaneddin Ahmed (1345–1398) Kayserili bir âlimdi; Kayseri kadılığından hükümdarlığa yükseldi, Sivas–Kayseri
+merkezli devletini 1381–1398 arasında yönetti ve şiirleri bir divanda toplandı. Muhtesib (çarşı ve narh denetçisi), narh, kapan
+(umumi tartı) ve Ahilik esnaf teşkilatı dönemin çarşı hayatının gerçek kurumlarıdır; Selçuklu döneminde Kayseri yakınlarında uluslararası
+**Yabanlu Pazarı** kurulurdu. Hikâye ise kurgudur: Ahi Bekir Usta, muhtesib, müşteriler ve anlaşmazlık hayalîdir; Kadı Burhaneddin'e
+söyletilen sözler tarihî alıntı değildir. Fiyatlar (akçe) oyun için uydurulmuştur.
+
 ## Kontroller
 
 | Tuş | İşlev |
@@ -194,12 +232,13 @@ src/
   missions/    MissionManager (veri odaklı), tipler
   minigames/   BaseMinigame, ShipTransportMinigame, CannonMinigame, SiegeMinigame,
                DibekMinigame, ForestGatherMinigame, FireMinigame, StirMinigame,
-               LampMinigame, TelegraphMinigame, MinutesMinigame
-  audio/       AudioManager, SynthLibrary (prosedürel SFX + enstrümanlar), MusicSequencer (Hicaz / Hüseyni makamında üretken müzik)
+               LampMinigame, TelegraphMinigame, MinutesMinigame,
+               MantiMinigame, SacMinigame, PazarlikMinigame
+  audio/       AudioManager, SynthLibrary (prosedürel SFX + enstrümanlar), MusicSequencer (Hicaz / Hüseyni / Uşşak makamında üretken müzik)
   ui/          UIManager, HUD, Dialogue, Settings, Map UI, sinematik katman, mobil kontroller (DOM, değişiklik‑tabanlı güncelleme)
   scenarios/   registry, common/FpsScenario (ortak FPS katmanı: oyuncu, ışık, NPC, diyalog, HUD, görev köprüsü),
-               istanbul1453/, mugla/ ve ankara/ (layout, dünya kurulumu, sahne: NPC'ler, mini oyunlar, görev kancaları)
-public/data/   turkey-geo.json, cities.json, scenarios/{istanbul_1453, mugla_keskek, ankara_1920}.json
+               istanbul1453/, mugla/, ankara/ ve kayseri/ (layout, dünya kurulumu, sahne: NPC'ler, mini oyunlar, görev kancaları)
+public/data/   turkey-geo.json, cities.json, scenarios/{istanbul_1453, mugla_keskek, ankara_1920, kayseri_pazar}.json
 ```
 
 ### Yeni şehir eklemek
@@ -235,7 +274,7 @@ git add docs && git commit -m "Update Pages build" && git push
 Bu yolda `docs/` kullanılmaz.
 
 ## Neler gerçek, neler yer tutucu?
-**Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, üç bölümde 23 görevin tamamı, 10 mini oyun,
+**Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, dört bölümde 31 görevin tamamı, 13 mini oyun,
 NPC davranışları ve yol bulma, Fatih / Ayşe Nine ve diyaloglar, gün → gece → şafak geçişi, kayıt/devam, ayarlar, mobil kontroller,
 prosedürel ses ve müzik, WebGPU/WebGL.
 
@@ -245,6 +284,7 @@ prosedürel ses ve müzik, WebGPU/WebGL.
 - İstanbul "temsili"dir: mesafeler oynanış için sıkıştırıldı; şehir içi (surların doğusu) görsel olarak vardır ama gezilemez.
 - Muğla köyü de temsilidir: evlerin ve avluların içine girilemez; Muğla mimarisi (badanalı evler, bacalar, kabalaklar) stilize edilmiştir.
 - Keşkeğin "keşfi" bir halk rivayeti olarak kurgulanmıştır; tarihî bir olay iddiası taşımaz.
+- Kayseri çarşısı ve hanı temsilîdir (belirli bir yapının kopyası değildir); üst kat revaklarına çıkılmaz.
 - NPC animasyonları prosedüreldir (iskelet/skinning yok); yüz ifadeleri yoktur.
 - Gün/zaman: İstanbul'da sabah → son hücumda şafak; Muğla'da ikindi → akşam → gece → şafak, hikâyeye bağlı (serbest gün döngüsü yok).
 - Diğer şehirler haritada "Yakında" olarak listelenir; senaryoları henüz yok.

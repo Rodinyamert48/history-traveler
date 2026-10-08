@@ -46,13 +46,19 @@ export type SfxName =
   | "applause"
   | "keyClick"
   | "penScratch"
-  | "lampLight";
+  | "lampLight"
+  | "coins"
+  | "knifeChop"
+  | "flip";
 
 /** Hicaz makam on D (Turkish classical / mehter flavour), in Hz. */
 export const HICAZ_D = [293.66, 311.13, 369.99, 392.0, 440.0, 466.16, 523.25, 587.33];
 
 /** Hüseyni on A — the typical Aegean folk / zeybek colour (segâh B approximated a bit flat). */
 export const HUSEYNI_A = [220.0, 242.0, 261.63, 293.66, 329.63, 369.99, 392.0, 440.0];
+
+/** Uşşak on D — the warm, everyday makam of Central Anatolian folk tunes (segâh slightly flat). */
+export const USSAK_D = [293.66, 323.0, 349.23, 392.0, 440.0, 466.16, 523.25, 587.33];
 
 /**
  * Procedural sound effects & instruments built from oscillators, filtered noise and
@@ -614,6 +620,31 @@ export class SynthLibrary {
         this.noise(t, 0.5, f);
         this.play("fireCrackle", dest, 1.2);
         return 0.6;
+      }
+      case "coins": {
+        // A handful of silver akçe dropped into a purse: small bright pings.
+        for (let i = 0; i < 6; i++) {
+          const tt = t + i * 0.045 + Math.random() * 0.03;
+          for (const [k, p] of [1, 2.4, 4.1].entries()) {
+            const g = this.gainEnv(dest, tt, 0.001, 0.004, 0.18 / (k + 1), 0.07 / (k + 1));
+            this.osc("sine", (2400 + Math.random() * 900) * p * 0.5 * pitch, tt, 0.25, g);
+          }
+        }
+        return 0.6;
+      }
+      case "knifeChop": {
+        const g = this.gainEnv(dest, t, 0.001, 0.005, 0.06, 0.4);
+        this.noise(t, 0.08, this.filter("bandpass", 1800 * pitch, 1.5, g));
+        const k = this.gainEnv(dest, t, 0.001, 0.01, 0.08, 0.3);
+        this.osc("triangle", 180 * pitch, t, 0.1, k);
+        return 0.15;
+      }
+      case "flip": {
+        const g = this.gainEnv(dest, t, 0.01, 0.05, 0.12, 0.25);
+        const f = this.filter("bandpass", 900 * pitch, 1.2, g);
+        f.frequency.exponentialRampToValueAtTime(2200 * pitch, t + 0.15);
+        this.noise(t, 0.2, f);
+        return 0.25;
       }
       case "reload": {
         this.play("woodKnock", dest, 0.7);
