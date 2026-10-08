@@ -355,7 +355,7 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
     }
     const cy = ground(b.x, b.z);
     S("plaster").box(b.x + 10, cy + 5, b.z - 6, 16, 10, 12, { color: hexColor("#d8ccb4") });
-    S("iron").sphere(b.x + 10, cy + 11, b.z - 6, 6, { segments: 10, rings: 6, scaleY: 0.6, color: hexColor("#8a8c90") });
+    S("plaster").sphere(b.x + 10, cy + 10, b.z - 6, 6, { segments: 12, rings: 6, scaleY: 0.6, color: hexColor("#9aa0a8") });
   }
   // Aktimur Hisarı, the other siege fort, on a hill to the east.
   {
