@@ -230,8 +230,8 @@ export function mountain(R: number, H: number, seed: number, peaks = 3): GeoBuil
 export function kebapTray(): PartSet {
   const p = new PartSet();
   const rnd = new Random(1326);
-  p.get("bronze").cylinder(0, 0, 0, 0.03, 0.34, 0.32, { segments: 16, color: hexColor("#c87a3a") });
-  p.get("matte").cylinder(0, 0.03, 0, 0.02, 0.28, 0.28, { segments: 14, color: hexColor("#d8b070") });
+  p.get("bronze").cylinder(0, 0, 0, 0.32, 0.34, 0.03, { segments: 16, color: hexColor("#c87a3a") });
+  p.get("matte").cylinder(0, 0.03, 0, 0.28, 0.28, 0.02, { segments: 14, color: hexColor("#d8b070") });
   for (let i = 0; i < 9; i++) {
     const a = rnd.range(0, Math.PI * 2);
     const r = rnd.range(0, 0.18);

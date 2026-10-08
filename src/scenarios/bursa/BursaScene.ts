@@ -142,7 +142,7 @@ export class BursaScene extends FpsScenario<BursaWorld> {
     this.spawn("commander", { ...LOOKS.gazi(1), longKaftan: true, kaftan: "#7a2a1f", hat: "bork" }, wt.x + 0.6, wt.z - 1.9, -0.6, { type: "pose", anim: "idle" }, "Akçakoca", "akcakoca");
     this.spawn("commander", { ...LOOKS.gazi(2), longKaftan: true, kaftan: "#3f4a2a" }, wt.x + 0.6, wt.z + 1.9, -2.4, { type: "pose", anim: "idle" }, "Konur Alp", "konur");
     // Guards before the otağ, at the gate and on the walls.
-    for (const dz of [-3.6, 3.6]) this.spawn("janissary", LOOKS.gazi(dz > 0 ? 0 : 2), L.otag.x - 5.6, L.otag.z + dz * 0.7, -Math.PI / 2, { type: "pose", anim: "guard" }, "Muhafız");
+    for (const dz of [-3.2, 3.2]) this.spawn("janissary", LOOKS.gazi(dz > 0 ? 0 : 2), L.otag.x - 4.6, L.otag.z + dz, -Math.PI / 2, { type: "pose", anim: "guard" }, "Muhafız");
     for (const dz of [-3.9, 3.9]) this.spawn("janissary", LOOKS.gazi(dz > 0 ? 3 : 4), L.barrier.x + 1.6, dz, dz > 0 ? -2.4 : -0.7, { type: "pose", anim: "guard" }, "Kapı nöbetçisi");
     const W = L.wall;
     for (const [x, z, h] of [

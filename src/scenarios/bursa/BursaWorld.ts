@@ -171,9 +171,9 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
   const ot = L.otag;
   place("otag", ot.x, ot.z, -Math.PI / 2, 0.6);
   collision.addCircle(ot.x, ot.z, 4.4, -100, GY + 6, { walkable: false });
-  for (const dz of [-3.6, 3.6]) {
-    place("tug", ot.x - 6.6, ot.z + dz, 0);
-    collision.addCircle(ot.x - 6.6, ot.z + dz, 0.25, -100, GY + 5, { walkable: false });
+  for (const dz of [-4.6, 4.6]) {
+    place("tug", ot.x - 4.6, ot.z + dz, 0);
+    collision.addCircle(ot.x - 4.6, ot.z + dz, 0.25, -100, GY + 5, { walkable: false });
   }
   const wt = L.warTable;
   place("warTable", wt.x, wt.z, Math.PI / 2);

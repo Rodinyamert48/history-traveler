@@ -29,7 +29,7 @@ export const LAYOUT = {
   walk: { y: 6.2 },
   road: { x: -46 },
   keep: { x: 12, z: -13, w: 12, d: 10, h: 13 },
-  otag: { x: 10, z: 8 },
+  otag: { x: 14, z: 9 },
   warTable: { x: 6.2, z: 5.4 },
   kitchen: { x: -16, z: -15 },
   spit: { x: -16, z: -12.6 },
