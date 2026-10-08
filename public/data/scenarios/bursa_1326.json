@@ -1,0 +1,164 @@
+{
+  "$comment": "Bursa · 1326 — Bursa'nın Fethi. Oyuncu, Osman Gazi'nin Bursa'yı kuşatmak için kurdurduğu havale kalelerinden Balabancık Hisarı'nda genç bir gazidir. Balabancık Bey, Orhan Gazi, Akçakoca, Konur Alp, Abdurrahman Gazi ve Turgut Alp tarihî kişilerdir; Aşçı Hızır Usta, yolcular ve diyaloglar kurgusaldır. Bursa 6 Nisan 1326'da antlaşmayla teslim olmuştur; finaldeki 'Tekfur'un son çıkışı' oyunlaştırmadır. İskender bölümü (1867) tarihte ileriye sıçrayan bir ara hikâyedir. Görev tipleri: talk, reach, interact, deliver, minigame (kapi | cevirme | iskender | ordu), hold.",
+  "scenario": "bursa_1326",
+  "firstMission": "bursa_m01",
+  "missions": [
+    {
+      "id": "bursa_m01",
+      "title": "Balabancık Hisarı",
+      "description": "Bursa'yı yıllardır kuşatan havale kalelerinden Balabancık Hisarı'ndasın. Hisarın komutanı Balabancık Bey seni bekliyor.",
+      "type": "story",
+      "date": "BURSA ÖNLERİ · BAHAR 1326",
+      "intro": "d_bu_intro",
+      "objectives": [
+        { "type": "talk", "npc": "balabancik", "text": "Avludaki Balabancık Bey ile konuş", "dialogue": "d_bu01" },
+        { "type": "reach", "anchor": "sur", "radius": 3.2, "text": "Güneydeki merdivenden surlara çık, kuşatılan Bursa'ya bak" }
+      ],
+      "reward": { "text": "Bursa'yı surlardan gördün." },
+      "outro": "d_bu01_end",
+      "nextMission": "bursa_m02"
+    },
+    {
+      "id": "bursa_m02",
+      "title": "Kapı Nöbeti",
+      "description": "Hisar, Bursa'ya giden yolu tutuyor. Kapıya gelen arabaları denetle: kuşatılan şehre erzak geçmesin.",
+      "type": "minigame",
+      "objectives": [
+        { "type": "minigame", "minigame": "kapi", "anchor": "kapi", "text": "Batı kapısındaki barikatta nöbete geç", "prompt": "Nöbete geç" }
+      ],
+      "reward": { "text": "Yol tutuldu, Bursa'ya erzak geçmedi." },
+      "outro": "d_bu02_end",
+      "nextMission": "bursa_m03"
+    },
+    {
+      "id": "bursa_m03",
+      "title": "Ocağa Odun",
+      "description": "Kasap Yusuf'un getirdiği kuzular bu akşam Orhan Bey'in sofrasına çevirme olacak. Aşçı Hızır Usta'ya yardım et.",
+      "type": "deliver",
+      "objectives": [
+        { "type": "talk", "npc": "asci", "text": "Mutfaktaki Aşçı Hızır Usta ile konuş", "dialogue": "d_bu03" },
+        {
+          "type": "deliver",
+          "pickup": "odunluk",
+          "drop": "ocak",
+          "count": 2,
+          "item": "logs",
+          "text": "Koğuşun yanındaki odunluktan çevirme ocağına odun taşı",
+          "pickupPrompt": "Odun demetini al",
+          "dropPrompt": "Odunu ocağın yanına bırak"
+        }
+      ],
+      "reward": { "text": "Ocak hazır." },
+      "nextMission": "bursa_m04"
+    },
+    {
+      "id": "bursa_m04",
+      "title": "Kuzu Çevirme",
+      "description": "Bütün bir kuzu şişte, közün üzerinde. Ateşi kıvamında tut, şişi çevir; her yanı nar gibi kızarsın.",
+      "type": "minigame",
+      "objectives": [
+        { "type": "minigame", "minigame": "cevirme", "anchor": "cevirme", "text": "Ocağın başına geç ve kuzuyu çevir", "prompt": "Şişin başına geç" }
+      ],
+      "reward": { "text": "Çevirme nar gibi kızardı." },
+      "onComplete": ["kuzu:roasted"],
+      "outro": "d_bu04_end",
+      "nextMission": "bursa_m05"
+    },
+    {
+      "id": "bursa_m05",
+      "title": "Yüzyıllar Sonra: İskender",
+      "description": "Ara hikâye — Bursa, 1867. Aynı şehirde bir aşçı, çevirmeyi dikine döndürecek.",
+      "type": "minigame",
+      "date": "ARA HİKÂYE · BURSA, 1867",
+      "intro": "d_bu05",
+      "objectives": [
+        { "type": "minigame", "minigame": "iskender", "anchor": "cevirme", "text": "İskender Efendi'nin dükkânı — dikine döneri hazırla", "prompt": "Hikâyeyi başlat", "autoRadius": 60 }
+      ],
+      "reward": { "text": "İskender kebabının hikâyesini öğrendin." },
+      "outro": "d_bu05_end",
+      "nextMission": "bursa_m06"
+    },
+    {
+      "id": "bursa_m06",
+      "title": "Orhan Gazi'nin Sofrası",
+      "description": "Çevirme hazır. Tepsiyi Orhan Gazi'nin otağının önündeki savaş masasına götür.",
+      "type": "deliver",
+      "objectives": [
+        {
+          "type": "deliver",
+          "pickup": "ocak",
+          "drop": "otag_sofra",
+          "count": 1,
+          "item": "tray",
+          "text": "Çevirme tepsisini Orhan Gazi'nin sofrasına götür",
+          "pickupPrompt": "Çevirme tepsisini al",
+          "dropPrompt": "Orhan Gazi'ye ikram et"
+        }
+      ],
+      "reward": { "text": "Orhan Gazi ve alpleri sofraya oturdu." },
+      "onComplete": ["kebap:served"],
+      "outro": "d_bu06_end",
+      "nextMission": "bursa_m07"
+    },
+    {
+      "id": "bursa_m07",
+      "title": "Bursa'nın Fethi",
+      "description": "Bütün hazırlıklar tamam. Orhan Gazi savaş masasının başında; son kuşatmayı birlikte yöneteceksiniz.",
+      "type": "combat",
+      "date": "BURSA · NİSAN 1326",
+      "objectives": [
+        { "type": "talk", "npc": "orhan", "text": "Savaş masasındaki Orhan Gazi ile konuş", "dialogue": "d_bu07" },
+        { "type": "minigame", "minigame": "ordu", "anchor": "savas_masasi", "text": "Savaş masasında orduları yönet — Bursa'yı fethet", "prompt": "Orduları yönet" }
+      ],
+      "reward": { "text": "Bursa fethedildi!" },
+      "nextMission": null
+    }
+  ],
+  "dialogues": {
+    "d_bu_intro": [
+      { "speaker": "Anlatıcı", "text": "1300'lerin başında Osman Gazi'nin beyliği, Bizans'ın Bitinya topraklarında büyüyordu. Sıra, Uludağ'ın eteğindeki zengin ve surlarla çevrili Bursa'daydı." },
+      { "speaker": "Anlatıcı", "text": "Osman Gazi şehri doğrudan saldırıyla alamayacağını biliyordu. Bursa'nın çevresine havale denen kuşatma kaleleri kurdurdu: Balabancık Hisarı ve Aktimur Hisarı." },
+      { "speaker": "Anlatıcı", "text": "Yıllar süren bu kuşatma, şehrin yollarını kesti. Artık yaşlanan Osman Gazi'nin yerine orduların başında oğlu Orhan Bey var. Sen, Balabancık Hisarı'nda genç bir gazisin." }
+    ],
+    "d_bu01": [
+      { "speaker": "Balabancık Bey", "text": "Hoş geldin yiğit! Bu hisarı Osman Gazi hazretlerinin emriyle ben yaptırdım; adını da benden aldı." },
+      { "speaker": "Balabancık Bey", "text": "Karşıdaki Aktimur Hisarı ile birlikte Bursa'yı yıllardır kuşatıyoruz. Şehre ne girer ne çıkar, hepsi bizim gözümüzün önünden geçer." },
+      { "speaker": "Balabancık Bey", "text": "Orhan Bey dün geldi, otağı avluda. Tekfur'un dayanacak gücü kalmadı diyorlar. Önce surlara çık da kuşattığımız şehri kendi gözünle gör." }
+    ],
+    "d_bu01_end": [
+      { "speaker": "Anlatıcı", "text": "Güneyde, Uludağ'ın karlı eteğinde surları ve kuleleriyle Bursa yükseliyor. Bizanslıların Prusa dediği şehir, yıllardır dışarıyla bağı kesilmiş hâlde." },
+      { "speaker": "Balabancık Bey", "text": "Gördün mü? Şimdi in, batı kapısındaki barikatta nöbet seninle. Kuşatmanın yarısı kılıçsa yarısı da yoldur!" }
+    ],
+    "d_bu02_end": [
+      { "speaker": "Balabancık Bey", "text": "Aferin! Ne mektup geçti ne buğday. Tekfur'un ambarları her gün biraz daha boşalıyor." },
+      { "speaker": "Balabancık Bey", "text": "Kasap Yusuf'un kuzularını gördün mü? Bu akşam Orhan Bey'in sofrasına çevirme yapılacak. Hızır Usta'ya yardım et." }
+    ],
+    "d_bu03": [
+      { "speaker": "Aşçı Hızır Usta", "text": "Gel evlat, gel! Kuzuyu şişe geçirdim, ama ocağın odunu bitmek üzere." },
+      { "speaker": "Aşçı Hızır Usta", "text": "Koğuşun önündeki odunluktan iki demet getir. Çevirme sabır işidir: ateş ne sönecek ne harlanacak." }
+    ],
+    "d_bu04_end": [
+      { "speaker": "Aşçı Hızır Usta", "text": "Maşallah! Nar gibi kızardı. Göçebe atalarımız da böyle yapardı: ateşin başında, şişte, döne döne." },
+      { "speaker": "Anlatıcı", "text": "Ateşin başında yavaş yavaş dönen bu et... Yüzyıllar sonra aynı şehirde bir aşçı onu bambaşka bir şekilde döndürecekti." }
+    ],
+    "d_bu05": [
+      { "speaker": "Anlatıcı", "text": "Zamanda ileri gidelim: Bursa, 1867. Osmanlı'nın ilk başkenti, artık ipeği ve kaplıcalarıyla ünlü büyük bir şehir." },
+      { "speaker": "Anlatıcı", "text": "Kebapçı Mehmetoğlu İskender Efendi'nin aklına bir fikir gelir: Kuzu etini yatık şişte değil, dikine bir şişte, dikine yanan odun ateşinin karşısında pişirmek." },
+      { "speaker": "Anlatıcı", "text": "Böylece et ince ince kesilebilecek, her yaprağı kıvamında kızaracaktı. Haydi, İskender Efendi'nin dükkânına!" }
+    ],
+    "d_bu05_end": [
+      { "speaker": "Anlatıcı", "text": "İskender Efendi'nin dikine döneri, pide, domates sosu, kızgın tereyağı ve yoğurtla buluştu. Bursa'nın adıyla anılan İskender kebap böyle doğdu." },
+      { "speaker": "Anlatıcı", "text": "Şimdi 1326'ya, Balabancık Hisarı'na dönelim. Orhan Gazi'nin sofrası bekliyor!" }
+    ],
+    "d_bu06_end": [
+      { "speaker": "Orhan Gazi", "text": "Eline sağlık yiğidim. Sofrada ekmeği bölüşen, savaşta da kılıcı paylaşır." },
+      { "speaker": "Akçakoca", "text": "Beyim, akıncılar haber getirdi: Tekfur'un askeri azaldı, şehirde açlık başladı." },
+      { "speaker": "Orhan Gazi", "text": "Vakit geldi. Yemekten sonra savaş masasının başına gel; Bursa'yı birlikte alacağız." }
+    ],
+    "d_bu07": [
+      { "speaker": "Orhan Gazi", "text": "Bak, şu Bursa'nın dört kapısı: Kaplıca, Yer, Zindan ve Pınarbaşı kapıları. Her birinin önüne bir alp dikeceğiz." },
+      { "speaker": "Orhan Gazi", "text": "Akçakoca'nın akıncıları hızlıdır, Turgut Alp'in süvarileri güçlüdür. Konur Alp'in yayaları sağlamdır, Abdurrahman Gazi'nin okçuları uzaktan vurur." },
+      { "speaker": "Orhan Gazi", "text": "Kapıları kuşat, ikmal kafilelerini kes; şehrin direnci kırılınca Tekfur son bir çıkış yapacaktır. Benim muhafızlarımı da koru — ben düşersem kuşatma dağılır!" }
+    ]
+  }
+}

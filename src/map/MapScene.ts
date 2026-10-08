@@ -456,6 +456,25 @@ export class MapScene implements GameScene {
       b.box(sx, 0.02, sz, 0.3, 0.06, 0.08, { color: hexColor("#1c1c1e") });
       b.box(sx, 0.09, sz, 0.12, 0.06, 0.06, { color: hexColor("#ece6d8") });
       b.box(sx + 0.03, 0.15, sz, 0.03, 0.1, 0.03, { color: hexColor("#1a1a1a") });
+    } else if (provinceId === "bursa") {
+      // Snowy Uludağ south of the city, Bursa's walled citadel and a siege fort with its banner.
+      const [ux, uz] = project(29.12, 40.07);
+      const uh = hAt(ux, uz);
+      b.cylinder(ux, uh, uz, 1.0, 0.3, 0.7, { segments: 9, color: hexColor("#4a6a3e") });
+      b.cylinder(ux, uh + 0.7, uz, 0.3, 0.0, 0.38, { segments: 9, color: hexColor("#f2f4f6") });
+      const [cx, cz] = project(29.06, 40.19);
+      const ch = hAt(cx, cz);
+      const stone = hexColor("#a89c86");
+      b.cylinder(cx, ch, cz, 0.32, 0.32, 0.16, { segments: 10, color: stone });
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        b.box(cx + Math.cos(a) * 0.32, ch + 0.12, cz + Math.sin(a) * 0.32, 0.08, 0.24, 0.08, { color: stone });
+      }
+      const [fx, fz] = project(29.0, 40.27);
+      const fh = hAt(fx, fz);
+      b.box(fx, fh + 0.08, fz, 0.18, 0.16, 0.18, { color: hexColor("#b0a48e") });
+      b.box(fx, fh + 0.36, fz, 0.015, 0.4, 0.015, { color: hexColor("#4e3820") });
+      b.box(fx + 0.06, fh + 0.5, fz, 0.1, 0.07, 0.01, { color: hexColor("#b3141c") });
     } else if (provinceId === "kayseri") {
       // Snow-capped Erciyes south of the city and the walled market (han) in the centre.
       const [ex, ez] = project(35.45, 38.53);

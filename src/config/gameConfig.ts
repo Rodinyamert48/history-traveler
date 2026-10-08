@@ -258,6 +258,45 @@ export const GAME_CONFIG = {
       /** A taste (ikram) raises the buyer's limit by this share of the narh. */
       tasteBonus: 0.15,
     },
+    // ---- Bursa: siege fort chapter
+    kapi: {
+      /** Correct decisions needed out of the carts that come to the gate. */
+      needed: 6,
+      cartSpeed: 4.2,
+    },
+    cevirme: {
+      /** Doneness per second on the side facing the embers, per unit of heat. */
+      cookRate: 0.2,
+      /** Share of that reaching the two neighbouring sides. */
+      sideShare: 0.15,
+      heatDecay: 0.035,
+      woodHeat: 0.22,
+      /** Good doneness band for every side, and where a side burns. */
+      done: [0.85, 1.25] as const,
+      burn: 1.4,
+      /** Above this heat the fat flares and cooking runs hot. */
+      flare: 0.95,
+    },
+    iskender: {
+      layers: 8,
+      slices: 8,
+      /** Browning per second of the face turned to the knife. */
+      brownRate: 0.42,
+      good: [0.75, 1.15] as const,
+    },
+    ordu: {
+      /** Garrison morale at the start, and where the Tekfur makes his last sortie. */
+      morale: 100,
+      bossAt: 40,
+      /** Morale lost per second for each blockaded gate. */
+      blockadeDrain: 0.36,
+      blockadeTime: 4,
+      convoyEvery: 11,
+      convoyIn: 8,
+      convoyCut: 6,
+      sortieEvery: 17,
+      bossHp: 460,
+    },
     stir: {
       /** Ideal stirring speed band in revolutions per second. */
       minRps: 0.35,

@@ -450,6 +450,72 @@ export const LOOKS = {
     apron: "#f6f2ea",
     scale: 1.06,
   }),
+  // -------------------------------------------------------------- Bursa 1326
+  /** Orhan Gazi: tall white kavuk-like sarık, dark green kaftan with a fur collar, full dark beard. */
+  orhanGazi: (): HumanoidLook => ({
+    skin: "#c99a72",
+    kaftan: "#1f4a3a",
+    sleeves: "#b8862e",
+    trousers: "#2a2420",
+    sash: "#d6a540",
+    boots: "#6a1a1a",
+    hat: "kavuk",
+    hatColor: "#f4efe4",
+    hatAccent: "#1f4a3a",
+    beard: "#241a14",
+    longKaftan: true,
+    collar: "#6a4a2e",
+    scale: 1.06,
+  }),
+  /** Frontier gazis (alps): white felt börk or sarık, plain short kaftans. */
+  gazi: (n = 0): HumanoidLook => {
+    const v = Math.abs(Math.round(n));
+    return {
+      skin: ["#c08a64", "#b98660", "#cf9e78", "#a87450"][v % 4],
+      kaftan: ["#6a3a28", "#3f5a3a", "#5a4a2a", "#7a2a2a", "#3a4a5a"][v % 5],
+      sleeves: ["#d8ccb0", "#a87a4a", "#e9e1cf"][v % 3],
+      trousers: ["#3a3028", "#2f2a26"][v % 2],
+      sash: ["#c4862a", "#a8261f", "#8a6a3a"][v % 3],
+      boots: "#4a3020",
+      hat: v % 3 === 1 ? "turban" : "bork",
+      hatColor: v % 3 === 1 ? "#e8e0cc" : "#efe8d8",
+      beard: v % 4 === 3 ? undefined : ["#2b2018", "#3a2a1c", "#4a3a2a"][v % 3],
+      longKaftan: false,
+      rightItem: v % 2 === 0 ? "spear" : "none",
+      leftItem: v % 3 === 0 ? "shield" : undefined,
+    };
+  },
+  /** Balabancık Bey, commander of the siege fort. */
+  balabancik: (): HumanoidLook => ({
+    skin: "#b98660",
+    kaftan: "#7a2a1f",
+    sleeves: "#c9a03a",
+    trousers: "#2a2420",
+    sash: "#d6a540",
+    boots: "#5a2a1a",
+    hat: "bork",
+    hatColor: "#f2ede2",
+    hatAccent: "#d6a540",
+    beard: "#5a5048",
+    longKaftan: true,
+    collar: "#5a3a22",
+    scale: 1.04,
+  }),
+  /** The fort's cook. */
+  asciHizir: (): HumanoidLook => ({
+    skin: "#c08a64",
+    kaftan: "#8a6a48",
+    sleeves: "#e8dcc0",
+    trousers: "#3a3028",
+    sash: "#8e1a20",
+    boots: "#3a2a1c",
+    hat: "keche",
+    hatColor: "#efe8d8",
+    beard: "#6a5a48",
+    longKaftan: false,
+    apron: "#f2ede2",
+    scale: 1.03,
+  }),
   fatih: (): HumanoidLook => ({
     skin: "#d0a07c",
     kaftan: "#9e1a1f",

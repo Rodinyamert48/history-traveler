@@ -3144,3 +3144,402 @@ input[type="range"]::-moz-range-thumb {
     font-size: 40px;
   }
 }
+
+/* ---------------------------------------------------------------- Bursa: kapı nöbeti */
+.rhythm-feedback small {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-ui);
+  font-size: 0.42em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.kapi-card {
+  position: absolute;
+  left: calc(20px + var(--safe-left));
+  top: calc(96px + var(--safe-top));
+  width: min(330px, 46vw);
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(236, 222, 190, 0.96), rgba(214, 196, 158, 0.96));
+  color: #2a1e12;
+  border: 2px solid #6a4a2a;
+  border-radius: 3px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+  transition: opacity 0.2s ease;
+}
+
+.kapi-card.dim {
+  opacity: 0.55;
+}
+
+.kc-head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid #8a6a40;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+.kc-head span {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0;
+  opacity: 0.7;
+  margin-left: 6px;
+}
+
+.kc-row {
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+  border-bottom: 1px dashed rgba(106, 74, 42, 0.3);
+}
+
+.kc-row span {
+  flex: 0 0 64px;
+  color: #6a4a2a;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 1px;
+}
+
+.kc-row i {
+  color: #8a7050;
+}
+
+.kc-row .ok {
+  color: #2e6a1e;
+}
+
+.kc-row .bad,
+.kc-row .warn {
+  color: #a8201a;
+}
+
+.kapi-rules {
+  position: absolute;
+  right: calc(20px + var(--safe-right));
+  top: calc(96px + var(--safe-top));
+  width: min(280px, 40vw);
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.kapi-rules b {
+  color: var(--gold);
+}
+
+.kapi-rules ol {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.kapi-rules li {
+  margin: 3px 0;
+}
+
+/* ---------------------------------------------------------------- Bursa: çevirme */
+.cv-label {
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+}
+
+.cv-heat {
+  position: relative;
+  height: 12px;
+  margin-top: 4px;
+  background: linear-gradient(90deg, #2a1e18, #6e2a10 35%, #d8642a 70%, #ffd060);
+  border: 1px solid var(--line);
+}
+
+.cv-heat-zone {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  border: 1px solid rgba(159, 210, 107, 0.9);
+  background: rgba(159, 210, 107, 0.15);
+}
+
+.cv-heat-needle {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 4px;
+  margin-left: -2px;
+  background: #fff;
+  box-shadow: 0 0 6px #fff;
+  transition: left 0.1s linear;
+}
+
+.cv-heat-needle.hot {
+  background: #ff6a3a;
+  box-shadow: 0 0 10px #ff6a3a;
+}
+
+.cv-heat-needle.cold {
+  background: #8ab4e8;
+  box-shadow: 0 0 8px #8ab4e8;
+}
+
+.cv-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  margin-top: 4px;
+}
+
+.cv-side span {
+  font-size: 11px;
+  color: var(--ink-dim);
+}
+
+.cv-side.down span {
+  color: #ffb060;
+}
+
+.cv-side.down span::after {
+  content: " ▼ ateşte";
+  font-size: 10px;
+}
+
+.cv-side.ok span {
+  color: var(--good);
+}
+
+.cv-side.hot span {
+  color: var(--bad);
+}
+
+.cv-side-track {
+  position: relative;
+  height: 8px;
+  margin-top: 2px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+}
+
+.cv-side-good {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  border: 1px solid rgba(159, 210, 107, 0.9);
+  background: rgba(159, 210, 107, 0.15);
+}
+
+.cv-side-fill {
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------- Bursa: İskender ara hikâyesi */
+.isk-steps {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: #8a7a60;
+}
+
+.isk-steps .cur {
+  color: #ffe8a0;
+}
+
+.isk-steps .done {
+  color: #9fd26b;
+}
+
+/* ---------------------------------------------------------------- Bursa: ordu yönetimi (final) */
+.pixel-duel.ordu {
+  pointer-events: auto;
+  justify-content: flex-start;
+  padding-top: calc(8px + var(--safe-top));
+  background: #14100c;
+}
+
+.pixel-duel.ordu::after {
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0 2px, transparent 2px 4px);
+}
+
+.ordu .pd-canvas {
+  width: min(100vw, calc((100vh - 150px) * 16 / 9));
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.ordu-top {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  width: min(100vw, calc((100vh - 150px) * 16 / 9));
+  margin-bottom: 6px;
+  font-family: "Courier New", monospace;
+  color: #f0e0c0;
+  font-size: 12px;
+}
+
+.ordu-morale {
+  flex: 1;
+}
+
+.om-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.om-val {
+  color: #ffe8a0;
+}
+
+.om-track {
+  position: relative;
+  height: 10px;
+  margin-top: 3px;
+  background: #2a2420;
+  border: 1px solid #6a5a40;
+}
+
+.om-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6a2a6a, #a84a8a);
+  transition: width 0.2s linear;
+}
+
+.om-mark {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: #ffd060;
+  z-index: 1;
+}
+
+.ordu-goals {
+  flex: 0 0 auto;
+  text-align: right;
+  line-height: 1.4;
+}
+
+.ordu-goals .cur::before {
+  content: "▸ ";
+  color: #ffd060;
+}
+
+.ordu-goals .done {
+  color: #9fd26b;
+}
+
+.ordu-goals .done::before {
+  content: "✓ ";
+}
+
+.ordu-cards {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  width: min(100vw, calc((100vh - 150px) * 16 / 9));
+}
+
+.ordu-card {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 7px;
+  background: #241c16;
+  border: 2px solid #4a3a2a;
+  border-left: 6px solid var(--c);
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: #e8dcc0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ordu-card b {
+  color: #ffe8a0;
+  margin-right: 5px;
+}
+
+.ordu-card.sel {
+  border-color: #ffe8a0;
+  border-left-color: var(--c);
+  background: #3a2e20;
+}
+
+.ordu-card.dead {
+  opacity: 0.45;
+}
+
+.oc-name {
+  font-weight: 700;
+}
+
+.oc-track {
+  height: 4px;
+  margin: 3px 0 2px;
+  background: #120e0a;
+}
+
+.oc-hp {
+  height: 100%;
+  background: #9fd26b;
+}
+
+.oc-state {
+  display: block;
+  color: #a89878;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ordu .pd-help {
+  margin-top: 6px;
+}
+
+@media (max-width: 760px) {
+  .kapi-card {
+    top: auto;
+    bottom: calc(200px + var(--safe-bottom));
+    width: min(300px, 60vw);
+    font-size: 11px;
+  }
+
+  .kapi-rules {
+    display: none;
+  }
+
+  .ordu-top,
+  .ordu-cards {
+    font-size: 10px;
+  }
+
+  .ordu-card {
+    font-size: 9px;
+    padding: 3px 4px;
+  }
+
+  .oc-state {
+    display: none;
+  }
+}
+
+.rhythm-feedback.long.show {
+  animation-duration: 2.6s;
+  width: min(560px, 92vw);
+  text-align: center;
+}

@@ -298,12 +298,12 @@ export abstract class FpsScenario<W extends ScenarioWorld = ScenarioWorld> imple
   private setupInputHooks(): void {
     const { input, canvas } = this.services;
     const onClick = () => {
-      if (this.playing && !this.paused && !this.services.ui.isMenuOpen) input.requestPointerLock();
+      if (this.playing && !this.paused && !this.services.ui.isMenuOpen && !(this.minigame?.active && this.minigame.freeCursor)) input.requestPointerLock();
     };
     canvas.addEventListener("click", onClick);
     this.disposers.push(() => canvas.removeEventListener("click", onClick));
     const offLock = input.onPointerLockChange((locked) => {
-      if (!locked && this.playing && !this.paused && !input.isTouch && !this.services.ui.isMenuOpen) this.onRequestPause?.();
+      if (!locked && this.playing && !this.paused && !input.isTouch && !this.services.ui.isMenuOpen && !(this.minigame?.active && this.minigame.freeCursor)) this.onRequestPause?.();
     });
     this.disposers.push(offLock);
   }

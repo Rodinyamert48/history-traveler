@@ -11,6 +11,7 @@ export const SCENARIO_LOADERS: Record<string, () => Promise<ScenarioModule>> = {
   ankara_1920: () => import("./ankara/AnkaraTbmmScenario").then((m) => m.default),
   kayseri_pazar: () => import("./kayseri/KayseriPazarScenario").then((m) => m.default),
   samsun_1919: () => import("./samsun/Samsun1919Scenario").then((m) => m.default),
+  bursa_1326: () => import("./bursa/Bursa1326Scenario").then((m) => m.default),
 };
 
 export async function loadScenario(id: string): Promise<ScenarioModule> {

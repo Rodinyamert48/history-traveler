@@ -53,7 +53,7 @@ export function defaultSettings(): Settings {
 function defaultSave(): SaveData {
   return {
     version: 1,
-    unlockedCities: ["istanbul", "mugla", "ankara", "kayseri", "samsun"],
+    unlockedCities: ["istanbul", "mugla", "ankara", "kayseri", "samsun", "bursa"],
     completedMissions: [],
     completedScenarios: [],
     currentMission: {},

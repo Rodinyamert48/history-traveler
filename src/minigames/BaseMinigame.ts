@@ -17,6 +17,8 @@ export abstract class BaseMinigame {
    * objective/waypoint; the hosting scene then asks them via objectiveText()/waypoint().
    */
   readonly freeRoam: boolean = false;
+  /** Minigames played with a visible mouse cursor (2D maps): no pointer lock, no pause on unlock. */
+  readonly freeCursor: boolean = false;
 
   constructor(protected readonly layer: HTMLElement) {}
 

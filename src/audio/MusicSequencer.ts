@@ -1,7 +1,7 @@
 import { Random } from "../utils/random";
 import { HICAZ_D, HUSEYNI_A, USSAK_D, type SynthLibrary } from "./SynthLibrary";
 
-export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara" | "kayseri" | "samsun";
+export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara" | "kayseri" | "samsun" | "bursa";
 
 /** A fixed arrangement (instead of generative phrases): MIDI notes in eighth-note steps, 0 = rest. */
 interface Score {
@@ -57,6 +57,8 @@ const THEMES: Record<MusicTheme, ThemeDef> = {
   // Kayseri bazaar: an unhurried sofyan-like 4/4 on the kudüm with bağlama plucks and ney in Uşşak.
   // Samsun: Black Sea horon — a quick 7/16 (2+2+3) with a kemençe-like reed line.
   samsun: { bpm: 150, usul: "D.T.TK.", drum: "davul", melody: "zurna", melodyDensity: 0.6, droneRoot: 110, volume: 0.66, scale: HUSEYNI_A },
+  // Bursa 1326: an early Ottoman camp — slow kudüm in a 10/8 (aksak semai feel) under a Hicaz ney.
+  bursa: { bpm: 80, usul: "D..T.D.TK.", drum: "kudum", melody: "ney", melodyDensity: 0.45, droneRoot: 73.42, volume: 0.8, scale: HICAZ_D },
   kayseri: { bpm: 90, usul: "D..TK.T.D.T.K.T.", drum: "kudum", melody: "mixed", melodyDensity: 0.55, droneRoot: 73.42, volume: 0.78, scale: USSAK_D },
 };
 

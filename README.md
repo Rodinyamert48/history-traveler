@@ -9,6 +9,10 @@ Oynanabilir bölümler:
 - **Ankara — 23 Nisan 1920, TBMM'nin Açılışı** (3 mini oyun): tamamen I. TBMM binasının içinde geçer
 - **Kayseri — 1390, Ticaretin ve Pazarlığın Keşfi** (3 mini oyun): duvarlarla çevrili çarşı ve han; yağlama, mantı, pazarlık ve Kadı Burhaneddin
 - **Samsun — 19 Mayıs 1919, Milli Mücadele'nin Başlangıcı** (3 mini oyun + 2B piksel‑art boss dövüşü): Samsun'a bakan tepedeki askerî karakol
+- **Bursa — 1326, Bursa'nın Fethi** (3 mini oyun + 2B İskender ara hikâyesi + 2B kuşbakışı ordu yönetimi finali): Balabancık kuşatma hisarı
+
+Haritada bir şehre tıklayınca önce o şehrin **tarihî olay kartı** açılır (tarih, olayın özeti, bölümde neler var);
+**Oyna** denince bölüm başlar.
 
 - **Motor:** Babylon.js 9 (WebGPU öncelikli, otomatik WebGL2/WebGL1 yedeği)
 - **Dil / derleme:** TypeScript + Vite (GitHub Pages uyumlu, göreli yollar)
@@ -212,6 +216,50 @@ yavaş yavaş **eski bir fotoğrafa** dönüşür. Ekran kararır ve *"1335 sene
 köyleri bastığı da bilinmektedir. Karakol, subaylar, Eleni Hanım, çete reisi ve dövüş kurgudur; Paşa'nın tepeye çıkışı ve ona söyletilen
 sözler dramatizasyondur, tarihî alıntı değildir. Finaldeki "fotoğraf" gerçek bir fotoğraf değil, oyun içinde canlandırılmış bir sahnedir.
 Büyük Taarruz (26 Ağustos 1922) Samsun'da değil Afyonkarahisar'da başlamıştır; bölümde Samsun'da başlayan yolun sonucu olarak anılır.
+
+### Bursa · 1326 — Bursa'nın Fethi (`public/data/scenarios/bursa_1326.json`)
+Bölüm açık dünya değildir; tamamen Osman Gazi'nin Bursa'yı kuşatmak için kurdurduğu havale kalelerinden **Balabancık Hisarı**'nın
+surları içinde geçer: batıda barikatlı kapı ve yolu gören burçlar, güneyde surlara çıkan merdiven, iç kale, avluda Orhan Gazi'nin
+otağı, tuğlar ve savaş masası, mutfakta kuzu çevirme ocağı, ahır, koğuş, kuyu ve cephanelik. Surlardan güneyde Uludağ'ın karlı
+eteğinde surlarıyla Bursa (Prusa), doğuda Aktimur Hisarı görünür. Müzik Hicaz'da ney ve kudüm ile sentezlenmiştir.
+
+| # | Görev | Tür | Mekanik |
+|---|---|---|---|
+| 1 | Balabancık Hisarı | story | Balabancık Bey ile konuş, merdivenden surlara çıkıp Bursa'ya bak |
+| 2 | Kapı Nöbeti | minigame | **Kapı mini oyunu** — kapıya gelen arabaları denetle |
+| 3 | Ocağa Odun | deliver | Aşçı Hızır Usta için odunluktan ocağa odun taşı |
+| 4 | Kuzu Çevirme | minigame | **Çevirme mini oyunu** — kuzuyu şişte nar gibi kızart |
+| 5 | Yüzyıllar Sonra: İskender | minigame | **2B ara hikâye (1867)** — İskender Efendi'nin dikine döneri |
+| 6 | Orhan Gazi'nin Sofrası | deliver | Çevirme tepsisini savaş masasına götür |
+| 7 | Bursa'nın Fethi | combat | Orhan Gazi ile konuş → **2B kuşbakışı ordu yönetimi (final)** |
+
+**Mini oyunlar:**
+1. **Kapı nöbeti** — Arabalar yoldan teker teker gelir. Kartında sürücü, nereden, nereye ve beyan edilen yük yazar. `E` yükü açar,
+   `Q` mührü sorar; `D/→` izin verir, `A/←` geri çevirir. Kurallar: kuşatılan Bursa'ya hiçbir yük geçmez, hisara girecek yükte Orhan Bey'in
+   mührü olmalı, yük beyanla aynı olmalı, köyüne boş dönen yolcuya dokunulmaz. Sekiz arabanın en az altısında doğru karar gerekir.
+2. **Kuzu çevirme** — `E` ile ocağa odun at (ateş ne sönsün ne harlansın), `SPACE` ile şişi çeyrek tur çevir; ateşe bakan yüz pişer,
+   komşu yüzler biraz ısınır. Dört yüz de altın kıvamına gelince `Q` ile şişten al. Bir yüz yanarsa kuzu baştan.
+3. **İskender'in keşfi (2B piksel art, Bursa 1867)** — Zamanda ileri bir ara hikâye: et yapraklarını dikine şişe tam ortadan diz
+   (`SPACE`), dikine odun ateşinin önünde dönen döneri her yüzü kızardıkça ince kes, sonra tabağı tarifin sırasıyla hazırla:
+   pide → döner → domates sosu → kızgın tereyağı → yoğurt.
+
+**Final — 2B kuşbakışı ordu yönetimi (boss):** Bütün görevler bitince Orhan Gazi'nin yanına, savaş masasına gidilir ve harita açılır.
+Beş birliği yönetirsin: Orhan Gazi'nin muhafızları, Akçakoca'nın akıncıları, Konur Alp'in yayaları, Abdurrahman Gazi'nin okçuları ve
+Turgut Alp'in süvarileri (tıkla veya `1–5` ile seç, haritaya tıklayıp gönder). Birlikler Bursa'nın Kaplıca, Yer, Zindan ve Pınarbaşı
+kapılarının önünde bekleyince kapıyı kuşatır; yollardan gelen ikmal kafilelerini keser, kaleden çıkan birlikleri püskürtür. Hisarın
+direnci 40'a düşünce **Tekfur zırhlı süvarileriyle son bir çıkış yapar** (boss): hücumunu belli eder ve üzerine atılır. Onu kırınca
+Bursa teslim olur. Orhan Gazi'nin muhafızları dağılırsa kuşatma baştan başlar.
+
+**Final sahnesi:** Hisarın sancakları yükselir, gaziler sevinir; kamera surlardan Bursa'ya ve Uludağ'a bakar. Ekran kararır ve
+*"Oğul! Ben öldüğümde beni Bursa'da şu Gümüşlü Kubbe'nin altına koyasın."* (Osman Gazi'nin vasiyeti, rivayet) belirir.
+
+*Tarihî notlar:* Osman Gazi'nin Bursa'yı uzun yıllar kuşatması, şehrin çevresine Balabancık ve Aktimur hisarlarını yaptırması,
+kuşatmayı Orhan Bey'in yönetmesi ve Bursa'nın 1326'da teslim olup Osmanlı'nın ilk büyük başkenti olması gerçektir; Akçakoca,
+Konur Alp, Abdurrahman Gazi ve Turgut Alp Osman Gazi'nin tanınmış alpleridir. Bursa savaşla değil **antlaşmayla teslim olmuştur**;
+finaldeki "Tekfur'un son çıkışı" ve birliklerin dağılımı oyunlaştırmadır. Aşçı Hızır Usta, yolcular ve diyaloglar kurgudur.
+İskender kebabının hikâyesi 1326'da değil, yüzyıllar sonra **1867'de Bursa'da Mehmetoğlu İskender Efendi**'ye dayanır (aile anlatısı);
+bölümde bilerek zamanda ileri sıçrayan bir ara hikâye olarak verilmiştir. Kapı adları Bursa'nın tarihî kapılarından alınmıştır;
+konumları haritada temsilîdir.
 
 ## Kontroller
 
