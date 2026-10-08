@@ -74,7 +74,7 @@ export class CevirmeMinigame extends BaseMinigame {
     player.lookEnabled = false;
     player.position.set(stand.x, stand.y, stand.z);
     player.yaw = facing;
-    player.pitch = 0.42;
+    player.pitch = 0.3;
     mobile.setActionButtons([
       { label: "ODUN AT", action: "interact" },
       { label: "ÇEVİR", action: "jump" },
@@ -97,7 +97,7 @@ export class CevirmeMinigame extends BaseMinigame {
   private buildUi(): void {
     const u = this.ui;
     this.feedback = el("div", "rhythm-feedback high long", u);
-    const panel = el("div", "mg-panel cevirme-panel", u);
+    const panel = el("div", "mg-panel compact cevirme-panel", u);
     const r = el("div", "mg-row", panel);
     el("div", "mg-title", r, "KUZU ÇEVİRME");
     el("div", "cv-label", panel, "ATEŞ");

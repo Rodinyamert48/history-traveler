@@ -219,7 +219,7 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
   roastFire.fire.minSize = 0.15;
   roastFire.fire.maxSize = 0.4;
   roastFire.smoke.emitRate = 1.2;
-  const roastStand = at(sp.x, sp.z + 1.9);
+  const roastStand = at(sp.x, sp.z + 2.7);
   anchors.set("cevirme", roastStand.clone());
   anchors.set("ocak", at(sp.x + 1.9, sp.z + 0.9));
   // Firewood pile (pickup) and the logs that appear by the pit once delivered.
