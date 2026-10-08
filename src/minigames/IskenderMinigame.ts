@@ -297,7 +297,7 @@ export class IskenderMinigame extends BaseMinigame {
         this.slices++;
         this.brown = 0.08;
         audio.play("good", { volume: 0.4 });
-        for (let i = 0; i < 5; i++) this.bits.push({ x: SKEWER_X - 16, y: 70 + i * 8, vx: this.rnd.range(-30, -10), vy: this.rnd.range(-20, 10), life: 0.9, color: PAL.meatGold, size: 2 });
+        for (let i = 0; i < 5; i++) this.bits.push({ x: SKEWER_X + 18, y: 60 + i * 12, vx: this.rnd.range(10, 40), vy: this.rnd.range(-20, 10), life: 0.9, color: PAL.meatGold, size: 2 });
         if (this.slices >= CFG.slices) {
           this.setPhase("plate");
           this.showBanner("3 · TABAĞA KOY<small>Bursa'nın hatırlayacağı sırayla.</small>", 2.2);
@@ -313,7 +313,7 @@ export class IskenderMinigame extends BaseMinigame {
       this.brown = 0.08;
       audio.play("miss", { volume: 0.4 });
       this.showBanner("YANDI!<small>O yüzü kazıyıp at — dikkat.</small>", 1);
-      for (let i = 0; i < 6; i++) this.bits.push({ x: SKEWER_X - 16, y: 60 + i * 10, vx: this.rnd.range(-40, -10), vy: -20, life: 0.8, color: PAL.meatBurnt, size: 2 });
+      for (let i = 0; i < 6; i++) this.bits.push({ x: SKEWER_X + 18, y: 60 + i * 10, vx: this.rnd.range(10, 40), vy: -20, life: 0.8, color: PAL.meatBurnt, size: 2 });
     }
   }
 
@@ -449,7 +449,7 @@ export class IskenderMinigame extends BaseMinigame {
         // Rotating stripes show the spin.
         const sh = Math.floor((this.spin * 12 + i * 3) % 6);
         for (let k = sh; k < l.w; k += 6) r(x + k, y + 1, 1, LAYER_H - 3, "#d88a6a");
-        if (this.phase === "slice" || this.phase === "done") r(x, y, 5, LAYER_H - 1, faceCol);
+        if (this.phase === "slice" || this.phase === "done") r(x + l.w - 5, y, 5, LAYER_H - 1, faceCol);
       });
       // The leaf in the hands, sliding left and right, and a falling one.
       if (this.phase === "stack") {
@@ -463,13 +463,18 @@ export class IskenderMinigame extends BaseMinigame {
       // Browning gauge beside the döner.
       if (this.phase === "slice") {
         r(92, 40, 8, 92, PAL.black);
+        this.ctx.fillStyle = PAL.woodDark;
+        this.ctx.font = "bold 6px monospace";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("KIZARMA", 96, 37);
         const k = clamp(this.brown / 1.55, 0, 1);
         const g0 = 1 - CFG.good[1] / 1.55;
         const g1 = 1 - CFG.good[0] / 1.55;
         r(93, 41 + g0 * 90, 6, (g1 - g0) * 90, "#3a6a2a");
         r(93, 41 + (1 - k) * 90, 6, 2, faceCol === PAL.meatBurnt ? "#e2655a" : "#ffe8a0");
         // Tray of sliced döner at the front.
-        for (let i = 0; i < this.slices; i++) r(40 + (i % 4) * 9, 138 + Math.floor(i / 4) * 5, 8, 3, PAL.meatGold);
+        r(228, 140, 46, 10, PAL.copper);
+        for (let i = 0; i < this.slices; i++) r(231 + (i % 4) * 10, 138 + Math.floor(i / 4) * 4, 9, 3, PAL.meatGold);
       }
       this.renderCook(r, t);
     }
