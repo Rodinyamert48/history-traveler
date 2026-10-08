@@ -374,7 +374,7 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
   }
   // Uludağ beyond Bursa.
   {
-    const m = B.mountain(240, 360, 26).toMesh("uludag", scene);
+    const m = B.mountain(260, 560, 26).toMesh("uludag", scene);
     m.position.set(L.uludag.x, 70, L.uludag.z);
     const mat = new PBRMaterial("uludag", scene);
     mat.albedoColor = new Color3(0.85, 0.87, 0.92);
