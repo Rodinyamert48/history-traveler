@@ -15,6 +15,7 @@
         { "type": "reach", "anchor": "sur", "radius": 3.2, "text": "Güneydeki merdivenden surlara çık, kuşatılan Bursa'ya bak" }
       ],
       "reward": { "text": "Bursa'yı surlardan gördün." },
+      "onComplete": ["bursa:look"],
       "outro": "d_bu01_end",
       "nextMission": "bursa_m02"
     },

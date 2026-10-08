@@ -147,7 +147,7 @@ export class BursaScene extends FpsScenario<BursaWorld> {
     const W = L.wall;
     for (const [x, z, h] of [
       [W.x0 - 1.0, 12, -Math.PI / 2],
-      [W.x0 - 1.0, -14, -Math.PI / 2],
+      [W.x0 - 1.0, -17.5, -Math.PI / 2],
       [-8, W.z0 - 1.2, Math.PI],
       [10, W.z0 - 1.2, Math.PI],
       [-10, W.z1 + 1.2, 0],
@@ -214,6 +214,15 @@ export class BursaScene extends FpsScenario<BursaWorld> {
     const instant = phase === "resume";
     const w = this.world;
     switch (id) {
+      case "bursa:look":
+        // Turn to the besieged city on its hill under Uludağ.
+        if (!instant) {
+          const p = this.player.position;
+          const b = LAYOUT.bursa;
+          this.player.yaw = Math.atan2(b.x - p.x, b.z - p.z);
+          this.player.pitch = -0.02;
+        }
+        break;
       case "kuzu:roasted":
         // The lamb stays golden on the spit, the Usta proud beside it.
         w.roast.material.albedoColor.set(0.39, 0.15, 0.04);

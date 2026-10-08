@@ -3159,7 +3159,7 @@ input[type="range"]::-moz-range-thumb {
 .kapi-card {
   position: absolute;
   left: calc(20px + var(--safe-left));
-  top: calc(96px + var(--safe-top));
+  top: calc(170px + var(--safe-top));
   width: min(330px, 46vw);
   padding: 12px 14px;
   background: linear-gradient(180deg, rgba(236, 222, 190, 0.96), rgba(214, 196, 158, 0.96));

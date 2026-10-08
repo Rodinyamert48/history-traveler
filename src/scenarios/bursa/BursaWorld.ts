@@ -120,13 +120,15 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
     prefabs.buildUnique(`tower-${x}-${z}`, towerP, n);
     collision.addBox(x, z, 5.4, 5.4, 0, -100, GY + 10.5, { walkable: false });
   }
-  // Gate leaves standing open inward, and the checkpoint barrier inside the passage.
+  // Gate leaves swung open flat against the inner face of the wall, and the checkpoint barrier.
   const dw = S("darkWood");
   for (const s of [-1, 1]) {
-    dw.pushTRS(W.x0, GY, s * L.gate.z1, 0);
-    dw.box(1.3, 2.4, -s * 0.1, 2.6, 4.8, 0.14, { color: hexColor("#5a3a22") });
-    dw.pop();
-    collision.addBox(W.x0 + 1.3, s * (L.gate.z1 - 0.1), 2.6, 0.2, 0, -100, GY + 5, { walkable: false });
+    // The gate towers stand 1.5 m proud of the wall, so the leaves rest against their inner faces.
+    const lx = W.x0 - T / 2 + 2.7 + 0.08;
+    const cz = s * (L.gate.z1 + 1.35);
+    dw.box(lx, GY + 2.4, cz, 0.14, 4.8, 2.6, { color: hexColor("#7a5232") });
+    for (const dy of [0.8, 2.4, 4.0]) dw.box(lx + 0.09, GY + dy, cz, 0.04, 0.14, 2.5, { color: hexColor("#2e2c2a") });
+    collision.addBox(lx, cz, 0.24, 2.6, 0, -100, GY + 5, { walkable: false });
   }
   place("barrier", L.barrier.x, 0, Math.PI / 2);
   collision.addBox(L.barrier.x, 0, 0.4, L.gate.z1 - L.gate.z0, 0, -100, GY + 2.3, { walkable: false });
@@ -275,10 +277,10 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
   }
 
   // ------------------------------------------------------------- the checkpoint
-  const stand = at(L.barrier.x + 1.1, 0);
+  const stand = at(L.barrier.x + 2.6, 0);
   anchors.set("kapi", stand.clone());
   const cartStop = new Vector3(W.x0 - T - 4.2, ground(W.x0 - T - 4.2, 0), 0);
-  const cartFrom = new Vector3(L.road.x, ground(L.road.x, 40), 40);
+  const cartFrom = new Vector3(L.road.x, ground(L.road.x, 26), 26);
   const carts: TransformNode[] = [];
   for (let i = 0; i < 2; i++) {
     const n = prefabs.place("cart", 0, 0, 0, { dynamic: true }).root!;
@@ -372,7 +374,7 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
   // Uludağ beyond Bursa.
   {
     const m = B.mountain(240, 360, 26).toMesh("uludag", scene);
-    m.position.set(L.uludag.x, 40, L.uludag.z);
+    m.position.set(L.uludag.x, 70, L.uludag.z);
     const mat = new PBRMaterial("uludag", scene);
     mat.albedoColor = new Color3(0.85, 0.87, 0.92);
     mat.roughness = 1;

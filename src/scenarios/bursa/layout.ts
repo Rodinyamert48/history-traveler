@@ -37,11 +37,11 @@ export const LAYOUT = {
   stable: { x: 20, z: 14 },
   barracks: { x: -14, z: 15 },
   armory: { x: 1, z: -16 },
-  spawn: { x: 2, z: -6, yaw: Math.PI * 0.5 },
+  spawn: { x: -5, z: -1, yaw: 1.85 },
 
   /** Bursa: the Byzantine citadel on its hill, south-east beyond the plain. */
   bursa: { x: 150, z: -540, r: 72 },
-  uludag: { x: 210, z: -760 },
+  uludag: { x: 210, z: -1030 },
   /** The road the fort guards: from the villages in the north, past the gate, on to Bursa. */
   roadPath: [
     [-60, 600],

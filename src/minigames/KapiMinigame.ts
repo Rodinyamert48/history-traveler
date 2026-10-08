@@ -65,6 +65,16 @@ const TRAVELLERS: Traveller[] = [
 
 type CartPhase = "arrive" | "wait" | "leave" | "gone";
 
+interface Mover {
+  node: TransformNode;
+  driver?: NPC;
+  path: Vector3[];
+  seg: number;
+  segT: number;
+  t: number;
+  walking: boolean;
+}
+
 /**
  * MINIGAME — "Kapı Nöbeti".
  * The fort guards the road to Bursa, which is under blockade. Carts come to the gate one by one;
@@ -80,9 +90,10 @@ export class KapiMinigame extends BaseMinigame {
   private asked = false;
   private phase: CartPhase = "arrive";
   private t = 0;
-  private path: Vector3[] = [];
-  private seg = 0;
-  private segT = 0;
+  /** The cart coming to (or waiting at) the gate, and the one driving off. */
+  private cur?: Mover;
+  private leaving: Mover | null = null;
+  private nextIn = 0;
   private endT = 0;
   private won = false;
   private card!: HTMLDivElement;
@@ -116,6 +127,8 @@ export class KapiMinigame extends BaseMinigame {
     this.wrong = 0;
     this.endT = 0;
     this.won = false;
+    this.leaving = null;
+    this.cur = undefined;
     this.d.carts.forEach((c) => c.setEnabled(false));
     this.d.drivers.forEach((n) => (n.visible = false));
     this.buildUi();
@@ -156,41 +169,30 @@ export class KapiMinigame extends BaseMinigame {
     this.feedback.classList.add("show");
   }
 
-  private get cur(): Traveller {
+  private get tr(): Traveller | undefined {
     return TRAVELLERS[this.idx];
   }
 
-  private get cart(): TransformNode {
-    return this.d.carts[this.idx % this.d.carts.length];
-  }
-
-  private get driver(): NPC | undefined {
-    return this.d.drivers[this.idx % this.d.drivers.length];
-  }
-
   private sendCart(): void {
-    const { cartFrom, cartStop } = this.d;
+    const { cartFrom, cartStop, carts, drivers } = this.d;
     this.opened = false;
     this.asked = false;
     this.phase = "arrive";
-    this.path = [cartFrom, new Vector3(cartFrom.x, 0, 7), cartStop];
-    this.seg = 0;
-    this.segT = 0;
-    this.cart.setEnabled(true);
-    const drv = this.driver;
-    if (drv) drv.visible = true;
-    this.placeCart(cartFrom, Math.PI);
+    const node = carts[this.idx % carts.length];
+    const driver = drivers[this.idx % drivers.length];
+    this.cur = { node, driver, path: [cartFrom, new Vector3(cartFrom.x, 0, 7), cartStop], seg: 0, segT: 0, t: 0, walking: true };
+    node.setEnabled(true);
+    if (driver) driver.visible = true;
+    this.placeCart(this.cur, cartFrom, Math.PI);
     this.d.audio.play("woodCreak", { volume: 0.4 });
     this.updateUi();
   }
 
-  private placeCart(p: Vector3, heading: number): void {
+  private placeCart(m: Mover, p: Vector3, heading: number): void {
     const { groundY } = this.d;
-    const y = groundY(p.x, p.z);
-    const c = this.cart;
-    c.position.set(p.x, y, p.z);
-    c.rotation.y = heading;
-    const drv = this.driver;
+    m.node.position.set(p.x, groundY(p.x, p.z), p.z);
+    m.node.rotation.y = heading;
+    const drv = m.driver;
     if (drv) {
       // Walking at the ox's head, on the side facing the gate.
       const s = Math.sin(heading);
@@ -198,53 +200,63 @@ export class KapiMinigame extends BaseMinigame {
       const x = p.x + co * 1.3 + s * 3.4;
       const z = p.z - s * 1.3 + co * 3.4;
       drv.place(x, groundY(x, z), z, heading);
-      drv.anim = this.phase === "wait" ? "idle" : "walk";
+      drv.anim = m.walking ? "walk" : "idle";
     }
   }
 
-  /** Moves the cart along its path; returns true when it reached the end. */
-  private advance(dt: number): boolean {
-    const a = this.path[this.seg];
-    const b = this.path[this.seg + 1];
+  /** Moves a cart along its path; returns true when it reached the end. */
+  private advance(m: Mover, dt: number): boolean {
+    m.t += dt;
+    const a = m.path[m.seg];
+    const b = m.path[m.seg + 1];
     if (!b) return true;
     const len = Math.max(0.01, Math.hypot(b.x - a.x, b.z - a.z));
-    this.segT += (CFG.cartSpeed * dt) / len;
-    if (this.segT >= 1) {
-      this.seg++;
-      this.segT = 0;
-      if (this.seg >= this.path.length - 1) {
-        this.placeCart(b, Math.atan2(b.x - a.x, b.z - a.z));
+    m.segT += (CFG.cartSpeed * dt) / len;
+    if (m.segT >= 1) {
+      m.seg++;
+      m.segT = 0;
+      if (m.seg >= m.path.length - 1) {
+        this.placeCart(m, b, Math.atan2(b.x - a.x, b.z - a.z));
         return true;
       }
       return false;
     }
-    const k = this.segT;
-    const p = new Vector3(lerp(a.x, b.x, k), 0, lerp(a.z, b.z, k));
-    this.placeCart(p, Math.atan2(b.x - a.x, b.z - a.z));
+    const p = new Vector3(lerp(a.x, b.x, m.segT), 0, lerp(a.z, b.z, m.segT));
+    this.placeCart(m, p, Math.atan2(b.x - a.x, b.z - a.z));
     return false;
   }
 
   private decide(allow: boolean): void {
-    const tr = this.cur;
+    const tr = this.tr!;
     const { audio, cartStop, cartTo } = this.d;
     const right = allow === tr.allow;
     if (right) this.correct++;
     else this.wrong++;
     audio.play(right ? "good" : "miss", { volume: 0.5 });
     this.showFeedback(`${right ? "DOĞRU KARAR" : "YANLIŞ KARAR"}<small>${tr.why}</small>`, right ? "#9fd26b" : "#e2655a");
-    // Off it goes: on its way if allowed, back up the road if not.
+    // Off it goes: on its way if allowed, back up the road if not; the next cart follows.
     const road = new Vector3(this.d.cartFrom.x, 0, -6);
-    if (allow) {
-      if (tr.dest === "hisar") this.path = [cartStop, cartTo.hisar];
-      else if (tr.dest === "bursa") this.path = [cartStop, road, cartTo.bursa];
-      else this.path = [cartStop, new Vector3(road.x, 0, 7), cartTo.back];
-    } else this.path = [cartStop, new Vector3(road.x, 0, 7), cartTo.back];
-    this.seg = 0;
-    this.segT = 0;
+    let path: Vector3[];
+    if (allow && tr.dest === "hisar") path = [cartStop, cartTo.hisar];
+    else if (allow && tr.dest === "bursa") path = [cartStop, road, cartTo.bursa];
+    else path = [cartStop, new Vector3(road.x, 0, 7), cartTo.back];
+    if (this.leaving) this.retire(this.leaving);
+    const m = this.cur!;
+    this.leaving = { ...m, path, seg: 0, segT: 0, t: 0, walking: true };
+    this.cur = undefined;
     this.phase = "leave";
-    this.t = 0;
+    this.nextIn = 1.6;
     audio.play("woodCreak", { volume: 0.35, pitch: 0.9 });
+    this.idx++;
+    if (this.correct >= CFG.needed && this.idx >= TRAVELLERS.length) this.end(true);
+    else if (this.wrong > TRAVELLERS.length - CFG.needed) this.end(false);
+    else if (this.idx >= TRAVELLERS.length) this.end(this.correct >= CFG.needed);
     this.updateUi();
+  }
+
+  private retire(m: Mover): void {
+    m.node.setEnabled(false);
+    if (m.driver) m.driver.visible = false;
   }
 
   protected update(dt: number): void {
@@ -260,10 +272,18 @@ export class KapiMinigame extends BaseMinigame {
       return;
     }
     this.t += dt;
-    if (this.phase === "arrive") {
-      if (this.advance(dt)) {
+    if (this.leaving && (this.advance(this.leaving, dt) || this.leaving.t > 12)) {
+      this.retire(this.leaving);
+      this.leaving = null;
+    }
+    if (this.phase === "leave") {
+      this.nextIn -= dt;
+      if (this.nextIn <= 0) this.sendCart();
+    } else if (this.phase === "arrive" && this.cur) {
+      if (this.advance(this.cur, dt)) {
         this.phase = "wait";
-        this.placeCart(this.d.cartStop, Math.PI / 2);
+        this.cur.walking = false;
+        this.placeCart(this.cur, this.d.cartStop, Math.PI / 2);
         audio.play("woodKnock", { volume: 0.4 });
         this.updateUi();
       }
@@ -280,25 +300,11 @@ export class KapiMinigame extends BaseMinigame {
       }
       if (input.wasPressed("right")) this.decide(true);
       else if (input.wasPressed("left")) this.decide(false);
-    } else if (this.phase === "leave") {
-      // Gone once it reached its destination or was out of sight for long enough.
-      if (this.advance(dt) || this.t > 14) {
-        this.cart.setEnabled(false);
-        const drv = this.driver;
-        if (drv) drv.visible = false;
-        this.idx++;
-        const left = TRAVELLERS.length - this.idx;
-        if (this.correct >= CFG.needed && (left === 0 || this.correct + this.wrong >= TRAVELLERS.length)) this.end(true);
-        else if (this.wrong > TRAVELLERS.length - CFG.needed) this.end(false);
-        else if (left === 0) this.end(this.correct >= CFG.needed);
-        else this.sendCart();
-      }
     }
-    // Look at the cart while it is near the gate.
-    const c = this.cart.position;
-    const near = this.phase === "gone" ? this.d.cartStop : c;
-    const yaw = Math.atan2(near.x - player.position.x, near.z - player.position.z);
-    player.yaw = lerp(player.yaw, clamp(yaw, this.d.facing - 0.9, this.d.facing + 0.9), clamp(dt * 3, 0, 1));
+    // Look out through the gate, following the cart a little.
+    const c = this.cur?.node.position ?? this.d.cartStop;
+    const yaw = Math.atan2(c.x - player.position.x, c.z - player.position.z);
+    player.yaw = lerp(player.yaw, clamp(yaw, this.d.facing - 0.3, this.d.facing + 0.3), clamp(dt * 3, 0, 1));
     player.pitch = lerp(player.pitch, 0.08, clamp(dt * 3, 0, 1));
     player.syncCamera(dt, 0);
   }
@@ -312,13 +318,13 @@ export class KapiMinigame extends BaseMinigame {
   }
 
   private updateUi(): void {
-    const tr = this.cur;
+    const tr = this.tr;
     if (tr && this.phase !== "gone") {
       const waiting = this.phase === "wait";
       const sealTxt = !this.asked ? "<i>? (Q: sor)</i>" : tr.seal ? "<b class='ok'>Var — Orhan Bey'in tuğrası</b>" : "<b class='bad'>Yok</b>";
       const loadTxt = !this.opened ? "<i>? (E: yükü aç)</i>" : `<b class='${tr.actual === tr.declared || tr.actual.startsWith(tr.declared) ? "" : "warn"}'>${tr.actual}</b>`;
       this.card.innerHTML = `
-        <div class="kc-head">${this.idx + 1}. ARABA ${waiting ? "" : "<span>yolda…</span>"}</div>
+        <div class="kc-head">${this.idx + 1}. ARABA ${waiting ? "" : "<span>geliyor…</span>"}</div>
         <div class="kc-row"><span>Sürücü</span><b>${tr.driver}</b></div>
         <div class="kc-row"><span>Nereden</span><b>${tr.from}</b></div>
         <div class="kc-row"><span>Nereye</span><b>${DEST_LABEL[tr.dest]}</b></div>
@@ -346,6 +352,6 @@ export class KapiMinigame extends BaseMinigame {
 
   /** QA helper for the test bot. */
   get qa(): { phase: CartPhase; idx: number; allow: boolean | null; correct: number } {
-    return { phase: this.phase, idx: this.idx, allow: this.cur ? this.cur.allow : null, correct: this.correct };
+    return { phase: this.phase, idx: this.idx, allow: this.tr ? this.tr.allow : null, correct: this.correct };
   }
 }

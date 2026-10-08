@@ -262,7 +262,7 @@ export const GAME_CONFIG = {
     kapi: {
       /** Correct decisions needed out of the carts that come to the gate. */
       needed: 6,
-      cartSpeed: 4.2,
+      cartSpeed: 5,
     },
     cevirme: {
       /** Doneness per second on the side facing the embers, per unit of heat. */
