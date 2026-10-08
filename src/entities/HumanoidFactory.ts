@@ -4,7 +4,7 @@ import type { MaterialKey, MaterialLibrary } from "../rendering/MaterialLibrary"
 import { registerInstancedBufferWithCapacity } from "../rendering/instancing";
 import type { RenderPipeline } from "../rendering/RenderPipeline";
 
-export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "yazma" | "keche" | "fes" | "kalpak" | "none";
+export type HatKind = "bork" | "turban" | "kavuk" | "helmet" | "cap" | "byzHelmet" | "yazma" | "keche" | "fes" | "kalpak" | "kabalak" | "bashlik" | "none";
 export type ItemKind = "spear" | "shield" | "hammer" | "mallet" | "paddle" | "davulStick" | "zurna" | "rifle" | "none";
 
 export interface HumanoidLook {
@@ -28,6 +28,8 @@ export interface HumanoidLook {
   /** Davul hung across the chest (wedding musicians). */
   davul?: boolean;
   mustache?: string;
+  /** Leather cross-belt / cartridge bandolier over the chest. */
+  bandolier?: string;
 }
 
 const LOOKS_BASE_MUSICIAN: HumanoidLook = {
@@ -273,6 +275,68 @@ export const LOOKS = {
     collar: "#efe8dc",
     scale: 1.04,
   }),
+  // ------------------------------------------------------------ Samsun, May 1919
+  /** Ottoman infantryman of 1919: khaki tunic, kabalak, puttees, leather belts, Mauser. */
+  asker1919: (v = 0): HumanoidLook => ({
+    skin: ["#c08a64", "#b07a54", "#cf9e78", "#a87450"][v % 4],
+    kaftan: ["#7a7452", "#726c4c", "#807a58"][v % 3],
+    sleeves: ["#7a7452", "#726c4c", "#807a58"][v % 3],
+    trousers: "#6a6446",
+    sash: "#4a3622",
+    boots: "#3a2a1c",
+    hat: "kabalak",
+    hatColor: ["#8a8460", "#827c58"][v % 2],
+    mustache: v % 3 === 2 ? undefined : "#2b2018",
+    longKaftan: false,
+    bandolier: "#5a4028",
+    rightItem: v % 2 === 0 ? "rifle" : "none",
+  }),
+  /** Ottoman officer of 1919: kalpak, belted tunic, high boots. */
+  subay1919: (v = 0): HumanoidLook => ({
+    skin: ["#c99a72", "#d4a882"][v % 2],
+    kaftan: "#6e6a50",
+    sleeves: "#6e6a50",
+    trousers: "#5a5642",
+    sash: "#3a2a1c",
+    boots: "#1e1610",
+    hat: "kalpak",
+    hatColor: ["#2e2a26", "#5a5650"][v % 2],
+    mustache: "#2b2018",
+    longKaftan: false,
+    collar: "#8a2a2a",
+    bandolier: "#3a2a1c",
+  }),
+  /** Mustafa Kemal Paşa in Samsun, May 1919: grey kalpak, khaki-grey uniform. */
+  mustafaKemal1919: (): HumanoidLook => ({
+    skin: "#e0b898",
+    kaftan: "#66624e",
+    sleeves: "#66624e",
+    trousers: "#4a473a",
+    sash: "#2a2018",
+    boots: "#141210",
+    hat: "kalpak",
+    hatColor: "#7a766e",
+    mustache: "#b89a72",
+    longKaftan: true,
+    collar: "#8a2a2a",
+    scale: 1.04,
+  }),
+  /** Leader of an armed band in the Pontic hills: black clothes, kerchief, cartridge belts. */
+  ceteReisi: (): HumanoidLook => ({
+    skin: "#c49470",
+    kaftan: "#1e1c1e",
+    sleeves: "#2a2628",
+    trousers: "#1a1818",
+    sash: "#7a1a1a",
+    boots: "#2a1c14",
+    hat: "bashlik",
+    hatColor: "#141214",
+    mustache: "#1c1814",
+    beard: "#1c1814",
+    longKaftan: false,
+    bandolier: "#6a4a2a",
+    scale: 1.08,
+  }),
   // ------------------------------------------------------------ Kayseri c. 1390
   /** Kadı Burhaneddin Ahmed: scholar-ruler, great white kavuk, green robe with a fur collar. */
   kadiBurhaneddin: (): HumanoidLook => ({
@@ -437,6 +501,9 @@ type PartName =
   | "fes"
   | "fesTassel"
   | "kalpak"
+  | "kabalak"
+  | "bashlik"
+  | "bandolier"
   | "mustache"
   | "rifle";
 
@@ -489,6 +556,30 @@ const PART_DEFS: Record<PartName, PartDef> = {
     build: (b) => b.cylinder(0, 0.15, 0, 0.128, 0.142, 0.2, { segments: 9, color: white, jitter: 0.05 }),
   },
   mustache: { material: "matte", build: (b) => b.box(0, 0.075, 0.118, 0.11, 0.025, 0.03, { color: white }) },
+  kabalak: {
+    material: "fabric",
+    // WWI Ottoman "kabalak": a khaki cloth wound round a light frame — rounded, a little bulky.
+    build: (b) => {
+      b.cylinder(0, 0.1, 0, 0.13, 0.138, 0.11, { segments: 9, color: white });
+      b.sphere(0, 0.2, 0, 0.138, { segments: 9, rings: 5, scaleY: 0.62, color: white, jitter: 0.04 });
+    },
+  },
+  bashlik: {
+    material: "fabric",
+    // Black kerchief tied round the head, the knot's ends hanging at the side.
+    build: (b) => {
+      b.sphere(0, 0.17, -0.01, 0.138, { segments: 8, rings: 5, scaleY: 0.95, color: white });
+      b.box(0.11, 0.08, -0.06, 0.04, 0.16, 0.05, { color: white });
+    },
+  },
+  bandolier: {
+    material: "matte",
+    build: (b) => {
+      b.push(Matrix.RotationZ(0.62));
+      b.box(0, 0.28, 0, 0.07, 0.72, 0.27, { color: white });
+      b.pop();
+    },
+  },
   rifle: {
     material: "wood",
     build: (b) => {
@@ -677,6 +768,7 @@ export class HumanoidFactory {
     if (look.hat === "helmet" && look.hatAccent) this.add(rig, "plume", head, look.hatAccent);
     if (look.hat === "bork" && look.hatAccent) this.add(rig, "hatBand", head, look.hatAccent).scaling.set(0.8, 0.5, 0.8);
     if (look.apron) this.add(rig, "apron", torso, look.apron, 0, 0.4, 0);
+    if (look.bandolier) this.add(rig, "bandolier", torso, look.bandolier);
     if (look.davul) this.add(rig, "davul", torso, "#ffffff", 0, 0.05, 0.3);
     for (const arm of [armL, armR]) {
       this.add(rig, "arm", arm, look.sleeves);

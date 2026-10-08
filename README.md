@@ -8,6 +8,7 @@ Oynanabilir bölümler:
 - **Muğla — Menteşe, Keşkeğin Keşfi** (4 mini oyun): eski Muğla evleri, kızılçam ormanı ve bir köy düğünü
 - **Ankara — 23 Nisan 1920, TBMM'nin Açılışı** (3 mini oyun): tamamen I. TBMM binasının içinde geçer
 - **Kayseri — 1390, Ticaretin ve Pazarlığın Keşfi** (3 mini oyun): duvarlarla çevrili çarşı ve han; yağlama, mantı, pazarlık ve Kadı Burhaneddin
+- **Samsun — 19 Mayıs 1919, Milli Mücadele'nin Başlangıcı** (3 mini oyun + 2B piksel‑art boss dövüşü): Samsun'a bakan tepedeki askerî karakol
 
 - **Motor:** Babylon.js 9 (WebGPU öncelikli, otomatik WebGL2/WebGL1 yedeği)
 - **Dil / derleme:** TypeScript + Vite (GitHub Pages uyumlu, göreli yollar)
@@ -175,6 +176,43 @@ merkezli devletini 1381–1398 arasında yönetti ve şiirleri bir divanda topla
 **Yabanlu Pazarı** kurulurdu. Hikâye ise kurgudur: Ahi Bekir Usta, muhtesib, müşteriler ve anlaşmazlık hayalîdir; Kadı Burhaneddin'e
 söyletilen sözler tarihî alıntı değildir. Fiyatlar (akçe) oyun için uydurulmuştur.
 
+### Samsun · 19 Mayıs 1919 — Milli Mücadele'nin Başlangıcı (`public/data/scenarios/samsun_1919.json`)
+Bölüm, Samsun'a bakan **tepelik bir askerî bölgede** geçer: tesviye edilmiş tepede karakol binası, bayrak direği, çan çadırları,
+içtima alanı, sahra topu, kum torbalı gözetleme siperi ve batı yamacında atış alanı. Aşağıda kıyı ovasında Samsun, iskele, camiler;
+denizde demirli bir İngiliz savaş gemisi, bir şilep, balıkçı kayıkları ve şafakta gelen **Bandırma Vapuru**. Askerler 1919 Osmanlı
+ordusu kıyafetiyle (haki ceket, kabalak, dolak, fişeklik, Mauser tüfek), subaylar kalpakla görünür. Müzik Karadeniz horonu
+havasında (7/16) sentezlenmiştir.
+
+| # | Görev | Tür | Mekanik |
+|---|---|---|---|
+| 1 | Tepedeki Karakol | story | Yüzbaşı Rıza Bey'den günün emirlerini al |
+| 2 | Nişan Talimi | minigame | **Atış mini oyunu** — yamaçta kalkan hedefleri Mauser'le vur |
+| 3 | Dürbün Nöbeti | minigame | **Dürbün mini oyunu** — limandaki gemileri deftere yaz, Bandırma'yı tanı |
+| 4 | Köy Yolunda | minigame | **2B piksel‑art boss dövüşü** — köyleri basan çetenin reisini durdur |
+| 5 | Karşılama Talimi | minigame | **Tören mini oyunu** — ihtarda bekle, icrada davran |
+| 6 | Paşa Tepede | story | Mustafa Kemal Paşa'yı selamla → final |
+
+**Mini oyunlar:**
+1. **Nişan talimi** — Hedefler 25–80 m'de tek tek kalkar. Fareyle nişan al, sol tıkla ateş et; her atıştan sonra sürgü çekilir, beş fişekte
+   şarjör değişir (`E`). Nişan nefesle salınır; `SHIFT` basılıyken nefesini tutarsın (sınırlı süre). Yedi isabet gerekir.
+2. **Dürbün nöbeti** — Dürbün görüşünde limanı tara; bir geminin üstünde `SPACE`/sol tıkı basılı tutarak deftere yaz. Liman kaydedilince
+   batıda bir duman belirir: Bandırma'yı bul ve tanı.
+3. **Karşılama talimi** — Komutan her emri iki parçada verir: uzayan **ihtar** ("Sağaaa…") ve kısa **icra** ("BAK!"). İhtarda beklersin,
+   icrada doğru tuşa basarsın (`↑` hazır ol, `↓` rahat, `→` sağa bak, `←` sola bak, `SPACE` selam dur). Erken davranmak sırayı bozar.
+
+**Boss dövüşü (2B piksel art):** Retro, yandan görünüşlü bir düello. `A/D` hareket, `W/SPACE` zıpla, sol tık/`E` dipçik darbesi, `S` siper.
+Çete reisi her saldırısını belli eder: kama savurma (savrulmadan hemen önce siper alırsan karşılarsın ve sersemler), koşarak saldırı
+(üstünden zıpla), taş atma; canı yarıya inince öfkelenir, sıçrayıp yeri sarsar (şok dalgasının üstünden zıpla). Yenilince teslim olur.
+
+**Final:** Mustafa Kemal Paşa karargâh subaylarıyla tepeye çıkar; onu selamlarsın. Kamera Paşa'yı denize bakarken çerçeveler ve görüntü
+yavaş yavaş **eski bir fotoğrafa** dönüşür. Ekran kararır ve *"1335 senesi Mayısının 19'uncu günü Samsun'a çıktım."* (Nutuk) belirir.
+
+*Tarihî notlar:* Mondros (1918), İzmir'in işgali (15 Mayıs 1919), Samsun'daki İngiliz birlikleri, Bandırma'nın 16 Mayıs'ta İstanbul'dan
+çıkıp 19 Mayıs'ta Samsun'a varması ve Mustafa Kemal Paşa'nın 9. Ordu Müfettişi olarak gelişi gerçektir; bölgede silahlı çetelerin
+köyleri bastığı da bilinmektedir. Karakol, subaylar, Eleni Hanım, çete reisi ve dövüş kurgudur; Paşa'nın tepeye çıkışı ve ona söyletilen
+sözler dramatizasyondur, tarihî alıntı değildir. Finaldeki "fotoğraf" gerçek bir fotoğraf değil, oyun içinde canlandırılmış bir sahnedir.
+Büyük Taarruz (26 Ağustos 1922) Samsun'da değil Afyonkarahisar'da başlamıştır; bölümde Samsun'da başlayan yolun sonucu olarak anılır.
+
 ## Kontroller
 
 | Tuş | İşlev |
@@ -233,12 +271,13 @@ src/
   minigames/   BaseMinigame, ShipTransportMinigame, CannonMinigame, SiegeMinigame,
                DibekMinigame, ForestGatherMinigame, FireMinigame, StirMinigame,
                LampMinigame, TelegraphMinigame, MinutesMinigame,
-               MantiMinigame, SacMinigame, PazarlikMinigame
-  audio/       AudioManager, SynthLibrary (prosedürel SFX + enstrümanlar), MusicSequencer (Hicaz / Hüseyni / Uşşak makamında üretken müzik)
+               MantiMinigame, SacMinigame, PazarlikMinigame,
+               AtisMinigame, DurbunMinigame, TorenMinigame, DuelloMinigame (2B canvas piksel art)
+  audio/       AudioManager, SynthLibrary (prosedürel SFX + enstrümanlar), MusicSequencer (Hicaz / Hüseyni / Uşşak makamında üretken müzik, horon ve marş düzenlemeleri)
   ui/          UIManager, HUD, Dialogue, Settings, Map UI, sinematik katman, mobil kontroller (DOM, değişiklik‑tabanlı güncelleme)
   scenarios/   registry, common/FpsScenario (ortak FPS katmanı: oyuncu, ışık, NPC, diyalog, HUD, görev köprüsü),
-               istanbul1453/, mugla/, ankara/ ve kayseri/ (layout, dünya kurulumu, sahne: NPC'ler, mini oyunlar, görev kancaları)
-public/data/   turkey-geo.json, cities.json, scenarios/{istanbul_1453, mugla_keskek, ankara_1920, kayseri_pazar}.json
+               istanbul1453/, mugla/, ankara/, kayseri/ ve samsun/ (layout, dünya kurulumu, sahne: NPC'ler, mini oyunlar, görev kancaları)
+public/data/   turkey-geo.json, cities.json, scenarios/{istanbul_1453, mugla_keskek, ankara_1920, kayseri_pazar, samsun_1919}.json
 ```
 
 ### Yeni şehir eklemek
@@ -274,7 +313,7 @@ git add docs && git commit -m "Update Pages build" && git push
 Bu yolda `docs/` kullanılmaz.
 
 ## Neler gerçek, neler yer tutucu?
-**Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, dört bölümde 31 görevin tamamı, 13 mini oyun,
+**Tamamen çalışan:** harita + seçim + sinematik geçiş, FPS kontrol/çarpışma, beş bölümde 37 görevin tamamı, 17 mini oyun (biri 2B piksel‑art boss dövüşü),
 NPC davranışları ve yol bulma, Fatih / Ayşe Nine ve diyaloglar, gün → gece → şafak geçişi, kayıt/devam, ayarlar, mobil kontroller,
 prosedürel ses ve müzik, WebGPU/WebGL.
 
@@ -285,6 +324,7 @@ prosedürel ses ve müzik, WebGPU/WebGL.
 - Muğla köyü de temsilidir: evlerin ve avluların içine girilemez; Muğla mimarisi (badanalı evler, bacalar, kabalaklar) stilize edilmiştir.
 - Keşkeğin "keşfi" bir halk rivayeti olarak kurgulanmıştır; tarihî bir olay iddiası taşımaz.
 - Kayseri çarşısı ve hanı temsilîdir (belirli bir yapının kopyası değildir); üst kat revaklarına çıkılmaz.
+- Samsun'daki karakol temsilîdir; şehir ve liman uzaktan görülür ama gezilemez.
 - NPC animasyonları prosedüreldir (iskelet/skinning yok); yüz ifadeleri yoktur.
 - Gün/zaman: İstanbul'da sabah → son hücumda şafak; Muğla'da ikindi → akşam → gece → şafak, hikâyeye bağlı (serbest gün döngüsü yok).
 - Diğer şehirler haritada "Yakında" olarak listelenir; senaryoları henüz yok.

@@ -1,7 +1,7 @@
 import { Random } from "../utils/random";
 import { HICAZ_D, HUSEYNI_A, USSAK_D, type SynthLibrary } from "./SynthLibrary";
 
-export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara" | "kayseri";
+export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara" | "kayseri" | "samsun";
 
 /** A fixed arrangement (instead of generative phrases): MIDI notes in eighth-note steps, 0 = rest. */
 interface Score {
@@ -55,6 +55,8 @@ const THEMES: Record<MusicTheme, ThemeDef> = {
   // Ankara 1920: a brass-and-snare march (4/4, one char per 8th note).
   ankara: { bpm: 104, usul: "D.S.T.S.", drum: "davul", melody: "pluck", melodyDensity: 1, droneRoot: 98, volume: 0.62, score: DAG_BASINI },
   // Kayseri bazaar: an unhurried sofyan-like 4/4 on the kudüm with bağlama plucks and ney in Uşşak.
+  // Samsun: Black Sea horon — a quick 7/16 (2+2+3) with a kemençe-like reed line.
+  samsun: { bpm: 150, usul: "D.T.TK.", drum: "davul", melody: "zurna", melodyDensity: 0.6, droneRoot: 110, volume: 0.66, scale: HUSEYNI_A },
   kayseri: { bpm: 90, usul: "D..TK.T.D.T.K.T.", drum: "kudum", melody: "mixed", melodyDensity: 0.55, droneRoot: 73.42, volume: 0.78, scale: USSAK_D },
 };
 

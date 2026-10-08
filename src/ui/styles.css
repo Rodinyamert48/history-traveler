@@ -2610,3 +2610,401 @@ input[type="range"]::-moz-range-thumb {
     right: 8px;
   }
 }
+
+/* ---------------------------------------------------------------- Samsun: nişan talimi */
+.atis-side {
+  position: absolute;
+  right: 24px;
+  bottom: calc(40px + var(--safe-bottom));
+  width: 210px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--font-display);
+}
+
+.atis-ammo {
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  color: #e8c878;
+}
+
+.atis-ammo span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #d8ccb0;
+}
+
+.atis-breath {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+
+.atis-breath-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.atis-breath-fill {
+  height: 100%;
+  background: #7fb2d8;
+}
+
+.atis-breath-fill.holding {
+  background: #ffd36a;
+}
+
+/* ---------------------------------------------------------------- Samsun: dürbün */
+.binocular-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #000;
+  /* Two eyepieces cut out of a black sheet: each mask layer is clear inside its circle,
+     intersecting them leaves black only outside both. */
+  -webkit-mask: radial-gradient(circle at 37% 50%, transparent 0 25vmin, #000 26.5vmin), radial-gradient(circle at 63% 50%, transparent 0 25vmin, #000 26.5vmin);
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(circle at 37% 50%, transparent 0 25vmin, #000 26.5vmin), radial-gradient(circle at 63% 50%, transparent 0 25vmin, #000 26.5vmin);
+  mask-composite: intersect;
+}
+
+.binocular-reticle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70px;
+  height: 70px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.binocular-reticle::before,
+.binocular-reticle::after {
+  content: "";
+  position: absolute;
+  background: rgba(20, 20, 20, 0.8);
+}
+
+.binocular-reticle::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+}
+
+.binocular-reticle::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+}
+
+.br-ring {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  --p: 0deg;
+  background: conic-gradient(#ffd36a var(--p), transparent 0);
+  -webkit-mask: radial-gradient(circle, transparent 19px, #000 20px);
+  mask: radial-gradient(circle, transparent 19px, #000 20px);
+  opacity: 0.35;
+}
+
+.br-ring.on {
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(255, 211, 106, 0.6);
+}
+
+.binocular-label {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 46px);
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  letter-spacing: 0.14em;
+  font-size: 13px;
+  color: #ffd36a;
+  text-shadow: 0 2px 8px #000;
+}
+
+.durbun-log {
+  position: absolute;
+  left: 24px;
+  top: 150px;
+  width: 240px;
+  padding: 12px 14px;
+  background: #ece2c8;
+  color: #2a2016;
+  border-radius: 2px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.dl-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: #6e1a1e;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.durbun-log ul {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.durbun-log li.ok {
+  color: #2e6a2a;
+}
+
+.durbun-log li.gold {
+  color: #8a5a10;
+  font-weight: 700;
+}
+
+.durbun-log li.wait {
+  color: #8a3a1a;
+  font-style: italic;
+}
+
+.durbun-card {
+  position: absolute;
+  right: 24px;
+  bottom: calc(40px + var(--safe-bottom));
+  width: min(320px, 44vw);
+  padding: 12px 14px;
+  background: rgba(18, 12, 8, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.durbun-card.show {
+  opacity: 1;
+  transform: none;
+}
+
+.durbun-card b {
+  display: block;
+  font-family: var(--font-display);
+  color: #ffd36a;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.durbun-card span {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ---------------------------------------------------------------- Samsun: tören talimi */
+.toren-shout {
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(32px, 6vw, 64px);
+  letter-spacing: 0.08em;
+  color: rgba(255, 245, 225, 0.35);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  transition: color 0.1s ease, transform 0.1s ease;
+}
+
+.toren-shout.ihtar {
+  color: rgba(255, 245, 225, 0.55);
+}
+
+.toren-shout.icra {
+  color: #ffd36a;
+  transform: translateX(-50%) scale(1.15);
+}
+
+.toren-key {
+  position: absolute;
+  left: 50%;
+  top: calc(16% + 86px);
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: #fff;
+  padding: 2px 14px;
+  border-radius: 4px;
+  background: rgba(200, 40, 40, 0.7);
+}
+
+.toren-key:empty {
+  display: none;
+}
+
+.toren-legend {
+  position: absolute;
+  right: 24px;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.toren-legend b {
+  display: inline-block;
+  min-width: 52px;
+  color: #ffd36a;
+  font-family: var(--font-display);
+}
+
+/* ---------------------------------------------------------------- Samsun: piksel düello */
+.pixel-duel {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0c0a10;
+  pointer-events: none;
+}
+
+.pd-canvas {
+  width: min(100vw, calc(100vh * 16 / 9 * 0.86));
+  height: auto;
+  aspect-ratio: 16 / 9;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  box-shadow: 0 0 0 4px #2a2420, 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.pixel-duel::after {
+  /* CRT scanlines */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 4px);
+  pointer-events: none;
+}
+
+.pd-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  font-family: "Courier New", monospace;
+  font-weight: 900;
+  font-size: clamp(18px, 3.4vw, 36px);
+  letter-spacing: 0.12em;
+  color: #ffe8a0;
+  text-align: center;
+  text-shadow: 3px 3px 0 #6a1a1a, 0 0 18px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+}
+
+.pd-banner.show {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.pd-banner i {
+  color: #e8402a;
+  font-style: normal;
+  margin: 0 0.4em;
+}
+
+.pd-banner small {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.42em;
+  letter-spacing: 0.08em;
+  color: #f0e0c0;
+  white-space: normal;
+}
+
+.pd-help {
+  margin-top: 10px;
+  max-width: 92vw;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  color: #c8b890;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- eski fotoğraf çerçevesi */
+.photo-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 23;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow:
+    inset 0 0 0 clamp(14px, 3vw, 34px) #ece2c8,
+    inset 0 0 0 calc(clamp(14px, 3vw, 34px) + 2px) #b8a882,
+    inset 0 0 120px 40px rgba(60, 40, 20, 0.55);
+}
+
+.photo-frame.show {
+  opacity: 1;
+}
+
+.pf-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image: repeating-radial-gradient(circle at 30% 40%, rgba(80, 60, 30, 0.6) 0 1px, transparent 1px 3px), repeating-radial-gradient(circle at 70% 60%, rgba(255, 245, 220, 0.5) 0 1px, transparent 1px 4px);
+  mix-blend-mode: multiply;
+}
+
+.pf-caption {
+  position: absolute;
+  left: 50%;
+  bottom: calc(clamp(14px, 3vw, 34px) + 70px);
+  transform: translateX(-50%);
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(14px, 2vw, 20px);
+  color: #f2e8cc;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .durbun-log {
+    left: 8px;
+    top: 8px;
+    width: 200px;
+  }
+
+  .durbun-card,
+  .toren-legend {
+    right: 8px;
+    top: auto;
+    bottom: calc(220px + var(--safe-bottom));
+  }
+
+  .atis-side {
+    right: 8px;
+    bottom: calc(360px + var(--safe-bottom));
+  }
+}

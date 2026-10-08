@@ -1,0 +1,268 @@
+{
+  "$comment": "Samsun · 19 Mayıs 1919 — Milli Mücadele'nin Başlangıcı. Oyuncu, Samsun'a bakan tepedeki karakolda genç bir erdir. Karakol, subaylar, Eleni Hanım ve çete reisi kurgusaldır; Mustafa Kemal Paşa'nın tepeye çıkışı ve ona söyletilen sözler dramatizasyondur. Görev tipleri: talk, reach, interact, deliver, minigame (atis | durbun | duello | toren), hold.",
+  "scenario": "samsun_1919",
+  "firstMission": "samsun_m01",
+  "missions": [
+    {
+      "id": "samsun_m01",
+      "title": "Tepedeki Karakol",
+      "description": "Samsun'a bakan tepedeki karakolda sabah oluyor. Karakol komutanı Yüzbaşı Rıza Bey seni bekliyor.",
+      "type": "story",
+      "date": "SAMSUN · 19 MAYIS 1919 · ŞAFAK",
+      "intro": "d_sa_intro",
+      "objectives": [
+        {
+          "type": "talk",
+          "npc": "yuzbasi",
+          "text": "Karakolun önündeki Yüzbaşı Rıza Bey ile konuş",
+          "dialogue": "d_sa01"
+        }
+      ],
+      "reward": {
+        "text": "Günün emirlerini aldın."
+      },
+      "nextMission": "samsun_m02"
+    },
+    {
+      "id": "samsun_m02",
+      "title": "Nişan Talimi",
+      "description": "Batı yamacındaki atış alanında Çavuş Hasan talim yaptırıyor. Kalkan hedefleri vur.",
+      "type": "minigame",
+      "intro": "d_sa02",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "atis",
+          "anchor": "atis",
+          "text": "Atış hattında hedefleri vur",
+          "prompt": "Atış hattına geç"
+        }
+      ],
+      "outro": "d_sa02_end",
+      "reward": {
+        "text": "Çavuş Hasan'ın gözüne girdin."
+      },
+      "nextMission": "samsun_m03"
+    },
+    {
+      "id": "samsun_m03",
+      "title": "Dürbün Nöbeti",
+      "description": "Kuzeydeki gözetleme siperinde nöbet sende. Limandaki gemileri deftere yaz, ufku gözetle.",
+      "type": "minigame",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "durbun",
+          "anchor": "durbun",
+          "text": "Dürbünle limanı ve ufku gözetle",
+          "prompt": "Dürbünün başına geç"
+        }
+      ],
+      "outro": "d_sa03_end",
+      "reward": {
+        "text": "Bandırma Vapuru Samsun'a ulaştı."
+      },
+      "nextMission": "samsun_m04",
+      "onComplete": [
+        "bandirma:spotted"
+      ]
+    },
+    {
+      "id": "samsun_m04",
+      "title": "Köy Yolunda",
+      "description": "Silahlı bir çete aşağıdaki çiftliği basmak üzere. Köy yoluna in ve çete reisinin yolunu kes.",
+      "type": "minigame",
+      "onStart": [
+        "koy:alarm"
+      ],
+      "intro": "d_sa04",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "duello",
+          "anchor": "koy_yolu",
+          "text": "Köy yolunda çete reisini durdur",
+          "prompt": "Çete reisinin yolunu kes"
+        }
+      ],
+      "outro": "d_sa04_end",
+      "reward": {
+        "text": "Çete reisi teslim oldu; köy rahat bir nefes aldı."
+      },
+      "nextMission": "samsun_m05",
+      "onComplete": [
+        "cete:captured"
+      ]
+    },
+    {
+      "id": "samsun_m05",
+      "title": "Karşılama Talimi",
+      "description": "Mustafa Kemal Paşa karakola çıkacak. Bölük içtima alanında sıraya girdi; sıradaki yerini al.",
+      "type": "minigame",
+      "intro": "d_sa05",
+      "objectives": [
+        {
+          "type": "minigame",
+          "minigame": "toren",
+          "anchor": "tören",
+          "text": "İçtima alanında karşılama talimine katıl",
+          "prompt": "Sıradaki yerini al"
+        }
+      ],
+      "outro": "d_sa05_end",
+      "reward": {
+        "text": "Bölük karşılamaya hazır."
+      },
+      "nextMission": "samsun_m06"
+    },
+    {
+      "id": "samsun_m06",
+      "title": "Paşa Tepede",
+      "description": "Mustafa Kemal Paşa karargâh subaylarıyla birlikte şehre bakan tepeye çıktı. Onu selamla.",
+      "type": "story",
+      "onStart": [
+        "pasa:arrive"
+      ],
+      "intro": "d_sa06",
+      "objectives": [
+        {
+          "type": "interact",
+          "targets": [
+            "selam"
+          ],
+          "text": "Mustafa Kemal Paşa'yı selamla",
+          "prompt": "Selam dur — Mustafa Kemal Paşa"
+        }
+      ],
+      "outro": "d_sa06_end",
+      "reward": {
+        "text": "Milli Mücadele başladı."
+      },
+      "nextMission": null
+    }
+  ],
+  "dialogues": {
+    "d_sa_intro": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "30 Ekim 1918'de imzalanan Mondros Mütarekesi'nden sonra İtilaf Devletleri Anadolu'nun birçok yerini işgal etmeye başladı. 15 Mayıs 1919'da Yunan ordusu İzmir'e çıktı."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Samsun'da İngiliz askerleri vardı. Karadeniz'in iç kesimlerinde silahlı çeteler köyleri basıyor, halk korku içinde yaşıyordu."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Mustafa Kemal Paşa, 9. Ordu Müfettişi olarak 16 Mayıs'ta Bandırma Vapuru ile İstanbul'dan yola çıktı. Sen, Samsun'a bakan tepedeki karakolda genç bir ersin."
+      }
+    ],
+    "d_sa01": [
+      {
+        "speaker": "Yüzbaşı Rıza Bey",
+        "text": "Günaydın evlat. Bugün gözünü dört açacaksın: İstanbul'dan bir vapur bekliyoruz. Kimin geldiğini sonra öğrenirsin."
+      },
+      {
+        "speaker": "Yüzbaşı Rıza Bey",
+        "text": "Önce talim. Çavuş Hasan batı yamacındaki atış alanında; nişanını bir görelim. Sonra kuzeydeki siperde dürbün nöbeti sende."
+      },
+      {
+        "speaker": "Sen",
+        "text": "Emredersiniz, komutanım!"
+      }
+    ],
+    "d_sa02": [
+      {
+        "speaker": "Çavuş Hasan",
+        "text": "Gel bakalım. Hedefler yamaçta teker teker kalkacak; kalkık kaldıkları süre kısadır."
+      },
+      {
+        "speaker": "Çavuş Hasan",
+        "text": "Nefesini tut, tetiği çekme, sık. Her atıştan sonra sürgüyü çek; beş fişek bitince şarjör değiştir. Mühimmat boşa harcanmaz!"
+      }
+    ],
+    "d_sa02_end": [
+      {
+        "speaker": "Çavuş Hasan",
+        "text": "Aferin! Eli tetikte, gözü nişanda bir asker oldun. Şimdi siperdeki dürbüne geç; nöbet senin."
+      }
+    ],
+    "d_sa03_end": [
+      {
+        "speaker": "Yüzbaşı Rıza Bey",
+        "text": "Bandırma mı dedin? Ver şu dürbünü… Evet, o! Demek Paşa geldi."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Bandırma Vapuru 19 Mayıs 1919 sabahı Samsun'a ulaştı. Mustafa Kemal Paşa ve karargâhı karaya çıktı."
+      }
+    ],
+    "d_sa04": [
+      {
+        "speaker": "Eleni Hanım",
+        "text": "Asker oğlum, yetişin! Yorgos'un çetesi aşağıdaki çiftliğe dadandı; hayvanları götürmek, ambarı yağmalamak istiyorlar!"
+      },
+      {
+        "speaker": "Eleni Hanım",
+        "text": "O çiftlikte hem Türk hem Rum komşularımız var. Yıllardır bu köylerde birlikte yaşıyoruz; bu adamlar hepimizi korkutuyor."
+      },
+      {
+        "speaker": "Yüzbaşı Rıza Bey",
+        "text": "Eleni Hanım'ın haberi doğrudur. Çetenin reisi köy yolunda; in ve yolunu kes. Unutma: amacımız onu yakalamak ve mahkemeye çıkarmak."
+      }
+    ],
+    "d_sa04_end": [
+      {
+        "speaker": "Çete reisi Yorgos",
+        "text": "Tamam… tamam! Teslim oluyorum."
+      },
+      {
+        "speaker": "Eleni Hanım",
+        "text": "Sağ ol evladım! Bu gece köyde herkes rahat uyuyacak."
+      },
+      {
+        "speaker": "Yüzbaşı Rıza Bey",
+        "text": "Aferin evlat. Reisi karakola götürüyoruz. Şimdi toparlan: Paşa'yı karşılamaya hazırlanıyoruz!"
+      }
+    ],
+    "d_sa05": [
+      {
+        "speaker": "Teğmen Kemal Efendi",
+        "text": "Paşa birazdan karakola çıkacak! Bölük sıraya! Sıradaki boş yer senin."
+      },
+      {
+        "speaker": "Teğmen Kemal Efendi",
+        "text": "Kural basit: komutun uzayan kısmı ihtardır, bekle. Kısa, sert kısmı icradır, o an davran. Erken davranan sırayı bozar!"
+      }
+    ],
+    "d_sa05_end": [
+      {
+        "speaker": "Teğmen Kemal Efendi",
+        "text": "Bölük hazır! Herkes yerine. İşte, yoldan geliyorlar…"
+      }
+    ],
+    "d_sa06": [
+      {
+        "speaker": "Anlatıcı",
+        "text": "Mustafa Kemal Paşa, karargâh subaylarıyla birlikte şehre ve denize bakan tepeye çıktı."
+      }
+    ],
+    "d_sa06_end": [
+      {
+        "speaker": "Mustafa Kemal Paşa",
+        "text": "Kaç yaşındasın, evlat?"
+      },
+      {
+        "speaker": "Sen",
+        "text": "On dokuz, Paşam. Bu sabah köy yolundaki çetenin reisini yakaladık."
+      },
+      {
+        "speaker": "Mustafa Kemal Paşa",
+        "text": "Aferin. Önümüzde uzun ve zor bir yol var; o yolu senin gibi gençlerle yürüyeceğiz."
+      },
+      {
+        "speaker": "Anlatıcı",
+        "text": "Samsun'da başlayan yolculuk; Havza, Amasya, Erzurum ve Sivas'tan geçerek Ankara'ya uzandı. Kurtuluş Savaşı, 26 Ağustos 1922'de başlayan Büyük Taarruz ile zafere ulaştı."
+      }
+    ]
+  }
+}

@@ -445,6 +445,17 @@ export class MapScene implements GameScene {
           b.box(x, hAt(x, z) + 0.12, z, 0.05, 0.24, 0.05, { color: wallCol });
         }
       }
+    } else if (provinceId === "samsun") {
+      // The hill above the town with its flag, and the Bandırma off the coast.
+      const [hx, hz] = project(36.3, 41.27);
+      const hh = hAt(hx, hz);
+      b.cylinder(hx, hh, hz, 0.5, 0.15, 0.35, { segments: 7, color: hexColor("#557a32") });
+      b.box(hx, hh + 0.55, hz, 0.02, 0.4, 0.02, { color: hexColor("#4e3820") });
+      b.box(hx + 0.08, hh + 0.68, hz, 0.14, 0.09, 0.01, { color: hexColor("#c8102e") });
+      const [sx, sz] = project(36.36, 41.36);
+      b.box(sx, 0.02, sz, 0.3, 0.06, 0.08, { color: hexColor("#1c1c1e") });
+      b.box(sx, 0.09, sz, 0.12, 0.06, 0.06, { color: hexColor("#ece6d8") });
+      b.box(sx + 0.03, 0.15, sz, 0.03, 0.1, 0.03, { color: hexColor("#1a1a1a") });
     } else if (provinceId === "kayseri") {
       // Snow-capped Erciyes south of the city and the walled market (han) in the centre.
       const [ex, ez] = project(35.45, 38.53);

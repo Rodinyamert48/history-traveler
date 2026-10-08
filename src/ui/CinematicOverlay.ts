@@ -12,6 +12,7 @@ export class CinematicOverlay {
   private boxBottom: HTMLDivElement;
   private skip: HTMLDivElement;
   private quote: HTMLDivElement;
+  private photo: HTMLDivElement;
 
   constructor(parent: HTMLElement) {
     this.boxTop = el("div", "letterbox top", parent);
@@ -29,6 +30,26 @@ export class CinematicOverlay {
     this.sub = el("div", "tc-sub", this.card);
     this.skip = el("div", "skip-hint hidden", parent, "Atla · Space");
     this.quote = el("div", "cine-quote hidden", parent);
+    this.photo = el("div", "photo-frame", parent);
+  }
+
+  /**
+   * Turns the live 3D view into an old photograph: sepia/contrast on the canvas and a paper
+   * frame with a caption fading in over `seconds`.
+   */
+  showPhoto(canvas: HTMLCanvasElement, caption: string, seconds: number): void {
+    canvas.style.transition = `filter ${seconds}s ease`;
+    canvas.style.filter = "sepia(0.9) contrast(1.18) brightness(0.92) saturate(0.85)";
+    this.photo.innerHTML = `<div class="pf-grain"></div><div class="pf-caption">${caption}</div>`;
+    this.photo.style.transition = `opacity ${seconds}s ease`;
+    void this.photo.offsetWidth;
+    this.photo.classList.add("show");
+  }
+
+  hidePhoto(canvas: HTMLCanvasElement): void {
+    canvas.style.transition = "";
+    canvas.style.filter = "";
+    this.photo.classList.remove("show");
   }
 
   /**

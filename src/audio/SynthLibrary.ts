@@ -49,7 +49,9 @@ export type SfxName =
   | "lampLight"
   | "coins"
   | "knifeChop"
-  | "flip";
+  | "flip"
+  | "rifleShot"
+  | "boltAction";
 
 /** Hicaz makam on D (Turkish classical / mehter flavour), in Hz. */
 export const HICAZ_D = [293.66, 311.13, 369.99, 392.0, 440.0, 466.16, 523.25, 587.33];
@@ -645,6 +647,29 @@ export class SynthLibrary {
         f.frequency.exponentialRampToValueAtTime(2200 * pitch, t + 0.15);
         this.noise(t, 0.2, f);
         return 0.25;
+      }
+      case "rifleShot": {
+        // Sharp crack, a short low thump and a rolling echo off the hills.
+        const g = this.gainEnv(dest, t, 0.0005, 0.01, 0.12, 0.9);
+        this.noise(t, 0.16, this.filter("highpass", 900 * pitch, 0.7, g));
+        const k = this.gainEnv(dest, t, 0.001, 0.02, 0.18, 0.7);
+        const o = this.osc("sine", 140 * pitch, t, 0.22, k);
+        o.frequency.exponentialRampToValueAtTime(45, t + 0.18);
+        const e = this.gainEnv(dest, t + 0.25, 0.08, 0.2, 1.1, 0.16);
+        this.noise(t + 0.25, 1.4, this.filter("lowpass", 700, 0.6, e));
+        this.send(g, 0.5);
+        return 1.6;
+      }
+      case "boltAction": {
+        for (const [dt, f] of [
+          [0, 2600],
+          [0.16, 1900],
+          [0.34, 2300],
+        ]) {
+          const g = this.gainEnv(dest, t + dt, 0.001, 0.005, 0.05, 0.35);
+          this.noise(t + dt, 0.06, this.filter("bandpass", f * pitch, 2.5, g));
+        }
+        return 0.45;
       }
       case "reload": {
         this.play("woodKnock", dest, 0.7);

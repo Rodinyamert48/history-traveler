@@ -193,6 +193,37 @@ export const GAME_CONFIG = {
       /** Wrong keystrokes forgiven per word before the ink blots. */
       blotEvery: 4,
     },
+    // ---- Samsun: 19 May 1919
+    atis: {
+      popups: 12,
+      hitsNeeded: 7,
+      ammo: 20,
+      clip: 5,
+      boltTime: 0.75,
+      reloadTime: 2.2,
+      /** Seconds a target stays up (first → last pop-up). */
+      upTime: [3.2, 1.9] as const,
+      /** Aim sway amplitude (radians) and how much holding the breath steadies it. */
+      sway: 0.014,
+      breathSteady: 0.22,
+      breathMax: 3,
+    },
+    durbun: {
+      /** Zoomed field of view (radians) and seconds the crosshair must stay on a ship. */
+      fov: 0.24,
+      holdTime: 1.0,
+    },
+    toren: {
+      commands: 12,
+      needed: 9,
+      /** Reaction window after the execution word (first → last command). */
+      window: [1.0, 0.62] as const,
+    },
+    duello: {
+      playerHp: 6,
+      bossHp: 30,
+      parryWindow: 0.2,
+    },
     // ---- Kayseri: bazaar chapter
     manti: {
       /** Knife sweeps per second across the dough sheet. */

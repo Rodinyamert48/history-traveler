@@ -9,7 +9,7 @@
     { "id": "bursa", "name": "Bursa", "year": 1326, "title": "Bursa'nın Fethi", "active": false },
     { "id": "edirne", "name": "Edirne", "year": 1363, "title": "Edirne'nin Fethi", "active": false },
     { "id": "canakkale", "name": "Çanakkale", "year": 1915, "title": "Çanakkale Savaşları", "active": false },
-    { "id": "samsun", "name": "Samsun", "year": 1919, "title": "Milli Mücadele'nin Başlangıcı", "active": false },
+    { "id": "samsun", "name": "Samsun", "year": 1919, "title": "Milli Mücadele'nin Başlangıcı", "active": true, "scenario": "samsun_1919", "doneLabel": "19 MAYIS 1919" },
     { "id": "erzurum", "name": "Erzurum", "year": 1919, "title": "Erzurum Kongresi", "active": false },
     { "id": "sivas", "name": "Sivas", "year": 1919, "title": "Sivas Kongresi", "active": false },
     { "id": "konya", "name": "Konya", "year": 1220, "title": "Selçuklu Başkenti", "active": false },
