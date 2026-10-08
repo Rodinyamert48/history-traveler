@@ -152,7 +152,8 @@ export async function buildBursaWorld(ctx: WorldBuildContext): Promise<BursaWorl
     st.box((lx0 + lx1) / 2, GY + walkH / 2, (lz0 + lz1) / 2, lx1 - lx0, walkH, lz1 - lz0, { uvScale: 3, color: shade(wallCol, 0.93) });
     collision.addBox((lx0 + lx1) / 2, (lz0 + lz1) / 2, lx1 - lx0, lz1 - lz0, 0, -100, GY + walkH, { walkable: true, tag: "stone" });
   }
-  const rampart = at(-27.2, -12, walkH);
+  // On the south wall above the stairs, looking out over the parapet to Bursa and Uludağ.
+  const rampart = at(-15, W.z0 - T / 2 + 0.2, walkH);
   anchors.set("sur", rampart.clone());
 
   // --------------------------------------------------------------- courtyard

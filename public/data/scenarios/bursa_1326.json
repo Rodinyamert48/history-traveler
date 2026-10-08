@@ -12,7 +12,7 @@
       "intro": "d_bu_intro",
       "objectives": [
         { "type": "talk", "npc": "balabancik", "text": "Avludaki Balabancık Bey ile konuş", "dialogue": "d_bu01" },
-        { "type": "reach", "anchor": "sur", "radius": 3.2, "text": "Güneydeki merdivenden surlara çık, kuşatılan Bursa'ya bak" }
+        { "type": "reach", "anchor": "sur", "radius": 3.2, "text": "Güneydeki merdivenden sura çık, kuşatılan Bursa'ya bak" }
       ],
       "reward": { "text": "Bursa'yı surlardan gördün." },
       "onComplete": ["bursa:look"],
