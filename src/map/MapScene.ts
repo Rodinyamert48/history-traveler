@@ -535,8 +535,9 @@ export class MapScene implements GameScene {
         this.pointer.y = this.scene.pointerY;
         const prov = this.pickProvince();
         if (!prov) return;
-        if (prov.active && prov.city) {
-          this.services.audio.play("uiConfirm");
+        if (prov.city) {
+          // Any city with a historical entry opens the info panel (playable ones can start there).
+          this.services.audio.play(prov.active ? "uiConfirm" : "uiClick");
           this.onCitySelected?.(prov.city);
         } else {
           this.services.audio.play("miss", { volume: 0.5 });
@@ -660,9 +661,9 @@ export class MapScene implements GameScene {
     const tx = this.cssX(this.pointer.x);
     const ty = this.cssY(this.pointer.y);
     if (hovered.active && hovered.city) {
-      ui.showTooltip({ name: hovered.city.name, message: `${hovered.city.year} — ${hovered.city.title}`, teaser: "Tıkla ve tarihin içine gir", active: true }, tx, ty);
+      ui.showTooltip({ name: hovered.city.name, message: `${hovered.city.year} — ${hovered.city.title}`, teaser: "Tıkla: olayı oku ve bölümü oyna", active: true }, tx, ty);
     } else {
-      const teaser = hovered.city ? `Yakında: ${hovered.city.year} · ${hovered.city.title}` : undefined;
+      const teaser = hovered.city ? `Yakında: ${hovered.city.year} · ${hovered.city.title} — tıkla ve oku` : undefined;
       ui.showTooltip({ name: hovered.name, message: "Bu şehir henüz keşfedilmedi.", teaser, active: false }, tx, ty);
     }
   }

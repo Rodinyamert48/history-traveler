@@ -1,23 +1,212 @@
 {
-  "$comment": "Şehir/senaryo kayıtları. 'id' alanı turkey-geo.json içindeki il kimliğiyle eşleşir. Yeni bir şehir eklemek için kayıt ekleyip 'active': true ve bir 'scenario' kimliği verin (src/scenarios/registry.ts).",
+  "$comment": "Şehir/senaryo kayıtları. 'id' alanı turkey-geo.json içindeki il kimliğiyle eşleşir. Yeni bir şehir eklemek için kayıt ekleyip 'active': true ve bir 'scenario' kimliği verin (src/scenarios/registry.ts). 'date', 'summary' ve 'chapter' haritadaki bilgi panelinde gösterilir.",
   "cities": [
-    { "id": "istanbul", "name": "İstanbul", "year": 1453, "title": "İstanbul'un Fethi", "active": true, "scenario": "istanbul_1453", "doneLabel": "FETHEDİLDİ" },
-    { "id": "mugla", "name": "Muğla", "year": 1375, "title": "Keşkeğin Keşfi", "active": true, "scenario": "mugla_keskek", "doneLabel": "KEŞFEDİLDİ" },
-    { "id": "ankara", "name": "Ankara", "year": 1920, "title": "TBMM'nin Açılışı", "active": true, "scenario": "ankara_1920", "doneLabel": "MECLİS AÇILDI" },
-    { "id": "kayseri", "name": "Kayseri", "year": 1390, "title": "Ticaretin ve Pazarlığın Keşfi", "active": true, "scenario": "kayseri_pazar", "doneLabel": "ALAN RAZI, SATAN RAZI" },
-    { "id": "izmir", "name": "İzmir", "year": 1922, "title": "Kurtuluş", "active": false },
-    { "id": "bursa", "name": "Bursa", "year": 1326, "title": "Bursa'nın Fethi", "active": false },
-    { "id": "edirne", "name": "Edirne", "year": 1363, "title": "Edirne'nin Fethi", "active": false },
-    { "id": "canakkale", "name": "Çanakkale", "year": 1915, "title": "Çanakkale Savaşları", "active": false },
-    { "id": "samsun", "name": "Samsun", "year": 1919, "title": "Milli Mücadele'nin Başlangıcı", "active": true, "scenario": "samsun_1919", "doneLabel": "19 MAYIS 1919" },
-    { "id": "erzurum", "name": "Erzurum", "year": 1919, "title": "Erzurum Kongresi", "active": false },
-    { "id": "sivas", "name": "Sivas", "year": 1919, "title": "Sivas Kongresi", "active": false },
-    { "id": "konya", "name": "Konya", "year": 1220, "title": "Selçuklu Başkenti", "active": false },
-    { "id": "mus", "name": "Muş", "year": 1071, "title": "Malazgirt Meydan Muharebesi", "active": false },
-    { "id": "trabzon", "name": "Trabzon", "year": 1461, "title": "Trabzon'un Fethi", "active": false },
-    { "id": "afyonkarahisar", "name": "Afyonkarahisar", "year": 1922, "title": "Büyük Taarruz", "active": false },
-    { "id": "sakarya", "name": "Sakarya", "year": 1921, "title": "Sakarya Meydan Muharebesi", "active": false },
-    { "id": "kahramanmaras", "name": "Kahramanmaraş", "year": 1920, "title": "Maraş Savunması", "active": false },
-    { "id": "gaziantep", "name": "Gaziantep", "year": 1921, "title": "Antep Savunması", "active": false }
+    {
+      "id": "istanbul",
+      "name": "İstanbul",
+      "year": 1453,
+      "title": "İstanbul'un Fethi",
+      "active": true,
+      "scenario": "istanbul_1453",
+      "doneLabel": "FETHEDİLDİ",
+      "date": "6 Nisan – 29 Mayıs 1453",
+      "summary": "Osmanlı Padişahı II. Mehmed, 21 yaşında Bizans'ın başkenti Konstantinopolis'i kuşattı. Rumeli Hisarı ile Boğaz'ı denetim altına aldı, dev toplarla kara surlarını dövdü ve gemilerini kızaklar üzerinde karadan yürüterek Haliç'e indirdi. 53 gün süren kuşatma 29 Mayıs 1453'te fetihle sona erdi; şehir Osmanlı'nın başkenti oldu.",
+      "chapter": [
+        "Sultan'ın otağında emirleri al",
+        "Mini oyun: gemileri kızaklarla karadan Haliç'e yürüt",
+        "Mini oyun: topları ateşleyip surları döv",
+        "Mini oyun: surlara hücum et ve sancağı burca dik"
+      ]
+    },
+    {
+      "id": "mugla",
+      "name": "Muğla",
+      "year": 1375,
+      "title": "Keşkeğin Keşfi",
+      "active": true,
+      "scenario": "mugla_keskek",
+      "doneLabel": "KEŞFEDİLDİ",
+      "date": "Menteşe Beyliği dönemi · 14. yüzyıl",
+      "summary": "Menteşe Beyliği'nin hüküm sürdüğü Muğla yaylalarında düğünler bütün köyün işiydi. Dövülmüş buğday ve etin bir gece boyunca kazanlarda pişirildiği keşkek, bu imece geleneğinin simgesi oldu. Keşkek geleneği 2011'de UNESCO Somut Olmayan Kültürel Miras listesine alındı. (Bölümdeki 'keşif' hikâyesi bir halk rivayeti olarak kurgulanmıştır.)",
+      "chapter": [
+        "Eski Muğla evleri, çam ormanı ve köy meydanı",
+        "Mini oyun: dibekte buğday dövme",
+        "Mini oyun: ormanda odun toplama",
+        "Mini oyunlar: ocağı harlama ve gece boyu kazanı karıştırma"
+      ]
+    },
+    {
+      "id": "ankara",
+      "name": "Ankara",
+      "year": 1920,
+      "title": "TBMM'nin Açılışı",
+      "active": true,
+      "scenario": "ankara_1920",
+      "doneLabel": "MECLİS AÇILDI",
+      "date": "23 Nisan 1920, Cuma",
+      "summary": "İstanbul'un işgali ve Meclis-i Mebusan'ın dağıtılması üzerine milletin temsilcileri Ankara'da toplandı. 23 Nisan 1920'de Hacı Bayram Camii'nde kılınan Cuma namazının ardından Türkiye Büyük Millet Meclisi, en yaşlı üye Sinop Mebusu Şerif Bey tarafından açıldı.",
+      "chapter": [
+        "Tamamen I. Meclis binasının içinde geçer",
+        "Mini oyun: salonun gaz lambalarını yak",
+        "Mini oyun: tamimi Mors alfabesiyle telgrafla",
+        "Mini oyun: açılış konuşmasını zabta geçir"
+      ]
+    },
+    {
+      "id": "kayseri",
+      "name": "Kayseri",
+      "year": 1390,
+      "title": "Ticaretin ve Pazarlığın Keşfi",
+      "active": true,
+      "scenario": "kayseri_pazar",
+      "doneLabel": "ALAN RAZI, SATAN RAZI",
+      "date": "Kadı Burhaneddin devri · 1381–1398",
+      "summary": "Kervan yollarının kavşağındaki Kayseri, Selçuklulardan beri Anadolu'nun ticaret merkezlerinden biriydi. Kayseri kadılığından hükümdarlığa yükselen Kadı Burhaneddin Ahmed döneminde çarşılar Ahilik geleneğiyle işledi: doğru terazi, insaflı fiyat ve narh. (Bölümdeki çırak ve müşteriler kurgudur.)",
+      "chapter": [
+        "Duvarlarla çevrili çarşı ve han avlusu",
+        "Mini oyun: kırk mantı bir kaşığa",
+        "Mini oyun: sac başında yağlama",
+        "Mini oyun: pazarlığın keşfi"
+      ]
+    },
+    {
+      "id": "samsun",
+      "name": "Samsun",
+      "year": 1919,
+      "title": "Milli Mücadele'nin Başlangıcı",
+      "active": true,
+      "scenario": "samsun_1919",
+      "doneLabel": "19 MAYIS 1919",
+      "date": "19 Mayıs 1919",
+      "summary": "Mondros Mütarekesi'nin ardından Anadolu işgal edilirken Mustafa Kemal Paşa, 9. Ordu Müfettişi olarak Bandırma Vapuru ile İstanbul'dan ayrıldı ve 19 Mayıs 1919'da Samsun'a çıktı. Bu adım Milli Mücadele'nin başlangıcı kabul edilir.",
+      "chapter": [
+        "Şehre bakan tepedeki askerî karakol",
+        "Mini oyunlar: nişan talimi, dürbün nöbeti, karşılama talimi",
+        "2B piksel art boss dövüşü: köy yolunda çete reisi",
+        "Final: tepede Mustafa Kemal Paşa"
+      ]
+    },
+    {
+      "id": "bursa",
+      "name": "Bursa",
+      "year": 1326,
+      "title": "Bursa'nın Fethi",
+      "active": false,
+      "date": "6 Nisan 1326",
+      "summary": "Osman Gazi'nin kurduğu Osmanlı Beyliği, Bizans'ın Bithynia'daki en önemli şehri Bursa'yı yıllarca kuşattı. Şehrin çevresine Balabancık ve Aktimur hisarları yapıldı, yollar tutuldu ve şehrin erzakı kesildi. Kuşatmayı Orhan Bey yönetti; 1326'da şehrin komutanı Bursa'yı teslim etti. Bursa, Osmanlı'nın ilk büyük başkenti oldu.",
+      "chapter": [
+        "Bursa önündeki kuşatma hisarında geçer",
+        "Mini oyunlar ve araya sıkışan bir hikâye: İskender kebabının keşfi (1867)",
+        "Final: Orhan Gazi'nin yanında 2B kuşbakışı ordu yönetimi"
+      ]
+    },
+    {
+      "id": "izmir",
+      "name": "İzmir",
+      "year": 1922,
+      "title": "Kurtuluş",
+      "active": false,
+      "date": "9 Eylül 1922",
+      "summary": "Büyük Taarruz'un ardından ilerleyen Türk süvarileri 9 Eylül 1922'de İzmir'e girdi. Yunan ordusunun Anadolu'dan çekilmesiyle Kurtuluş Savaşı'nın askerî safhası sona erdi."
+    },
+    {
+      "id": "edirne",
+      "name": "Edirne",
+      "year": 1363,
+      "title": "Edirne'nin Fethi",
+      "active": false,
+      "date": "1361–1363 (tartışmalı)",
+      "summary": "Sultan I. Murad döneminde Lala Şahin Paşa komutasındaki Osmanlı ordusu Edirne'yi aldı. Edirne, İstanbul'un fethine kadar Osmanlı Devleti'nin başkenti oldu ve Balkanlar'a açılan kapı haline geldi."
+    },
+    {
+      "id": "canakkale",
+      "name": "Çanakkale",
+      "year": 1915,
+      "title": "Çanakkale Savaşları",
+      "active": false,
+      "date": "18 Mart 1915 · Nisan 1915 – Ocak 1916",
+      "summary": "İtilaf donanması 18 Mart 1915'te Çanakkale Boğazı'nı geçmeyi denedi ancak ağır kayıplarla geri çekildi. Ardından Gelibolu Yarımadası'nda aylarca süren kara savaşları yaşandı; Boğaz geçilemedi."
+    },
+    {
+      "id": "erzurum",
+      "name": "Erzurum",
+      "year": 1919,
+      "title": "Erzurum Kongresi",
+      "active": false,
+      "date": "23 Temmuz – 7 Ağustos 1919",
+      "summary": "Doğu illerinin temsilcileriyle toplanan Erzurum Kongresi, vatanın millî sınırlar içinde bir bütün olduğunu ve bölünemeyeceğini, manda ve himayenin kabul edilemeyeceğini ilan etti."
+    },
+    {
+      "id": "sivas",
+      "name": "Sivas",
+      "year": 1919,
+      "title": "Sivas Kongresi",
+      "active": false,
+      "date": "4–11 Eylül 1919",
+      "summary": "Sivas Kongresi, bütün millî cemiyetleri 'Anadolu ve Rumeli Müdafaa-i Hukuk Cemiyeti' adı altında birleştirdi; manda ve himaye kesin olarak reddedildi ve Heyet-i Temsiliye bütün yurdu temsil eder hale geldi."
+    },
+    {
+      "id": "konya",
+      "name": "Konya",
+      "year": 1220,
+      "title": "Selçuklu Başkenti",
+      "active": false,
+      "date": "I. Alâeddin Keykubad dönemi · 1220–1237",
+      "summary": "Anadolu Selçuklu Devleti'nin başkenti Konya, Sultan I. Alâeddin Keykubad döneminde en parlak günlerini yaşadı. Şehir surlarla çevrildi, saraylar, medreseler ve kervan yolları üzerinde hanlar yapıldı."
+    },
+    {
+      "id": "mus",
+      "name": "Muş",
+      "year": 1071,
+      "title": "Malazgirt Meydan Muharebesi",
+      "active": false,
+      "date": "26 Ağustos 1071",
+      "summary": "Büyük Selçuklu Sultanı Alp Arslan, Malazgirt'te Bizans İmparatoru Romen Diyojen'in ordusunu yendi ve imparatoru esir aldı. Bu zaferle Anadolu'nun kapıları Türklere açıldı."
+    },
+    {
+      "id": "trabzon",
+      "name": "Trabzon",
+      "year": 1461,
+      "title": "Trabzon'un Fethi",
+      "active": false,
+      "date": "1461",
+      "summary": "Fatih Sultan Mehmed, 1461'de Trabzon Rum İmparatorluğu'na son verdi. Böylece Karadeniz'in güney kıyıları Osmanlı topraklarına katıldı."
+    },
+    {
+      "id": "afyonkarahisar",
+      "name": "Afyonkarahisar",
+      "year": 1922,
+      "title": "Büyük Taarruz",
+      "active": false,
+      "date": "26–30 Ağustos 1922",
+      "summary": "Başkomutan Mustafa Kemal Paşa, 26 Ağustos 1922 sabahı Kocatepe'den Büyük Taarruz'u başlattı. 30 Ağustos'ta Dumlupınar'da kazanılan Başkomutanlık Meydan Muharebesi ile Kurtuluş Savaşı'nın zaferi kesinleşti."
+    },
+    {
+      "id": "sakarya",
+      "name": "Sakarya",
+      "year": 1921,
+      "title": "Sakarya Meydan Muharebesi",
+      "active": false,
+      "date": "23 Ağustos – 13 Eylül 1921",
+      "summary": "22 gün 22 gece süren Sakarya Meydan Muharebesi'nde Yunan ordusunun Ankara'ya ilerleyişi durduruldu. TBMM, Mustafa Kemal Paşa'ya mareşallik rütbesi ve Gazi unvanı verdi."
+    },
+    {
+      "id": "kahramanmaras",
+      "name": "Kahramanmaraş",
+      "year": 1920,
+      "title": "Maraş Savunması",
+      "active": false,
+      "date": "21 Ocak – 12 Şubat 1920",
+      "summary": "Fransız işgaline karşı ayaklanan Maraş halkı, 22 gün süren sokak çatışmalarının ardından şehri kurtardı. Şehre 1973'te 'Kahraman' unvanı verildi."
+    },
+    {
+      "id": "gaziantep",
+      "name": "Gaziantep",
+      "year": 1921,
+      "title": "Antep Savunması",
+      "active": false,
+      "date": "1920 – 9 Şubat 1921",
+      "summary": "Antep halkı, Fransız kuşatmasına karşı aylarca direndi; kıtlık içinde şehri savundu. TBMM, 1921'de şehre 'Gazi' unvanını verdi."
+    }
   ]
 }

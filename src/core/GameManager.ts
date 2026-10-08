@@ -127,7 +127,7 @@ export class GameManager {
 
   private async buildMap(onProgress: (f: number, s: string) => void): Promise<void> {
     this.map = await MapScene.create(this.services, this.geo!, this.cities, onProgress);
-    this.map.onCitySelected = (city) => void this.selectCity(city);
+    this.map.onCitySelected = (city) => this.openCityInfo(city);
     this.current = this.map;
   }
 
@@ -183,8 +183,29 @@ export class GameManager {
     this.services.ui.mainMenu.show();
   }
 
+  /** Map click: show the event's info panel; "Oyna" starts the chapter. */
+  private openCityInfo(city: CityEntry): void {
+    if (this.state !== "map") return;
+    const { ui, save } = this.services;
+    const completed = !!city.scenario && save.save.completedScenarios.includes(city.scenario);
+    ui.map.showCityInfo(
+      city,
+      completed,
+      () => {
+        this.services.audio.play("uiConfirm");
+        ui.map.hideCityInfo();
+        void this.selectCity(city);
+      },
+      () => {
+        this.services.audio.play("uiBack");
+        ui.map.hideCityInfo();
+      },
+    );
+  }
+
   private async selectCity(city: CityEntry): Promise<void> {
     if (this.state !== "map" || !city.scenario || !this.map) return;
+    this.services.ui.map.hideCityInfo();
     this.state = "intro";
     const { ui, audio, save } = this.services;
     await this.map.playSelectSequence(city.id);
@@ -263,7 +284,10 @@ export class GameManager {
     if (this.state === "playing" || this.state === "paused") {
       if (performance.now() - this.lastPauseToggle < 350) return;
       this.togglePause();
-    } else if (this.state === "map") this.backToMenu();
+    } else if (this.state === "map") {
+      if (ui.map.infoOpen) ui.map.hideCityInfo();
+      else this.backToMenu();
+    }
   }
 
   togglePause(force?: boolean): void {

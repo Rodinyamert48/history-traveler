@@ -27,6 +27,10 @@ export interface CityEntry {
   scenario?: string;
   /** Short badge once the scenario is completed (e.g. "FETHEDİLDİ"). */
   doneLabel?: string;
+  /** Shown in the map's info panel: exact date, a short account of the event, chapter contents. */
+  date?: string;
+  summary?: string;
+  chapter?: string[];
 }
 
 export interface CitiesFile {
