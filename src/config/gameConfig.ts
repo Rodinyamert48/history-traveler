@@ -295,7 +295,7 @@ export const GAME_CONFIG = {
       convoyIn: 8,
       convoyCut: 6,
       sortieEvery: 17,
-      bossHp: 460,
+      bossHp: 340,
     },
     stir: {
       /** Ideal stirring speed band in revolutions per second. */

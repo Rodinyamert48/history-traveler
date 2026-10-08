@@ -227,7 +227,7 @@ export class OrduMinigame extends BaseMinigame {
       flash: 0,
     });
     this.units = [
-      u("Orhan Gazi'nin muhafızları", "Orhan Gazi", "guard", 180, 10, 11, 32, PAL.ottomanGreen, 52, 66),
+      u("Orhan Gazi'nin muhafızları", "Orhan Gazi", "guard", 230, 10, 11, 32, PAL.ottomanGreen, 52, 66),
       u("Akçakoca'nın akıncıları", "Akçakoca", "cav", 95, 9, 11, 46, PAL.ottoman, 60, 50),
       u("Konur Alp'in yayaları", "Konur Alp", "inf", 140, 8, 10, 22, "#8a4a1a", 44, 76),
       u("Abdurrahman Gazi'nin okçuları", "Abdurrahman", "arch", 75, 7, 46, 26, "#2a5a8a", 30, 66),
@@ -497,7 +497,7 @@ export class OrduMinigame extends BaseMinigame {
         if (u.dead || b.hitThisDash?.has(u)) continue;
         if (Math.hypot(u.x - b.x, u.y - b.y) < 12) {
           b.hitThisDash?.add(u);
-          this.damage(u, 24);
+          this.damage(u, 18);
           audio.play("woodClash", { volume: 0.6 });
           this.burst(u.x, u.y, 8, PAL.byzGold);
         }
@@ -686,7 +686,7 @@ export class OrduMinigame extends BaseMinigame {
     this.morale = CFG.bossAt;
     this.convoys = [];
     const g = this.gates[0];
-    this.boss = this.byz("Tekfur'un zırhlı süvarileri", g.x, g.y, CFG.bossHp, 16, 12, 26, "boss");
+    this.boss = this.byz("Tekfur'un zırhlı süvarileri", g.x, g.y, CFG.bossHp, 12, 12, 26, "boss");
     this.boss.chargeCd = 3;
     this.enemies.push(this.boss);
     this.enemies.push(this.byz("Tekfur'un muhafızı", this.gates[1].x, this.gates[1].y, 80, 7, 10, 24));
