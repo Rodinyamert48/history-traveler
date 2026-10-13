@@ -48,8 +48,8 @@ const PAL = {
   beam: "rgba(255,240,170,0.22)",
   ship: "#6a7078",
   nusret: "#a8a090",
-  mine: "#1a1a1e",
-  mineHi: "#5a5a60",
+  mine: "#8a8c94",
+  mineHi: "#d8dce4",
   lane: "rgba(150,200,255,0.35)",
   text: "#c8d0d8",
 };
@@ -326,6 +326,8 @@ export class NusretMinigame extends BaseMinigame {
     // Laid mines.
     for (const m of this.mines) {
       r(m.x - 1, m.y - 1, 3, 3, PAL.mine);
+      r(m.x - 2, m.y, 5, 1, PAL.mine);
+      r(m.x, m.y - 2, 1, 5, PAL.mine);
       r(m.x - 1, m.y - 1, 1, 1, PAL.mineHi);
     }
     // Wake.
