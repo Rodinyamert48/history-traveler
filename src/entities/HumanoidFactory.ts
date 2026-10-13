@@ -291,6 +291,38 @@ export const LOOKS = {
     bandolier: "#5a4028",
     rightItem: v % 2 === 0 ? "rifle" : "none",
   }),
+  /** Ottoman coastal gunner of 1915: kabalak, plain khaki tunic, no rifle. */
+  topcu1915: (n = 0): HumanoidLook => {
+    const v = Math.abs(Math.round(n));
+    return {
+      skin: ["#c08a64", "#b07a54", "#cf9e78", "#a87450"][v % 4],
+      kaftan: ["#7a7452", "#726c4c", "#807a58"][v % 3],
+      sleeves: ["#7a7452", "#726c4c", "#807a58"][v % 3],
+      trousers: "#6a6446",
+      sash: "#4a3622",
+      boots: "#3a2a1c",
+      hat: "kabalak",
+      hatColor: ["#8a8460", "#827c58"][v % 2],
+      mustache: v % 3 === 2 ? undefined : "#2b2018",
+      longKaftan: false,
+      rightItem: "none",
+    };
+  },
+  /** Seyit Onbaşı: a big, broad-shouldered gunner from Edremit with a thick moustache. */
+  seyitOnbasi: (): HumanoidLook => ({
+    skin: "#b88058",
+    kaftan: "#76704e",
+    sleeves: "#76704e",
+    trousers: "#666042",
+    sash: "#4a3622",
+    boots: "#3a2a1c",
+    hat: "kabalak",
+    hatColor: "#868058",
+    mustache: "#1e1610",
+    longKaftan: false,
+    rightItem: "none",
+    scale: 1.12,
+  }),
   /** Ottoman officer of 1919: kalpak, belted tunic, high boots. */
   subay1919: (v = 0): HumanoidLook => ({
     skin: ["#c99a72", "#d4a882"][v % 2],

@@ -10,6 +10,7 @@ Oynanabilir bölümler:
 - **Kayseri — 1390, Ticaretin ve Pazarlığın Keşfi** (3 mini oyun): duvarlarla çevrili çarşı ve han; yağlama, mantı, pazarlık ve Kadı Burhaneddin
 - **Samsun — 19 Mayıs 1919, Milli Mücadele'nin Başlangıcı** (3 mini oyun + 2B piksel‑art boss dövüşü): Samsun'a bakan tepedeki askerî karakol
 - **Bursa — 1326, Bursa'nın Fethi** (3 mini oyun + 2B İskender ara hikâyesi + 2B kuşbakışı ordu yönetimi finali): Balabancık kuşatma hisarı
+- **Çanakkale — 18 Mart 1915, Çanakkale Deniz Zaferi** (2B Nusret mayın gecesi + topçu atışı + Seyit Onbaşı + 18 Mart finali): Rumeli Mecidiye Tabyası
 
 Haritada bir şehre tıklayınca önce o şehrin **tarihî olay kartı** açılır (tarih, olayın özeti, bölümde neler var);
 **Oyna** denince bölüm başlar.
@@ -260,6 +261,45 @@ finaldeki "Tekfur'un son çıkışı" ve birliklerin dağılımı oyunlaştırma
 İskender kebabının hikâyesi 1326'da değil, yüzyıllar sonra **1867'de Bursa'da Mehmetoğlu İskender Efendi**'ye dayanır (aile anlatısı);
 bölümde bilerek zamanda ileri sıçrayan bir ara hikâye olarak verilmiştir. Kapı adları Bursa'nın tarihî kapılarından alınmıştır;
 konumları haritada temsilîdir.
+
+### Çanakkale · 18 Mart 1915 — Çanakkale Deniz Zaferi (`public/data/scenarios/canakkale_1915.json`)
+Bölüm kapalı bir alanda, Kilitbahir'in güneyindeki **Rumeli Mecidiye Tabyası**'nda geçer: önde toprak siper ve kum torbaları,
+aralarında toprak travers bulunan dört top çukurunda 24'lük Krupp kıyı topları, cephanelik, mermi istifleri, topun mermi vinci,
+telemetre (mesafe ölçer) mevzii, çadırlar, mutfak ve bayrak. Tabyanın önünde Boğaz; kuzeyde Kilitbahir Kalesi, karşı kıyıda
+Çimenlik Kalesi ile Çanakkale, güneydoğuda Erenköy Koyu ve İtilaf donanmasının zırhlıları. Müzik Hüseyni'de ney ve kudüm ile
+sentezlenmiştir. Askerler 1915 Osmanlı topçu kıyafetiyle (haki ceket, kabalak) görünür.
+
+| # | Görev | Tür | Mekanik |
+|---|---|---|---|
+| 1 | Rumeli Mecidiye Tabyası | story | Yüzbaşı Hasan Bey ile konuş, telemetreden düşman hattına bak |
+| 2 | Nusret'in Gecesi | minigame | **2B mayın döşeme** — 8 Mart gecesi Erenköy Koyu'na 26 mayın |
+| 3 | Cephane | deliver | Seyit Onbaşı ile cephanelikten topa mermi taşı |
+| 4 | Ateş! | minigame | **Topçu mini oyunu** — İngiliz hattını vur |
+| 5 | Seyit Onbaşı | minigame | **276 kiloluk mermi** — kaldır, dengede taşı, kamaya sür |
+| 6 | 18 Mart | combat | **Final** — Fransız hattına ve donanmanın karşı ateşine karşı tabyayı ayakta tut |
+
+**Mini oyunlar:**
+1. **Nusret'in Gecesi (2B piksel art)** — Işıkları sönük Nusret'i (`A/D` dümen, `W/S` hız) koya sok ve mayınları kıyıya paralel
+   kesik çizgi boyunca `SPACE` ile bırak. İngiliz muhriplerinin ışıldak hüzmeleri suyu tarar: hüzmede kalırsan fark edilirsin.
+   26 mayından sonra şafak sökmeden kuzeye, Çanakkale'ye dön.
+2. **Topçu atışı** — Fareyle topu çevir, `W/S` (tekerlek; `Q/E` ince ayar) ile telemetrenin bildirdiği mesafeyi ayarla, sol tık /
+   `SPACE` ile ateş et. Mermi birkaç saniyede varır; gemi ilerlediği için önüne nişan almalısın. Iskalarda su sütunu ve "kısa / uzun /
+   sola / sağa" düzeltmesi görürsün; yara alan gemi hattan çekilir.
+3. **Seyit Onbaşı** — Vinç parçalanınca 276 kiloluk mermiyi `A` ve `D`'ye sırayla basarak sırtına al, sallanan yükü `A/D` ile
+   dengeleyerek topa taşı, ibre yeşildeyken `E` ile kamaya sür.
+
+**Final:** 18 Mart öğleden sonra Fransız hattı (Bouvet, Suffren, Gaulois, Charlemagne) ve Irresistible ile Ocean koya girer; donanma
+tabyayı dövdükçe tabyanın dayanıklılığı düşer. İlk atış Seyit Onbaşı'nın mermisidir. Yeterince isabetten sonra Bouvet Erenköy Koyu'na
+döner ve Nusret'in mayınlarına çarpıp dakikalar içinde batar; ardından Irresistible ve Ocean da mayına çarpar, donanma geri çekilir.
+Ekran kararır ve Mehmet Âkif Ersoy'un *Çanakkale Şehitlerine* şiirinden *"Ey şehid oğlu şehid, isteme benden makber, / Sana âgûşunu
+açmış duruyor Peygamber."* dizeleri belirir.
+
+*Tarihî notlar:* İtilaf donanmasının 18 Mart 1915'te Boğaz'ı geçme girişimi; Nusret'in 7'yi 8 Mart'a bağlayan gece Erenköy Koyu'na
+kıyıya paralel 26 mayın döşemesi; Bouvet'nin bu mayınlara çarpıp kısa sürede batması, Irresistible ve Ocean'ın da mayınlara çarpıp
+kaybedilmesi ve donanmanın geri çekilmesi gerçektir. Rumeli Mecidiye Tabyası ve Seyit Onbaşı'nın vinç kırılınca 276 kiloluk mermiyi
+sırtında taşıması tarihî bir olaydır; mermilerinin Ocean'a isabet ettiği ve sonradan aynı mermiyi kaldıramayıp "Harp olursa yine
+kaldırırım" dediği anlatılır (rivayet). Yüzbaşı Hasan Bey, Mülazım Hakkı Efendi ve diyaloglar kurgudur. Boğaz üzerindeki mesafeler oyunda
+kısaltılmıştır (ekrandaki mesafe değerleri oyun mesafesinin on katıdır); gemilerin sırası ve zamanlaması oyunlaştırılmıştır.
 
 ## Kontroller
 

@@ -456,6 +456,18 @@ export class MapScene implements GameScene {
       b.box(sx, 0.02, sz, 0.3, 0.06, 0.08, { color: hexColor("#1c1c1e") });
       b.box(sx, 0.09, sz, 0.12, 0.06, 0.06, { color: hexColor("#ece6d8") });
       b.box(sx + 0.03, 0.15, sz, 0.03, 0.1, 0.03, { color: hexColor("#1a1a1a") });
+    } else if (provinceId === "canakkale") {
+      // Kilitbahir's castle on the European shore of the Narrows, a flag, and a grey battleship.
+      const [kx, kz] = project(26.37, 40.14);
+      const kh = hAt(kx, kz);
+      const stone = hexColor("#b8ad94");
+      b.cylinder(kx, kh, kz, 0.28, 0.26, 0.18, { segments: 9, color: stone });
+      b.box(kx, kh + 0.22, kz, 0.14, 0.32, 0.14, { color: stone });
+      b.box(kx - 0.3, kh + 0.35, kz + 0.1, 0.015, 0.5, 0.015, { color: hexColor("#4e3820") });
+      b.box(kx - 0.23, kh + 0.53, kz + 0.1, 0.13, 0.09, 0.01, { color: hexColor("#c8102e") });
+      const [sx, sz] = project(26.3, 40.04);
+      b.box(sx, 0.02, sz, 0.08, 0.06, 0.32, { color: hexColor("#6e747a") });
+      b.box(sx, 0.08, sz, 0.05, 0.06, 0.12, { color: hexColor("#7c8288") });
     } else if (provinceId === "bursa") {
       // Snowy Uludağ south of the city, Bursa's walled citadel and a siege fort with its banner.
       const [ux, uz] = project(29.12, 40.07);

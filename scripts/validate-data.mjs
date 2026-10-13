@@ -29,6 +29,7 @@ const MINIGAMES = {
   kayseri_pazar: new Set(["manti", "sac", "pazarlik"]),
   samsun_1919: new Set(["atis", "durbun", "duello", "toren"]),
   bursa_1326: new Set(["kapi", "cevirme", "iskender", "ordu"]),
+  canakkale_1915: new Set(["nusret", "batarya", "seyit", "filo"]),
 };
 // Completed missions are saved in one flat list, so ids must be unique across scenarios.
 const allMissionIds = new Map();

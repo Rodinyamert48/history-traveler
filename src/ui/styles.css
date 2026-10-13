@@ -3543,3 +3543,221 @@ input[type="range"]::-moz-range-thumb {
   width: min(560px, 92vw);
   text-align: center;
 }
+
+/* ---------------------------------------------------------------- Çanakkale: tabya topu */
+.bt-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bt-label {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding: 2px 6px;
+  background: rgba(14, 10, 8, 0.55);
+  border: 1px solid rgba(216, 173, 72, 0.35);
+  border-radius: 2px;
+  font-size: 11px;
+  line-height: 1.25;
+  color: var(--ink);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bt-label b {
+  display: block;
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+}
+
+.bt-label span {
+  color: #e2655a;
+  letter-spacing: 0.1em;
+}
+
+.bt-label.fr b {
+  color: #b8c8ff;
+}
+
+.bt-label.sel {
+  border-color: #ffd36a;
+  box-shadow: 0 0 10px rgba(255, 211, 106, 0.6);
+}
+
+.bt-side {
+  position: absolute;
+  left: calc(20px + var(--safe-left));
+  top: calc(170px + var(--safe-top));
+  width: min(300px, 42vw);
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.bt-cap {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-dim);
+}
+
+.bt-range {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffd36a;
+  letter-spacing: 0.04em;
+}
+
+.bt-call {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.bt-call b {
+  color: #ffd36a;
+}
+
+.bt-call i {
+  display: block;
+  color: var(--ink-dim);
+  font-style: normal;
+}
+
+.bt-reload {
+  height: 6px;
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--line);
+}
+
+.bt-reload-fill {
+  height: 100%;
+  background: #8a6a3a;
+}
+
+.bt-reload-fill.ready {
+  background: var(--good);
+}
+
+.bt-integrity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+}
+
+.bt-int-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--line);
+}
+
+.bt-int-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6a8a3a, #9fd26b);
+  transition: width 0.2s ease;
+}
+
+.bt-int-fill.low {
+  background: linear-gradient(90deg, #8a2a1a, #e2655a);
+}
+
+/* ---------------------------------------------------------------- Çanakkale: Seyit Onbaşı */
+.sy-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+}
+
+.sy-row > span {
+  flex: 0 0 82px;
+}
+
+.sy-track {
+  position: relative;
+  flex: 1;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--line);
+}
+
+.sy-lift {
+  height: 100%;
+  background: linear-gradient(90deg, #6e2a10, #d8642a, #ffd36a);
+}
+
+.sy-safe,
+.sy-zone {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 35%;
+  width: 30%;
+  border: 1px solid rgba(159, 210, 107, 0.9);
+  background: rgba(159, 210, 107, 0.15);
+}
+
+.sy-zone {
+  left: 39%;
+  width: 22%;
+}
+
+.sy-needle {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 4px;
+  margin-left: -2px;
+  background: #fff;
+  box-shadow: 0 0 6px #fff;
+}
+
+.sy-needle.danger {
+  background: #e2655a;
+  box-shadow: 0 0 10px #e2655a;
+}
+
+/* ---------------------------------------------------------------- Çanakkale: Nusret (2B) */
+.pixel-duel.nusret {
+  background: #05080e;
+}
+
+.nu-status {
+  margin-top: 8px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  color: #c8d0d8;
+}
+
+.nu-status b {
+  color: #ffe8a0;
+}
+
+.nu-status b.bad {
+  color: #e2655a;
+}
+
+@media (max-width: 760px) {
+  .bt-side {
+    top: auto;
+    bottom: calc(210px + var(--safe-bottom));
+    width: min(260px, 58vw);
+    padding: 8px 10px;
+  }
+
+  .bt-range {
+    font-size: 22px;
+  }
+}

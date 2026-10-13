@@ -124,10 +124,13 @@
       "id": "canakkale",
       "name": "Çanakkale",
       "year": 1915,
-      "title": "Çanakkale Savaşları",
-      "active": false,
-      "date": "18 Mart 1915 · Nisan 1915 – Ocak 1916",
-      "summary": "İtilaf donanması 18 Mart 1915'te Çanakkale Boğazı'nı geçmeyi denedi ancak ağır kayıplarla geri çekildi. Ardından Gelibolu Yarımadası'nda aylarca süren kara savaşları yaşandı; Boğaz geçilemedi."
+      "title": "Çanakkale Deniz Zaferi",
+      "active": true,
+      "scenario": "canakkale_1915",
+      "doneLabel": "GEÇİLMEDİ · 1915",
+      "date": "18 Mart 1915",
+      "summary": "İtilaf donanması 18 Mart 1915'te Çanakkale Boğazı'nı geçmeye çalıştı. Kıyı tabyalarının ateşi ve Nusret mayın gemisinin Erenköy Koyu'na döşediği mayınlarla Bouvet, Irresistible ve Ocean battı; donanma geri çekildi. Ardından Gelibolu'da aylarca süren kara savaşları yaşandı; Boğaz geçilemedi.",
+      "chapter": ["Rumeli Mecidiye Tabyası'nda geçer", "Mini oyunlar: Nusret'in mayın gecesi (2B), 24'lük Krupp topuyla atış, Seyit Onbaşı'nın 276 kiloluk mermisi", "Final: 18 Mart öğleden sonra düşman donanmasına karşı tabya"]
     },
     {
       "id": "erzurum",

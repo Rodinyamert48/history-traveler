@@ -1,7 +1,7 @@
 import { Random } from "../utils/random";
 import { HICAZ_D, HUSEYNI_A, USSAK_D, type SynthLibrary } from "./SynthLibrary";
 
-export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara" | "kayseri" | "samsun" | "bursa";
+export type MusicTheme = "map" | "istanbul" | "tension" | "victory" | "mugla" | "dugun" | "ankara" | "kayseri" | "samsun" | "bursa" | "canakkale";
 
 /** A fixed arrangement (instead of generative phrases): MIDI notes in eighth-note steps, 0 = rest. */
 interface Score {
@@ -59,6 +59,8 @@ const THEMES: Record<MusicTheme, ThemeDef> = {
   samsun: { bpm: 150, usul: "D.T.TK.", drum: "davul", melody: "zurna", melodyDensity: 0.6, droneRoot: 110, volume: 0.66, scale: HUSEYNI_A },
   // Bursa 1326: an early Ottoman camp — slow kudüm in a 10/8 (aksak semai feel) under a Hicaz ney.
   bursa: { bpm: 80, usul: "D..T.D.TK.", drum: "kudum", melody: "ney", melodyDensity: 0.45, droneRoot: 73.42, volume: 0.8, scale: HICAZ_D },
+  // Çanakkale 1915: a slow, mournful Hüseyni line on the ney over a sparse kudüm, like the türkü.
+  canakkale: { bpm: 66, usul: "D...T...K...T...", drum: "kudum", melody: "ney", melodyDensity: 0.4, droneRoot: 110, volume: 0.78, scale: HUSEYNI_A },
   kayseri: { bpm: 90, usul: "D..TK.T.D.T.K.T.", drum: "kudum", melody: "mixed", melodyDensity: 0.55, droneRoot: 73.42, volume: 0.78, scale: USSAK_D },
 };
 

@@ -297,6 +297,35 @@ export const GAME_CONFIG = {
       sortieEvery: 17,
       bossHp: 340,
     },
+    // ---- Çanakkale: 18 March 1915
+    batarya: {
+      /** Hits needed in the morning duel, and in the final before the French line turns into the bay. */
+      firstHits: 5,
+      finalHits: 7,
+      reload: 4.2,
+      /** Game meters per second of shell flight (on top of 1.1 s), and the hit allowance around a hull. */
+      shellSpeed: 230,
+      slack: 9,
+      minRange: 250,
+      maxRange: 1100,
+      /** Enemy shells landing closer than this to the battery wear it down by `damage`. */
+      nearMiss: 30,
+      damage: 6,
+    },
+    nusret: {
+      mines: 26,
+      /** Searchlight exposure (seconds) before Nusret is spotted. */
+      spotTime: 1.6,
+    },
+    seyit: {
+      /** Lift strength gained per alternating step, and how fast it slips back. */
+      liftStep: 0.075,
+      liftDecay: 0.22,
+      walkSpeed: 1.25,
+      /** Balance: drift strength and the tilt at which he stumbles. */
+      wobble: 0.55,
+      tip: 1,
+    },
     stir: {
       /** Ideal stirring speed band in revolutions per second. */
       minRps: 0.35,
