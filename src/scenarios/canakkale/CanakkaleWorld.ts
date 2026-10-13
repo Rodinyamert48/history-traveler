@@ -171,7 +171,8 @@ export async function buildCanakkaleWorld(ctx: WorldBuildContext): Promise<Canak
   // The lone shell by the door that Seyit Onbaşı will lift.
   const shell = new TransformNode("seyit-shell", scene);
   {
-    const p = atL(dp.u + 1.8, dp.v + 4.4);
+    // In front of the magazine, on the way to the guns: he faces the battery as he lifts it.
+    const p = atL(dp.u + 1.8, dp.v + 6.5);
     shell.position.copyFrom(p);
     shell.rotation.y = FACING + 0.4;
     prefabs.buildUnique("seyit-shell", K.shellLying(), shell);

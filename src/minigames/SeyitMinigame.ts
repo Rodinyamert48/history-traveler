@@ -195,7 +195,7 @@ export class SeyitMinigame extends BaseMinigame {
       this.lift = Math.max(0, this.lift - CFG.liftDecay * dt * (1 - this.lift * 0.5));
       // Bent over the shell, straightening up as it comes up.
       player.pitch = lerp(0.7, 0.12, this.lift);
-      if (this.lift >= 1) {
+      if (this.lift >= 0.97) {
         shell.setEnabled(false);
         held.setEnabled(true);
         audio.play("land", { volume: 0.7, pitch: 0.5 });
