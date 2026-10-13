@@ -45,11 +45,11 @@ export const LAYOUT = {
   mainGun: 2,
   depot: { u: -6, v: -16 },
   crane: { u: 12.6, v: 8.4 },
-  telemetre: { u: 33, v: 7 },
+  telemetre: { u: 32, v: 8 },
   flag: { u: 0, v: -6 },
   tents: { u0: -26, u1: 26, v: -28 },
   kitchen: { u: -32, v: -22 },
-  spawn: { u: 0, v: -18 },
+  spawn: { u: 9, v: -15 },
 
   kilitbahir: { x: 70, z: 470 },
   cimenlik: { x: 700, z: 470 },

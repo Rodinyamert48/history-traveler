@@ -179,10 +179,18 @@ export async function buildCanakkaleWorld(ctx: WorldBuildContext): Promise<Canak
   anchors.set("seyit", atL(dp.u + 1.8, dp.v + 5.4));
 
   // Rangefinder post, flag, tents, kitchen and the crew's shelters.
+  // The rangefinder stands on a stepped earth platform so the officer sees over the parapet.
   const tm = L.telemetre;
-  placeL("rangefinder", tm.u, tm.v, 0);
-  circleL(tm.u, tm.v, 0.6, GY + 1.8);
-  const telemetre = atL(tm.u, tm.v - 1.2);
+  {
+    const [x, z] = bw(tm.u, tm.v);
+    S0("matte").box(x, GY + 0.25, z, 9, 0.5, 9, { color: hexColor("#8a7452"), jitter: 0.05 });
+    S0("matte").box(x, GY + 0.75, z, 6.6, 0.5, 6.6, { color: hexColor("#7e6a4a"), jitter: 0.05 });
+    collision.addBox(x, z, 9, 9, 0, -100, GY + 0.5, { walkable: true });
+    collision.addBox(x, z, 6.6, 6.6, 0, -100, GY + 1.0, { walkable: true });
+    prefabs.place("rangefinder", x, GY + 1.0, z, { rotY: FACING });
+    collision.addCircle(x, z, 0.6, -100, GY + 2.8, { walkable: false });
+  }
+  const telemetre = atL(tm.u, tm.v - 1.4, 1.0);
   anchors.set("telemetre", telemetre.clone());
   let flagNode: TransformNode;
   {
