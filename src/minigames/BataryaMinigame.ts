@@ -94,10 +94,10 @@ export class BataryaMinigame extends BaseMinigame {
     const { player, mobile, hud, stand, facing, fleet, mode, audio } = this.d;
     player.controlEnabled = false;
     player.lookEnabled = true;
-    player.position.set(stand.x, stand.y + 0.35, stand.z);
-    player.yaw = facing + 0.12;
-    player.pitch = 0.02;
-    player.yawLimit = { center: facing + 0.1, range: 0.62 };
+    player.position.set(stand.x, stand.y + 1.05, stand.z);
+    player.yaw = facing + 0.2;
+    player.pitch = 0.03;
+    player.yawLimit = { center: facing + 0.2, range: 0.62 };
     player.pitchLimit = { min: -0.12, max: 0.25 };
     mobile.setActionButtons([
       { label: "ATEŞ", action: "fire" },
@@ -465,7 +465,7 @@ export class BataryaMinigame extends BaseMinigame {
       label.style.left = `${pr.x * sx}px`;
       label.style.top = `${pr.y * sy}px`;
       const hp = s.state === "steaming" || s.state === "toMines" ? "■".repeat(Math.max(0, s.hp)) + "□".repeat(Math.max(0, s.maxHp - s.hp)) : s.state === "sinking" ? "BATIYOR" : "YARALI";
-      label.innerHTML = `<b>${s.name}</b><span>${hp}</span>`;
+      label.innerHTML = s === sighted ? `<b>${s.name}</b><span>${hp}</span>` : `<i>${s.name}</i>`;
       label.classList.toggle("sel", s === sighted);
       label.classList.toggle("fr", s.nation === "Fransız");
     }

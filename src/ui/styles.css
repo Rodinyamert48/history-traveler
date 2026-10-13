@@ -3577,6 +3577,18 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: 0.1em;
 }
 
+.bt-label i {
+  font-style: normal;
+  font-size: 9px;
+  opacity: 0.75;
+}
+
+.bt-label:not(.sel) {
+  padding: 1px 4px;
+  background: rgba(14, 10, 8, 0.35);
+  border-color: transparent;
+}
+
 .bt-label.fr b {
   color: #b8c8ff;
 }

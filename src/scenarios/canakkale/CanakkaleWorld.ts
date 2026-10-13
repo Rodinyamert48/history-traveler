@@ -148,7 +148,8 @@ export async function buildCanakkaleWorld(ctx: WorldBuildContext): Promise<Canak
     boxL(u - 3.4, v - 3.6, 2.2, 0.8, GY + 1, false, 0.3);
   });
   const mg = L.guns[L.mainGun];
-  const gunStand = atL(mg - 1.5, 7.1, 0);
+  // The layer stands on the left of the breech, up on the carriage step, eyes over the barrel.
+  const gunStand = atL(mg - 2.6, 9.4, 0);
   anchors.set("top", atL(mg - 1.5, 6.4));
   // The hand crane at our gun (it breaks during the battle).
   const cr = L.crane;
