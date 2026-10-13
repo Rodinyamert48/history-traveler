@@ -52,16 +52,16 @@ const SHIPS: ShipDef[] = [
 
 /** Steaming loops (x, z, rx, rz) in the lower strait and Erenköy Bay. */
 const LOOPS_FAR: [number, number, number, number][] = [
-  [300, -980, 70, 26],
-  [420, -1020, 70, 26],
-  [540, -980, 70, 26],
-  [360, -1080, 70, 26],
+  [300, -780, 60, 22],
+  [410, -810, 60, 22],
+  [520, -770, 60, 22],
+  [360, -860, 60, 22],
 ];
 const LOOPS_A: [number, number, number, number][] = [
-  [300, -640, 60, 22],
-  [400, -700, 60, 22],
-  [500, -660, 60, 22],
-  [360, -760, 60, 22],
+  [270, -560, 56, 20],
+  [370, -610, 56, 20],
+  [470, -570, 56, 20],
+  [330, -670, 56, 20],
 ];
 const LOOPS_FINAL: Record<string, [number, number, number, number]> = {
   bouvet: [420, -430, 46, 18],
@@ -142,7 +142,7 @@ export class CanakkaleFleet {
       s.burning.stop();
       s.burning = null;
     }
-    if (!s.smoke) s.smoke = this.fx.smokeColumn(new Vector3(0, 14, 0), 0.35);
+    if (!s.smoke) s.smoke = this.fx.smokeColumn(new Vector3(0, 14, 0), 0.9);
     this.place(s, 0);
   }
 
@@ -185,7 +185,7 @@ export class CanakkaleFleet {
     s.hp--;
     const p = s.node.position;
     this.fx.impact(new Vector3(p.x, 7, p.z), true);
-    if (!s.burning) s.burning = this.fx.smokeColumn(new Vector3(p.x, 6, p.z), 0.6);
+    if (!s.burning) s.burning = this.fx.smokeColumn(new Vector3(p.x, 6, p.z), 1.6);
     if (s.hp > 0) return false;
     if (s.state === "steaming") this.withdraw(s);
     return true;
@@ -220,7 +220,7 @@ export class CanakkaleFleet {
     for (let k = 0; k < 4; k++) this.fx.splash(at.add(new Vector3(this.rnd.range(-10, 10), 0, this.rnd.range(-10, 10))));
     this.fx.impact(new Vector3(p.x, 4, p.z), true);
     s.burning?.stop();
-    s.burning = this.fx.smokeColumn(new Vector3(p.x, 4, p.z), s.id === "bouvet" ? 1.2 : 0.8);
+    s.burning = this.fx.smokeColumn(new Vector3(p.x, 4, p.z), s.id === "bouvet" ? 3 : 2.2);
     this.audio.play("cannonFire", { volume: 0.9, pitch: 0.5 });
     this.audio.play("impactStone", { volume: 0.6, pitch: 0.6 });
     this.onMine?.(s);

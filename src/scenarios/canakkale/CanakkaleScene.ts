@@ -172,7 +172,7 @@ export class CanakkaleScene extends FpsScenario<CanakkaleWorld> {
       return this.spawn(role, look, x, z, FACING + rot, { type: "pose", anim }, name, id);
     };
     sp("commander", LOOKS.subay1919(0), 3, -8, Math.PI, "idle", "Yüzbaşı Hasan Bey", "yuzbasi");
-    sp("commander", LOOKS.subay1919(1), L.telemetre.u - 1.4, L.telemetre.v - 0.6, 0, "point", "Mülazım Hakkı Efendi", "mulazim");
+    sp("commander", LOOKS.subay1919(1), L.telemetre.u + 1.6, L.telemetre.v - 0.6, 0.3, "point", "Mülazım Hakkı Efendi", "mulazim");
     this.seyitNpc = sp("janissary", LOOKS.seyitOnbasi(), L.depot.u + 4.2, L.depot.v + 5.4, Math.PI * 0.85, "idle", "Seyit Onbaşı", "seyit");
     // Gun crews: two at each gun (the third gun's crew stands to its side).
     L.guns.forEach((u, i) => {
@@ -265,7 +265,7 @@ export class CanakkaleScene extends FpsScenario<CanakkaleWorld> {
       case "bogaz:look":
         if (!instant) {
           const p = this.player.position;
-          this.player.yaw = Math.atan2(420 - p.x, -900 - p.z);
+          this.player.yaw = Math.atan2(400 - p.x, -800 - p.z);
           this.player.pitch = 0.02;
         }
         break;

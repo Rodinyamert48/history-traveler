@@ -489,7 +489,7 @@ export class BataryaMinigame extends BaseMinigame {
     this.bar.style.width = `${(k * 100).toFixed(1)}%`;
     setText(this.ascii, asciiBar(k));
     setText(this.pct, `${Math.round(k * 100)}%`);
-    this.stats.innerHTML = `İsabet: <b>${this.hits}</b>/${this.goal} · Atış: <b>${this.fired}</b>${this.d.mode === "final" ? ` · Tabya: <b>${Math.round(this.integrity)}%</b>` : ""}`;
+    this.stats.innerHTML = `İsabet: <b>${this.hits}</b> (hedef ${this.goal}) · Atış: <b>${this.fired}</b>${this.d.mode === "final" ? ` · Tabya: <b>${Math.round(this.integrity)}%</b>` : ""}`;
     this.integrityFill.style.width = `${this.integrity}%`;
     this.integrityFill.classList.toggle("low", this.integrity < 35);
   }

@@ -192,7 +192,8 @@ export async function buildCanakkaleWorld(ctx: WorldBuildContext): Promise<Canak
     prefabs.place("rangefinder", x, GY + 1.0, z, { rotY: FACING });
     collision.addCircle(x, z, 0.6, -100, GY + 2.8, { walkable: false });
   }
-  const telemetre = atL(tm.u, tm.v - 1.4, 1.0);
+  // Beside the instrument, not behind it, so the view down the strait stays open.
+  const telemetre = atL(tm.u - 2.0, tm.v - 0.2, 1.0);
   anchors.set("telemetre", telemetre.clone());
   let flagNode: TransformNode;
   {

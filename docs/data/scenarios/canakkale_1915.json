@@ -1,0 +1,155 @@
+{
+  "$comment": "Çanakkale · 18 Mart 1915 — Çanakkale Deniz Zaferi. Oyuncu, Rumeli Mecidiye Tabyası'nda genç bir topçudur. Seyit Onbaşı, Nusret mayın gemisi, Erenköy Koyu'na döşenen 26 mayın ve batan Bouvet, Irresistible ve Ocean tarihîdir; Yüzbaşı Hasan Bey, Mülazım Hakkı Efendi ve diyaloglar kurgusaldır. Boğaz üzerindeki mesafeler oyunda kısaltılmıştır. Görev tipleri: talk, reach, interact, deliver, minigame (nusret | batarya | seyit | filo), hold.",
+  "scenario": "canakkale_1915",
+  "firstMission": "canakkale_m01",
+  "missions": [
+    {
+      "id": "canakkale_m01",
+      "title": "Rumeli Mecidiye Tabyası",
+      "description": "Boğaz'ın en dar yerini bekleyen Mecidiye Tabyası'ndasın. Tabya komutanı Yüzbaşı Hasan Bey seni bekliyor.",
+      "type": "story",
+      "date": "ÇANAKKALE · 18 MART 1915 · SABAH",
+      "intro": "d_ca_intro",
+      "onStart": ["filo:approach"],
+      "objectives": [
+        { "type": "talk", "npc": "yuzbasi", "text": "Bayrağın yanındaki Yüzbaşı Hasan Bey ile konuş", "dialogue": "d_ca01" },
+        { "type": "reach", "anchor": "telemetre", "radius": 3, "text": "Telemetre başına git, Boğaz'a bak" }
+      ],
+      "reward": { "text": "Düşman donanmasını gördün." },
+      "onComplete": ["bogaz:look"],
+      "outro": "d_ca01_end",
+      "nextMission": "canakkale_m02"
+    },
+    {
+      "id": "canakkale_m02",
+      "title": "Nusret'in Gecesi",
+      "description": "On gün önce, 7'yi 8 Mart'a bağlayan gece: küçük mayın gemisi Nusret Erenköy Koyu'na giriyor.",
+      "type": "minigame",
+      "date": "ON GÜN ÖNCE · 8 MART 1915 GECESİ",
+      "intro": "d_ca02",
+      "objectives": [
+        { "type": "minigame", "minigame": "nusret", "anchor": "telemetre", "text": "Nusret'in dümenine geç — 26 mayını döşe", "prompt": "Hikâyeyi başlat", "autoRadius": 60 }
+      ],
+      "reward": { "text": "26 mayın Erenköy Koyu'nda." },
+      "outro": "d_ca02_end",
+      "nextMission": "canakkale_m03"
+    },
+    {
+      "id": "canakkale_m03",
+      "title": "Cephane",
+      "description": "Toplar mermi bekliyor. Seyit Onbaşı ile cephanelikten topa mermi taşı.",
+      "type": "deliver",
+      "objectives": [
+        { "type": "talk", "npc": "seyit", "text": "Cephaneliğin önündeki Seyit Onbaşı ile konuş", "dialogue": "d_ca03" },
+        {
+          "type": "deliver",
+          "pickup": "cephanelik",
+          "drop": "top",
+          "count": 2,
+          "item": "shell",
+          "text": "Cephanelikten 3 numaralı topa mermi taşı",
+          "pickupPrompt": "Mermiyi al",
+          "dropPrompt": "Mermiyi topun yanına bırak"
+        }
+      ],
+      "reward": { "text": "Top dolduruldu." },
+      "outro": "d_ca03_end",
+      "nextMission": "canakkale_m04"
+    },
+    {
+      "id": "canakkale_m04",
+      "title": "Ateş!",
+      "description": "İngiliz hattı menzile girdi. Telemetrenin söylediği mesafeyi ayarla, geminin önüne nişan al.",
+      "type": "minigame",
+      "date": "18 MART 1915 · ÖĞLE",
+      "intro": "d_ca04",
+      "onStart": ["filo:first"],
+      "objectives": [
+        { "type": "minigame", "minigame": "batarya", "anchor": "top", "text": "3 numaralı topun başına geç — düşman gemilerini vur", "prompt": "Topun başına geç" }
+      ],
+      "reward": { "text": "İngiliz hattı yara aldı." },
+      "onComplete": ["vinc:broken"],
+      "outro": "d_ca04_end",
+      "nextMission": "canakkale_m05"
+    },
+    {
+      "id": "canakkale_m05",
+      "title": "Seyit Onbaşı",
+      "description": "Vinç parçalandı. 276 kiloluk mermi artık sırtta taşınacak.",
+      "type": "minigame",
+      "intro": "d_ca05",
+      "onStart": ["filo:final", "seyit:play"],
+      "objectives": [
+        { "type": "minigame", "minigame": "seyit", "anchor": "seyit", "text": "Cephaneliğin önündeki mermiyi sırtla, topa taşı", "prompt": "Mermiyi sırtla" }
+      ],
+      "reward": { "text": "Mermi kamada!" },
+      "onComplete": ["seyit:done"],
+      "outro": "d_ca05_end",
+      "nextMission": "canakkale_m06"
+    },
+    {
+      "id": "canakkale_m06",
+      "title": "18 Mart",
+      "description": "Fransız hattı Erenköy Koyu'na giriyor. Tabyayı ayakta tut, ateşe devam et!",
+      "type": "combat",
+      "date": "18 MART 1915 · ÖĞLEDEN SONRA",
+      "intro": "d_ca06",
+      "objectives": [
+        { "type": "minigame", "minigame": "filo", "anchor": "top", "text": "Topun başına geç — Boğaz'ı geçirme!", "prompt": "Topun başına geç" }
+      ],
+      "reward": { "text": "Çanakkale geçilmedi!" },
+      "nextMission": null
+    }
+  ],
+  "dialogues": {
+    "d_ca_intro": [
+      { "speaker": "Anlatıcı", "text": "1915 baharı. Birinci Dünya Savaşı sürüyor. İngiltere ve Fransa, İstanbul'a ulaşmak ve müttefikleri Rusya'ya yol açmak için Çanakkale Boğazı'nı donanmayla geçmeye karar verdi." },
+      { "speaker": "Anlatıcı", "text": "Şubat'tan beri Boğaz'ın girişindeki tabyalar bombalanıyor. Boğaz'ı kıyılardaki Türk topçusu ve sulara döşenmiş mayın hatları savunuyor." },
+      { "speaker": "Anlatıcı", "text": "Bugün 18 Mart 1915. Kilitbahir'in güneyindeki Rumeli Mecidiye Tabyası'nda genç bir topçusun. Düşmanın en büyük saldırısı başlamak üzere." }
+    ],
+    "d_ca01": [
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Hazır ol evlat! Düşman donanması bu sabah Boğaz'a giriyor; gözcüler güneyden haber verdi." },
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Bu tabya, 24'lük Krupp toplarıyla Boğaz'ın en dar yerini bekler. Düşman buradan geçerse İstanbul'un yolu açılır." },
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Telemetrenin başına git, Mülazım Hakkı Efendi'nin yanına. Düşmanı kendi gözünle gör." }
+    ],
+    "d_ca01_end": [
+      { "speaker": "Mülazım Hakkı Efendi", "text": "Bak, Boğaz'ın ağzında: İngiliz hattı. Queen Elizabeth, Agamemnon, Lord Nelson, Inflexible… Zırhlıların en büyükleri." },
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Korkma. Onlar on gün önce olanı bilmiyor. Sana anlatayım: Nusret'in gecesini…" }
+    ],
+    "d_ca02": [
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Düşman gemileri her gün Erenköy Koyu'na girip ateş ediyor, sonra koyun içinde dönüp çıkıyordu." },
+      { "speaker": "Anlatıcı", "text": "Bunu fark eden komutanlar, düşmanın dönüş yaptığı yere, kıyıya paralel yeni bir mayın hattı döşemeye karar verdi." },
+      { "speaker": "Anlatıcı", "text": "7'yi 8 Mart'a bağlayan gece küçük mayın gemisi Nusret, ışıklarını söndürüp koya süzüldü. Şimdi Nusret'in dümenindesin." }
+    ],
+    "d_ca02_end": [
+      { "speaker": "Anlatıcı", "text": "Nusret 26 mayını kimseye görünmeden döşeyip Çanakkale'ye döndü. Düşmanın bu hattan haberi yoktu." },
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "O mayınlar bugün orada, sessizce bekliyor. Haydi, şimdi kendi işimize: toplara cephane lazım!" }
+    ],
+    "d_ca03": [
+      { "speaker": "Seyit Onbaşı", "text": "Hoş geldin kardaş! Ben Seyit, Havranlıyım. Bu topu besleyen benim." },
+      { "speaker": "Seyit Onbaşı", "text": "Mermileri cephanelikten topa taşıyacağız. Topun yanında vinç var; onunla kaldırıp kamaya süreriz." }
+    ],
+    "d_ca03_end": [
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Mermiler yerinde. Mevzilere! İngiliz hattı menzile giriyor!" }
+    ],
+    "d_ca04": [
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Telemetre mesafeyi bildirecek. Mesafeyi ayarla, gemi ilerlediği için önüne nişan al, sonra ateş!" }
+    ],
+    "d_ca04_end": [
+      { "speaker": "Anlatıcı", "text": "Bir düşman mermisi tabyanın içine düştü. Topun mermi kaldıran vinci parçalandı." },
+      { "speaker": "Seyit Onbaşı", "text": "Vinç gitti! Mermi kaldırılmazsa top susar…" }
+    ],
+    "d_ca05": [
+      { "speaker": "Anlatıcı", "text": "Her biri 276 kilo gelen mermiler artık elle taşınmalıydı. Seyit Onbaşı cephaneliğin önündeki mermiye eğildi." },
+      { "speaker": "Anlatıcı", "text": "Bu kez Seyit Onbaşı sensin. Mermiyi sırtla, topa ulaştır!" }
+    ],
+    "d_ca05_end": [
+      { "speaker": "Seyit Onbaşı", "text": "Hele şükür… Top yeniden konuşacak!" },
+      { "speaker": "Anlatıcı", "text": "Savaştan sonra aynı mermiyi yeniden kaldırması istendiğinde Seyit Onbaşı'nın kaldıramadığı, 'Harp olursa yine kaldırırım' dediği anlatılır." }
+    ],
+    "d_ca06": [
+      { "speaker": "Mülazım Hakkı Efendi", "text": "Fransız hattı koya giriyor: Bouvet, Suffren, Gaulois, Charlemagne! Arkalarında Irresistible ve Ocean!" },
+      { "speaker": "Yüzbaşı Hasan Bey", "text": "Bütün toplar ateşe! Tabyayı ayakta tutun — Boğaz geçilmeyecek!" }
+    ]
+  }
+}
