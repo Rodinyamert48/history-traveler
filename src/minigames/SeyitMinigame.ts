@@ -204,7 +204,9 @@ export class SeyitMinigame extends BaseMinigame {
         this.setPhase("carry");
       }
       this.liftFill.style.width = `${this.lift * 100}%`;
-      held.position.set(0.05, lerp(-1.2, -0.12, this.lift), 0.55);
+      // From the ground in front of him up onto his right shoulder, nose forward.
+      held.position.set(lerp(0.05, 0.44, this.lift), lerp(-1.2, -0.06, this.lift), lerp(0.55, 0.32, this.lift));
+      held.rotation.y = lerp(0, Math.PI / 2 - 0.12, this.lift);
     } else if (this.phase === "carry") {
       this.stumbleT = Math.max(0, this.stumbleT - dt);
       // The load sways and wants to keep going the way it leans.
@@ -236,7 +238,7 @@ export class SeyitMinigame extends BaseMinigame {
       player.position.set(at.p.x, groundAt(at.p.x, at.p.z), at.p.z);
       player.yaw = lerp(player.yaw, at.yaw + this.tilt * 0.12, clamp(dt * 3, 0, 1));
       player.pitch = lerp(player.pitch, 0.18 + Math.abs(this.tilt) * 0.08, clamp(dt * 3, 0, 1));
-      held.position.set(0.05 + this.tilt * 0.08, -0.12 - Math.abs(this.tilt) * 0.05, 0.55);
+      held.position.set(0.44 + this.tilt * 0.06, -0.06 - Math.abs(this.tilt) * 0.05, 0.32);
       held.rotation.z = this.tilt * 0.35;
       this.tiltNeedle.style.left = `${clamp(0.5 + this.tilt / (CFG.tip * 2), 0, 1) * 100}%`;
       this.tiltNeedle.classList.toggle("danger", Math.abs(this.tilt) > CFG.tip * 0.65);
@@ -277,7 +279,7 @@ export class SeyitMinigame extends BaseMinigame {
     mobile.setLayout("explore");
     hud.setCrosshair(true);
     held.setEnabled(false);
-    held.rotation.z = 0;
+    held.rotation.set(0, 0, 0);
     if (!success) shell.setEnabled(true);
   }
 
